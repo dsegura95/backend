@@ -2,14 +2,9 @@ const express = require('express');
 const app = express();
 
 const { config } = require('./config/index.js');
+const reservACapi = require('./routes/reserva.js')
 
-app.get('/', function(req,res) {
-    res.send('hello world');
-});
-
-app.get('/json', function(req,res) {
-    res.send({hello: 'world'});
-});
+reservACapi(app);
 
 app.listen(config.port, function() {
     console.log(`Listening http://localhost:${config.port}`)

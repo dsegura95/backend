@@ -135,4 +135,7 @@ CREATE TABLE IF NOT EXISTS reserve_req_shedule(
     week SMALLINT
 );
 
---notifications? control de taquilla?
+--Scripts
+INSERT INTO item (name) VALUES
+    ('jk'),
+    ('rb')
