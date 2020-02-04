@@ -37,7 +37,7 @@ function reservACapi(app) {
         const description = req.body.description;
         try {
             const createItem = await reservacService.createItem(name, description);
-            res.json({
+            res.send(201).json({
                 message: 'Item Agregado',
                 body: {
                     Item: { name }
@@ -65,10 +65,9 @@ function reservACapi(app) {
     //  *** Eliminar un item: http://localhost:3000/api/items/<itemId> ***
     router.delete("/items/:itemId", async function (req, res, next) {
         const id = req.params.itemId;
-        const deletedItem = await reservacService.deleteItem(id);
+        await reservacService.deleteItem(id);
         try {
             res.send(`Item Id: ${id} Eliminado correctamente`);
-            res.send(deletedItem);
         } catch (err) {
             next(err);
         };
@@ -76,22 +75,22 @@ function reservACapi(app) {
 
     //  ************************ API REST ENDPOINTS  ***********************
 
-    //  *** Mostrar todos los items   http://localhost:3000/api/salas ***
+    //  *** Mostrar todas las salas   http://localhost:3000/api/salas ***
     router.get("/salas", async function (req, res, next) {
         try {
             const salas = await reservacService.getSalas()
-            res.send(salas);
+            res.send(salas.rows);
         } catch (err) {
             next(err);
         }
     });
 
-    //  *** Mostrar todos los items   http://localhost:3000/api/salas/<salaId=MYS-022> ***
+    //  *** Mostrar datos de una Sala   http://localhost:3000/api/salas/<salaId=MYS-022> ***
     router.get("/salas/:salaId", async function (req, res, next) {
         const { salaId } = req.params;
         try {
-            const response = await reservacService.getSala({ salaId });
-            res.status(200).send(response);
+            const sala = await reservacService.getSala(salaId);
+            res.send(sala.rows);
         } catch (err) {
             next(err);
         }

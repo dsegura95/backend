@@ -49,7 +49,7 @@ class ReservacService {
         return deletedSalaId || [];
     }
 
-    //  ************************ SERVICIOS DEL API REST  ***********************
+    //  ************************ SERVICIOS DE LAS SALAS  ***********************
 
     async getSalas() {
         const items = await pool.query('SELECT * FROM room');
@@ -60,7 +60,9 @@ class ReservacService {
         const item = await pool.query('SELECT * FROM room WHERE id = ($1)', [id]);
         return item || [];
     }
-}
 
+    //  ********************* SERVICIOS DE LAS SOLICITUDES  *********************
+
+}
 
 module.exports = ReservacService
