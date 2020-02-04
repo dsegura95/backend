@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
 CREATE TABLE IF NOT EXISTS reservation_request_shedule(
     id BIGSERIAL PRIMARY KEY,
     reservation_request_id BIGINT,
-    FOREIGN KEY (reservation_id) REFERENCES reservation_request(id),
+    FOREIGN KEY (reservation_request_id) REFERENCES reservation_request(id),
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT
