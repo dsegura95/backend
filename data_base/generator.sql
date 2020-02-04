@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
 CREATE TABLE IF NOT EXISTS reservation_request_shedule(
     id BIGSERIAL PRIMARY KEY,
     reservation_request_id BIGINT,
-    FOREIGN KEY (reservation_id) REFERENCES reservation_request(id),
+    FOREIGN KEY (reservation_request_id) REFERENCES reservation_request(id),
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT
@@ -138,4 +138,11 @@ CREATE TABLE IF NOT EXISTS reservation_request_shedule(
 --Scripts
 INSERT INTO item (name) VALUES
     ('jk'),
-    ('rb')
+    ('rb');
+
+INSERT INTO usuario (id, name, email, type, is_active, chief) VALUES
+    ('12-10273', 'JK', 'jesuskauze@gmail.com', 01, true, '12-10273');
+
+INSERT INTO room (id, name, owner_id, manager_id, is_active, description) VALUES
+    ('MYS018', 'Sala A', '12-10273', '12-10273', true, 'el mejor lab de todos'),
+    ('MYS019', 'Sala F', '12-10273', '12-10273', true, 'el segundo mejor lab de todos')
