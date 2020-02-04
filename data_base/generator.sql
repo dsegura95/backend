@@ -119,16 +119,16 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     subject_id VARCHAR(6),
     FOREIGN KEY (subject_id) REFERENCES subject(id),
     send_time TIMESTAMP,
-    trimester_name VARCHAR(12),
+    trimester_id VARCHAR(12),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
     status CHAR(1) --A(aprobado),R(rechazado),E(espera)
 );
 
 --Hace referencia al horario
-CREATE TABLE IF NOT EXISTS reserve_req_shedule(
+CREATE TABLE IF NOT EXISTS reservation_request_shedule(
     id BIGSERIAL PRIMARY KEY,
-    reservation_id BIGINT,
+    reservation_request_id BIGINT,
     FOREIGN KEY (reservation_id) REFERENCES reservation_request(id),
     day VARCHAR(9),
     hour SMALLINT,
