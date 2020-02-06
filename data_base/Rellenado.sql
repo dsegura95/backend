@@ -78,8 +78,8 @@ insert into reservation_request(id, requester_id, room_id, subject_id, trimester
 /*Rellenamos reserve_req_schedule*/
 
 
-insert into reservation_request_shedule(id, reservation_request_id, day, hour, week) values(1, 1, 'LunMier', 1-3, 5);
-insert into reservation_request_shedule(id, reservation_request_id, day, hour, week) values(2, 2, 'MarJue', 2-3, 7);
+insert into reservation_request_schedule(id, reservation_request_id, day, hour, week) values(1, 1, 'LunMier', 1-3, 5);
+insert into reservation_request_schedule(id, reservation_request_id, day, hour, week) values(2, 2, 'MarJue', 2-3, 7);
 
 
 /*Rellenamos asignation*/
