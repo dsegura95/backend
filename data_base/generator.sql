@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS room_request(
     manager_id VARCHAR(64) NOT NULL, --LDC
     FOREIGN KEY (manager_id) REFERENCES usuario(id),
     trimester_id VARCHAR(12) NOT NULL,
-    FOREIGN KEY (trimester_id) REFERENCES usuario(id),
+    FOREIGN KEY (trimester_id) REFERENCES trimester(id),
     date DATE NOT NULL,
     status CHAR(1) --A(aprobado),R(rechazado),E(espera)
 );
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS asignation(
 );
 
 -- Esta es la del crud
-CREATE TABLE IF NOT EXISTS asig_shedule(
+CREATE TABLE IF NOT EXISTS asig_schedule(
     id BIGSERIAL PRIMARY KEY,
     asignation_id BIGINT NOT NULL,
     FOREIGN KEY (asignation_id) REFERENCES asignation(id),
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
 );
 
 --Hace referencia al horario
-CREATE TABLE IF NOT EXISTS reservation_request_shedule(
+CREATE TABLE IF NOT EXISTS reservation_request_schedule(
     id BIGSERIAL PRIMARY KEY,
     reservation_request_id BIGINT,
     FOREIGN KEY (reservation_request_id) REFERENCES reservation_request(id),
@@ -135,14 +135,3 @@ CREATE TABLE IF NOT EXISTS reservation_request_shedule(
     week SMALLINT
 );
 
---Scripts
-INSERT INTO item (name) VALUES
-    ('jk'),
-    ('rb');
-
-INSERT INTO usuario (id, name, email, type, is_active, chief) VALUES
-    ('12-10273', 'JK', 'jesuskauze@gmail.com', 01, true, '12-10273');
-
-INSERT INTO room (id, name, owner_id, manager_id, is_active, description) VALUES
-    ('MYS018', 'Sala A', '12-10273', '12-10273', true, 'el mejor lab de todos'),
-    ('MYS019', 'Sala F', '12-10273', '12-10273', true, 'el segundo mejor lab de todos')
