@@ -36,14 +36,8 @@ function reservACapi(app) {
         const name = req.body.name;
         const description = req.body.description;
         try {
-            const createItem = await reservacService.createItem(name, description);
-            res.send(201).json({
-                message: 'Item Agregado',
-                body: {
-                    Item: { name }
-                },
-                body2: createItem
-            })
+            await reservacService.createItem(name, description);
+            res.sendStatus(201);
         } catch (err) {
             next(err);
         }
