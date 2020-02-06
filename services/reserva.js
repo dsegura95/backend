@@ -61,6 +61,14 @@ class ReservacService {
         return item || [];
     }
 
+    async getSalaItems(id) {
+        console.log(id)
+        const items = await pool.query(
+        'SELECT r.quantity, i.name FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = ($1)',
+        [id]);
+        return items || [];
+    }
+
     //  ********************* SERVICIOS DE LAS SOLICITUDES  *********************
 
 }

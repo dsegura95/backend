@@ -69,7 +69,7 @@ function reservACapi(app) {
 
     //  ************************ API REST ENDPOINTS  ***********************
 
-    //  *** Mostrar todas las salas   http://localhost:3000/api/salas ***
+    //  *** Mostrar todas las salas http://localhost:3000/api/salas ***
     router.get("/salas", async function (req, res, next) {
         try {
             const salas = await reservacService.getSalas()
@@ -79,7 +79,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Mostrar datos de una Sala   http://localhost:3000/api/salas/<salaId=MYS-022> ***
+    //  *** Mostrar datos de una Sala http://localhost:3000/api/salas/<salaId=MYS-022> ***
     router.get("/salas/:salaId", async function (req, res, next) {
         const { salaId } = req.params;
         try {
@@ -89,5 +89,28 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
+    router.get("/salas/:salaId", async function (req, res, next) {
+        const { salaId } = req.params;
+        try {
+            const sala = await reservacService.getSala(salaId);
+            res.send(sala.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
+    router.get("/salas/:salaId/items", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        console.log(salaId);
+        try {
+            const salaItems = await reservacService.getSalaItems(salaId);
+            res.send(salaItems.rows);
+        } catch (err) {
+            next(err);
+        }
+    });   
 }
 module.exports = reservACapi;
