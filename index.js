@@ -2,15 +2,16 @@ const express = require('express');
 const app = express();
 
 const { config } = require('./config/index.js');
+const reservACapi = require('./routes/reserva.js')
 
-app.get('/', function(req,res) {
-    res.send('hello world');
-});
+// const bodyParser = require('body-parser')
 
-app.get('/json', function(req,res) {
-    res.send({hello: 'world'});
-});
+// Body Parser middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
-app.listen(config.port, function() {
-    console.log(`Listening http://localhost:$(config.port)`)
+reservACapi(app);
+
+app.listen(config.port, function () {
+    console.log(`Listening http://localhost:${config.port}`)
 });
