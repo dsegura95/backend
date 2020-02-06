@@ -116,9 +116,12 @@ insert into item(name) values('videobeam');
 insert into item(name) values('sillas');
 insert into item(name) values('mesas');
 
-/*Rellenamos la tabla de room_attribute*/
+/*Rellenamos la tabla de room_item*/
 
-/*Rellenamos room request*/
+insert into room_item(room_id,trimester_id,item_id,quantity)values('MYS-111', 'ENE-MAR2020', 3, 5);
+insert into room_item(room_id,trimester_id,item_id,quantity)values('MYS-111', 'ENE-MAR2020', 2, 3);
+
+/*Rellenamos room_request*/
 
 insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-111', 'labF', 'ldac', 'cchang', 'ENE-MAR2020', '2020-05-06','A');
 insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-111', 'labF', 'ldc', 'edublanco', 'ENE-MAR2020', '2020-01-06','E');
