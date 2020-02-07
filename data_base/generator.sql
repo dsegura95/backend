@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS room(
     is_active BOOLEAN NOT NULL,
     description VARCHAR(1024) NOT NULL, --Lo llenara el usuario en un vista para informacion del laboratorio
     last_used DATE, --LAB F puede modificarla para extenderla
-    first_used DATE
+    first_used DATE,
+    pathImage TEXT
 );
 
 CREATE TABLE IF NOT EXISTS room_request(

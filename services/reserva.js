@@ -74,7 +74,7 @@ class ReservacService {
 
     async getSalaItems(id) {
         //const TRIM_ACTUAL = await this.getActualTrim()
-        const sql = `SELECT r.quantity, i.name FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
+        const sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
         const items = await pool.query(sql);
         return items || [];
     }
