@@ -46,19 +46,9 @@ class ReservacService {
         return deleteItem;
     }
 
-    async createSala() {
-        let query = 'SELECT * FROM item';
-        const createSalaId = await pool.query(query);
-        return createSalaId;
-    }
-
-    async deleteSala() {
-        let query = 'SELECT * FROM item';
-        const deletedSalaId = await pool.query(query);
-        return deletedSalaId || [];
-    }
-
     //  ************************ SERVICIOS DE LAS SALAS  ***********************
+
+    //  ************************ Get  **********************
 
     async getSalas() {
         let query = 'SELECT * FROM room';
@@ -71,6 +61,35 @@ class ReservacService {
         const item = await pool.query(query);
         return item || [];
     }
+
+    //  ************************ Post  ***********************
+
+    async createSala(name, description) {
+        let query = `INSERT INTO room (name, description) VALUES ('${name}','${description}'`;
+        const createItemId = await pool.query(query);
+        return createItemId;
+    }
+
+    //  ************************ Put  ***********************
+
+
+    async updateSala(id, name, description) {
+        let query = `UPDATE room SET name = '${name}', description = '${description}' WHERE id = ${id}`;
+        const updateItem = await pool.query(query);
+        return updateItem;
+    }
+
+    //  ************************ Delete  ***********************
+
+    async deleteSala(id) {
+        let query = `DELETE FROM room WHERE id = '${id}'`;
+        const deleteItem = await pool.query(query);
+        return deleteItem;
+    }
+
+    //  ************************ Items De Sala  ***********************
+
+    //  ************************ Get  **********************
 
     async getSalaItems(id) {
         //const TRIM_ACTUAL = await this.getActualTrim()
