@@ -5,7 +5,7 @@ const ReservacService = require('../services/reserva')
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService
-
+    
     app.use("/api/", router);
 
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
@@ -104,13 +104,12 @@ function reservACapi(app) {
     //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
     router.get("/salas/:salaId/items", async function (req, res, next) {
         const salaId = req.params.salaId;
-        console.log(salaId);
         try {
             const salaItems = await reservacService.getSalaItems(salaId);
             res.send(salaItems.rows);
         } catch (err) {
             next(err);
         }
-    });   
+    });
 }
 module.exports = reservACapi;
