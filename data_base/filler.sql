@@ -93,20 +93,20 @@ insert into usuario(id, name,email,type,is_active,chief) values
 ('labF', 'Laboratorio F', 'labF@usb.ve', 0104,  true, 'labF');
 
 /*Rellenamos la tabla de room*/
-insert into room(id, name,owner_id, manager_id, is_active,description ,type, last_used, first_used) values
-('MYS-111', 'Lab con PC','ldac', 'cchang', true, 'Laboratorio con computadoras','Laboratorio con computadoras',  '2020-07-02', '2018-06-05');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-111', 'Lab con PC','ldac', 'cchang', true, 'Laboratorio con computadoras', '2020-07-02', '2018-06-05');
 
-insert into room(id, name,owner_id, manager_id, is_active,description ,type, last_used, first_used) values
-('MYS-112', 'Sala A','ldac', 'cchang', true, 'Sala A', 'Sala A','2020-01-01', '2019-06-01');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-112', 'Sala A','ldac', 'cchang', true, 'Sala A','2020-01-01', '2019-06-01');
 
-insert into room(id, name,owner_id, manager_id, is_active,description ,type, last_used, first_used) values
-('MYS-113', 'Sala F','ldac', 'cchang', true, 'Sala F','Sala F',  '2020-01-01', '2018-01-05');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-113', 'Sala F','ldac', 'cchang', true, 'Sala F',  '2020-01-01', '2018-01-05');
 
-insert into room(id, name,owner_id, manager_id, is_active,description ,type, last_used, first_used) values
-('MYS-110', 'Sala Leal','ldc', 'edublanco', true, 'Sala Leal','Sala Leal',  '2020-10-10', '2018-04-01');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-110', 'Sala Leal','ldc', 'edublanco', true, 'Sala Leal',  '2020-10-10', '2018-04-01');
 
-insert into room(id, name,owner_id, manager_id, is_active,description ,type, last_used, first_used) values
-('MYS-115', 'Sala Progra Momucho','ldc', 'edublanco', true, 'Sala Progra Momucho', 'Sala Progra Momucho','2020-04-02', '2018-01-01');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-115', 'Sala Progra Momucho','ldc', 'edublanco', true, 'Sala Progra Momucho','2020-04-02', '2018-01-01');
 
 
 /*Rellenamos la tabla item*/
