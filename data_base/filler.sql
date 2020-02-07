@@ -111,10 +111,10 @@ insert into room(id, name,owner_id, manager_id, is_active,description , last_use
 
 /*Rellenamos la tabla item*/
 
-insert into item(name) values('computadoras');
-insert into item(name) values('videobeam');
-insert into item(name) values('sillas');
-insert into item(name) values('mesas');
+insert into item(name,description) values('computadoras','hp 64 bits');
+insert into item(name,description) values('videobeam','casio 6000 lumens');
+insert into item(name,description) values('sillas','4 patas');
+insert into item(name,description) values('mesas','madera');
 
 /*Rellenamos la tabla de room_item*/
 

@@ -7,7 +7,7 @@
 
 --Querys
 
-SELECT r.quantity, i.name
+SELECT r.quantity, i.name, i.description
 FROM room_item AS r
 INNER JOIN item AS i ON i.id = r.item_id
 WHERE room_id = 'MYS-111';
