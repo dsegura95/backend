@@ -1,13 +1,18 @@
 const express = require('express');
 const app = express();
-
 const { config } = require('./config/index.js');
 const reservACapi = require('./routes/reserva.js')
 
+
 // const bodyParser = require('body-parser')
+var path = require('path');
+var dir = path.join(__dirname, 'public');
+app.use(express.static(dir));
 
 // Body Parser middlewares
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }))
 
 app.use((req, res, next) => {

@@ -7,6 +7,8 @@
 
 --Querys
 
+SELECT id, (pg_read_file(room.pathImage)::bytea) FROM room;
+
 SELECT r.quantity, i.name, i.description
 FROM room_item AS r
 INNER JOIN item AS i ON i.id = r.item_id
