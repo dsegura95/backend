@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS room(
     description VARCHAR(1024) NOT NULL, --Lo llenara el usuario en un vista para informacion del laboratorio
     last_used DATE, --LAB F puede modificarla para extenderla
     first_used DATE,
-    pathImage TEXT
+    pathImage VARCHAR(256)
 );
 
 CREATE TABLE IF NOT EXISTS room_request(

@@ -1,6 +1,8 @@
 const express = require('express');
-
-const ReservacService = require('../services/reserva')
+//const multer = require("multer");
+//const fs = require('fs');
+const path = require("path");
+const ReservacService = require('../services/reserva');
 
 
 function reservACapi(app) {
@@ -108,6 +110,16 @@ function reservACapi(app) {
         try {
             const salaItems = await reservacService.getSalaItems(salaId);
             res.send(salaItems.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/salas/:salaId/picture", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            console.log(path.join(`./media/'${salaId}.jpg'`));
+            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`));
         } catch (err) {
             next(err);
         }
