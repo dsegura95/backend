@@ -2,7 +2,6 @@ const express = require('express');
 
 const ReservacService = require('../services/reserva')
 
-
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService
@@ -67,8 +66,9 @@ function reservACapi(app) {
             next(err);
         };
     });
-
-    //  ************************ API REST ENDPOINTS  ***********************
+    //  *******************************************************************
+    //  ************************ API REST ENDPOINTS ***********************
+    //  **************************** SALAS ********************************
 
     //  *** Mostrar todas las salas http://localhost:3000/api/salas ***
     router.get("/salas", async function (req, res, next) {
@@ -91,18 +91,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
-    router.get("/salas/:salaId", async function (req, res, next) {
-        const { salaId } = req.params;
-        try {
-            const sala = await reservacService.getSala(salaId);
-            res.send(sala.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
+    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId>/items ***
     router.get("/salas/:salaId/items", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
@@ -112,5 +101,18 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    //  *** Obtener todas las salas que son administradas por un laboratorio http://localhost:3000/api/salas/<userId>/ ***
+    router.get("/salas/admin/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const adminSalas = await reservacService.getAdminSalas(userId);
+            res.send(adminSalas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
 }
 module.exports = reservACapi;

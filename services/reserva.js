@@ -48,7 +48,7 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALAS  ***********************
 
-    //  ************************ Get  **********************
+    //  ************************ GET  **********************
 
     async getSalas() {
         let query = 'SELECT * FROM room';
@@ -58,8 +58,21 @@ class ReservacService {
 
     async getSala(id) {
         let query = `SELECT * FROM room WHERE id = '${id}'`;
-        const item = await pool.query(query);
-        return item || [];
+        const sala = await pool.query(query);
+        return sala || [];
+    }
+
+    async getSalaItems(id) {
+        //const TRIM_ACTUAL = await this.getActualTrim()
+        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
+        const itemsSala = await pool.query(sql);
+        return itemsSala || [];
+    }
+
+    async getAdminSalas(id) {
+        const sql = `SELECT * FROM room WHERE manager_id = '${id}'`;
+        const adminSalas = await pool.query(sql);
+        return adminSalas || [];
     }
 
     //  ************************ Post  ***********************
@@ -87,16 +100,6 @@ class ReservacService {
         return deleteItem;
     }
 
-    //  ************************ Items De Sala  ***********************
-
-    //  ************************ Get  **********************
-
-    async getSalaItems(id) {
-        //const TRIM_ACTUAL = await this.getActualTrim()
-        const sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
-        const items = await pool.query(sql);
-        return items || [];
-    }
 
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
 
