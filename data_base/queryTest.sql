@@ -7,7 +7,8 @@
 
 --Querys
 
-SELECT id, (pg_read_file(room.pathImage)::bytea) FROM room;
+SELECT id, encode(pathImage, 'base64')
+FROM room;
 
 SELECT r.quantity, i.name, i.description
 FROM room_item AS r
