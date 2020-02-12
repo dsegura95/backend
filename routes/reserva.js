@@ -7,7 +7,7 @@ const ReservacService = require('../services/reserva');
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService
-    
+
     app.use("/api/", router);
 
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
@@ -104,7 +104,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Obtener todas las salas que son administradas por un laboratorio http://localhost:3000/api/salas/<userId>/ ***
+    //  *** Obtener todas las salas que son administradas por un laboratorio ***
     router.get("/salas/admin/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
@@ -143,6 +143,27 @@ function reservACapi(app) {
         try {
             const requestFromUser = await reservacService.getResquests(labId);
             res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** USUARIOS ********************************
+
+    router.get("/usuarios", async function (req, res, next) {
+        try {
+            const users = await reservacService.getUsers();
+            res.send(users.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/usuarios/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const user = await reservacService.getUser(userId);
+            res.send(user.rows);
         } catch (err) {
             next(err);
         }

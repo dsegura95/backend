@@ -112,7 +112,8 @@ class ReservacService {
     //  ********************* SERVICIOS DE SOLICITUDES  *********************
 
     async getResquetUser(userId) {
-        let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}'`;
+        let query = `SELECT * FROM reservation_request JOIN Reservation_request_schedule 
+        ON id WHERE requester_id = '${userId}'`;
         const requestsUsers = await pool.query(query);
         return requestsUsers || [];
     }
@@ -124,6 +125,22 @@ class ReservacService {
         const requests = await pool.query(query);
         return requests || [];
     }
+
+    //  ********************* SERVICIOS DE USUARIOS  *********************
+
+    async getUsers() {
+        let query = `SELECT * FROM usuario`;
+        const users = await pool.query(query);
+        return users || [];
+    }
+
+    async getUser(id) {
+        let query = `SELECT * FROM usuario WHERE id = '${id}'`;
+        const user = await pool.query(query);
+        return user || [];
+    }
+
+
 }
 
 module.exports = ReservacService

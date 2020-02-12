@@ -81,17 +81,13 @@ insert into room(id, name,owner_id, manager_id, is_active,description , last_use
 ('MYS-119', 'Sala Leal','eduardo', 'ldc', true, 'La salita de ldc', '2020-07-02', '2018-06-05');
 
 insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
-('MYS-019','Sala A','ldac','cchang',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
+('MYS-019','Sala A','cchang','ldac',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-019', 'Sala A','cchang', 'ldac', true, 'La mejor sala del mundo', '2020-07-02', '2018-06-05');
-
---superINSERT
+('MYS-018', 'Sala A','cchang', 'ldac', true, 'La mejor sala del mundo', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
 ('MYS-001', 'Sala E','cchang', 'ldac', true, 'Sala multimedia, solicitar televisor de ser necesario','2020-01-01', '2019-06-01');
-
-
 
 /*Rellenamos la tabla item*/
 
@@ -121,9 +117,14 @@ insert into reservation_request(requester_id, room_id, subject_id, trimester_id,
 
 /*Rellenamos reserve_req_schedule*/
 
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'LunMier', 1-3, 5);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 2-3, 7);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 2-5, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 12);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 23, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 25, 7);
 
 
 /*Rellenamos asignation*/
