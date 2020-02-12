@@ -117,12 +117,12 @@ insert into reservation_request(requester_id, room_id, subject_id, trimester_id,
 
 /*Rellenamos reserve_req_schedule*/
 
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 2);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 4);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 6);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 8);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 10);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 13, 12);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 2, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 3, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 12);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 23, 7);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 25, 7);
 
