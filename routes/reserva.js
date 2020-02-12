@@ -8,7 +8,7 @@ const boom = require('@hapi/boom');
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService
-    
+
     app.use("/api/", router);
 
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
@@ -105,7 +105,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Obtener todas las salas que son administradas por un laboratorio http://localhost:3000/api/salas/<userId>/ ***
+    //  *** Obtener todas las salas que son administradas por un laboratorio ***
     router.get("/salas/admin/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
