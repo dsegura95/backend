@@ -119,7 +119,13 @@ function reservACapi(app) {
     router.get("/salas/:salaId/picture", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
-            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`));
+            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`),
+                function (err) {
+                    if (err) {
+                        res.sendFile(path.join((__dirname)+`/../media/defaultImage.jpg`));
+                    }
+                }
+            );
         } catch (err) {
             next(err);
         }
