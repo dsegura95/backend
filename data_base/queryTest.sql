@@ -7,8 +7,7 @@
 
 --Querys
 
-SELECT id, encode(pathImage, 'base64')
-FROM room;
+SELECT * FROM usuario WHERE email = 'cchang@usb.ve';
 
 SELECT r.quantity, i.name, i.description
 FROM room_item AS r
