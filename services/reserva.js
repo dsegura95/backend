@@ -48,7 +48,7 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALAS  ***********************
 
-    //  ************************ Get  **********************
+    //  ************************ GET  **********************
 
     async getSalas() {
         let query = 'SELECT * FROM room';
@@ -58,8 +58,21 @@ class ReservacService {
 
     async getSala(id) {
         let query = `SELECT * FROM room WHERE id = '${id}'`;
-        const item = await pool.query(query);
-        return item || [];
+        const sala = await pool.query(query);
+        return sala || [];
+    }
+
+    async getSalaItems(id) {
+        //const TRIM_ACTUAL = await this.getActualTrim()
+        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
+        const itemsSala = await pool.query(sql);
+        return itemsSala || [];
+    }
+
+    async getAdminSalas(id) {
+        const sql = `SELECT * FROM room WHERE manager_id = '${id}'`;
+        const adminSalas = await pool.query(sql);
+        return adminSalas || [];
     }
 
     //  ************************ Post  ***********************
@@ -87,24 +100,47 @@ class ReservacService {
         return deleteItem;
     }
 
-    //  ************************ Items De Sala  ***********************
-
-    //  ************************ Get  **********************
-
-    async getSalaItems(id) {
-        //const TRIM_ACTUAL = await this.getActualTrim()
-        const sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
-        const items = await pool.query(sql);
-        return items || [];
-    }
 
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
 
     async getActualTrim() {
         const sql = 'SELECT id FROM trimester ORDER BY id DESC LIMIT 1';
-        const items = await pool.query(sql);
-        return items || [];
+        const trim = await pool.query(sql);
+        return trim || [];
     }
+
+    //  ********************* SERVICIOS DE SOLICITUDES  *********************
+
+    async getResquetUser(userId) {
+        let query = `SELECT * FROM reservation_request JOIN Reservation_request_schedule 
+        ON id WHERE requester_id = '${userId}'`;
+        const requestsUsers = await pool.query(query);
+        return requestsUsers || [];
+    }
+
+    async getResquests(labId) {
+        let query = `SELECT reservation_request.id, requester_id, room_id, subject_id, trimester_id, reason,
+        material_needed, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id 
+        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}'`;
+        const requests = await pool.query(query);
+        return requests || [];
+    }
+
+    //  ********************* SERVICIOS DE USUARIOS  *********************
+
+    async getUsers() {
+        let query = `SELECT * FROM usuario`;
+        const users = await pool.query(query);
+        return users || [];
+    }
+
+    async getUser(id) {
+        let query = `SELECT * FROM usuario WHERE id = '${id}'`;
+        const user = await pool.query(query);
+        return user || [];
+    }
+
+
 }
 
 module.exports = ReservacService

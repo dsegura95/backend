@@ -1,12 +1,13 @@
 const express = require('express');
-
-const ReservacService = require('../services/reserva')
-
+//const multer = require("multer");
+//const fs = require('fs');
+const path = require("path");
+const ReservacService = require('../services/reserva');
 
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService
-    
+
     app.use("/api/", router);
 
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
@@ -67,8 +68,9 @@ function reservACapi(app) {
             next(err);
         };
     });
-
-    //  ************************ API REST ENDPOINTS  ***********************
+    //  *******************************************************************
+    //  ************************ API REST ENDPOINTS ***********************
+    //  **************************** SALAS ********************************
 
     //  *** Mostrar todas las salas http://localhost:3000/api/salas ***
     router.get("/salas", async function (req, res, next) {
@@ -91,18 +93,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
-    router.get("/salas/:salaId", async function (req, res, next) {
-        const { salaId } = req.params;
-        try {
-            const sala = await reservacService.getSala(salaId);
-            res.send(sala.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId=MYS-022>/items ***
+    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId>/items ***
     router.get("/salas/:salaId/items", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
@@ -112,5 +103,72 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    //  *** Obtener todas las salas que son administradas por un laboratorio ***
+    router.get("/salas/admin/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const adminSalas = await reservacService.getAdminSalas(userId);
+            res.send(adminSalas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/salas/:salaId/picture", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** SOLICITUDES ********************************
+
+    //  Obtener todas las solicitudes hechas por un usuario
+    router.get("/solicitudes/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const requestFromUser = await reservacService.getResquetUser(userId);
+            res.send(requestFromUser.rows);
+        } catch(err) {
+            next(err);
+        }
+    });
+
+    // Obtener todas las solicitudes correspondientes a un laboratorio.
+    router.get("/solicitudes/admin/:labId", async function (req, res, next) {
+        const labId = req.params.labId;
+        try {
+            const requestFromUser = await reservacService.getResquests(labId);
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** USUARIOS ********************************
+
+    router.get("/usuarios", async function (req, res, next) {
+        try {
+            const users = await reservacService.getUsers();
+            res.send(users.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/usuarios/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const user = await reservacService.getUser(userId);
+            res.send(user.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
 }
 module.exports = reservACapi;
