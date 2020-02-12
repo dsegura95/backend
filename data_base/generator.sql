@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     FOREIGN KEY (room_id) REFERENCES room(id),
     subject_id VARCHAR(6),
     FOREIGN KEY (subject_id) REFERENCES subject(id),
-    send_time TIMESTAMP,
+    send_time TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     trimester_id VARCHAR(12),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
