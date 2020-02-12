@@ -113,6 +113,30 @@ function reservACapi(app) {
         }
     });
 
+    //  **************************** SOLICITUDES ********************************
+
+    //  Obtener todas las solicitudes hechas por un usuario
+    router.get("/solicitudes/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const requestFromUser = await reservacService.getResquetUser(userId);
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // Obtener todas las solicitudes correspondientes a un laboratorio.
+    router.get("/solicitudes/admin/:labId", async function (req, res, next) {
+        const labId = req.params.labId;
+        try {
+            const requestFromUser = await reservacService.getResquests(labId);
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
 }
 module.exports = reservACapi;
