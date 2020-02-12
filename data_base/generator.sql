@@ -63,7 +63,6 @@ CREATE TABLE IF NOT EXISTS room(
 CREATE TABLE IF NOT EXISTS room_request(
     id BIGSERIAL PRIMARY KEY,
     room_id VARCHAR(64) NOT NULL, --MYS-222
-    FOREIGN KEY (room_id) REFERENCES room(id),
     requested_id VARCHAR(64) NOT NULL, --LAB F
     FOREIGN KEY (requested_id) REFERENCES usuario(id),
     owner_id VARCHAR(64) NOT NULL, --Eduardo Whithe
