@@ -3,6 +3,7 @@ const express = require('express');
 //const fs = require('fs');
 const path = require("path");
 const ReservacService = require('../services/reserva');
+const boom = require('@hapi/boom');
 
 function reservACapi(app) {
     const router = express.Router();
@@ -118,7 +119,13 @@ function reservACapi(app) {
     router.get("/salas/:salaId/picture", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
-            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`));
+            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`),
+                function (err) {
+                    if (err) {
+                        res.sendFile(path.join((__dirname)+`/../media/defaultImage.jpg`));
+                    }
+                }
+            );
         } catch (err) {
             next(err);
         }
@@ -130,7 +137,7 @@ function reservACapi(app) {
     router.get("/solicitudes/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
-            const requestFromUser = await reservacService.getResquetUser(userId);
+            const requestFromUser = await reservacService.getRequestUser(userId);
             res.send(requestFromUser.rows);
         } catch(err) {
             next(err);
@@ -141,7 +148,7 @@ function reservACapi(app) {
     router.get("/solicitudes/admin/:labId", async function (req, res, next) {
         const labId = req.params.labId;
         try {
-            const requestFromUser = await reservacService.getResquests(labId);
+            const requestFromUser = await reservacService.getRequest(labId);
             res.send(requestFromUser.rows);
         } catch (err) {
             next(err);
@@ -149,26 +156,20 @@ function reservACapi(app) {
     });
 
     //  **************************** USUARIOS ********************************
-
-    router.get("/usuarios", async function (req, res, next) {
-        try {
-            const users = await reservacService.getUsers();
-            res.send(users.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    router.get("/usuarios/:userId", async function (req, res, next) {
+    // Obtener un usuario de la base de datos.
+    router.get("/usuario/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
-            const user = await reservacService.getUser(userId);
-            res.send(user.rows);
+            const requestFromUser = await reservacService.getUser(userId);
+            console.log(requestFromUser);
+            if (requestFromUser.rows.length){
+                res.send(requestFromUser.rows);
+            }else{
+                res.json(boom.notFound('missing').output.payload);
+            }
         } catch (err) {
             next(err);
         }
     });
-
-
 }
 module.exports = reservACapi;

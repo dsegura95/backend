@@ -111,14 +111,13 @@ class ReservacService {
 
     //  ********************* SERVICIOS DE SOLICITUDES  *********************
 
-    async getResquetUser(userId) {
-        let query = `SELECT * FROM reservation_request JOIN Reservation_request_schedule 
-        ON id WHERE requester_id = '${userId}'`;
+    async getRequestUser(userId) {
+        let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}'`;
         const requestsUsers = await pool.query(query);
         return requestsUsers || [];
     }
 
-    async getResquests(labId) {
+    async getRequest(labId) {
         let query = `SELECT reservation_request.id, requester_id, room_id, subject_id, trimester_id, reason,
         material_needed, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id 
         JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}'`;
@@ -127,20 +126,11 @@ class ReservacService {
     }
 
     //  ********************* SERVICIOS DE USUARIOS  *********************
-
-    async getUsers() {
-        let query = `SELECT * FROM usuario`;
-        const users = await pool.query(query);
-        return users || [];
+    async getUser(userId) {
+        let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
+        const requestsUsers = await pool.query(query);
+        return requestsUsers || [];
     }
-
-    async getUser(id) {
-        let query = `SELECT * FROM usuario WHERE id = '${id}'`;
-        const user = await pool.query(query);
-        return user || [];
-    }
-
-
 }
 
 module.exports = ReservacService
