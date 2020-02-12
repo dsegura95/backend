@@ -84,11 +84,6 @@ insert into room(id,name,owner_id,manager_id,is_active,description,last_used,fir
 ('MYS-019','Sala A','ldac','cchang',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-019', 'Sala A','cchang', 'ldac', true, 'La mejor sala del mundo', '2020-07-02', '2018-06-05');
-
---superINSERT
-
-insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
 ('MYS-001', 'Sala E','cchang', 'ldac', true, 'Sala multimedia, solicitar televisor de ser necesario','2020-01-01', '2019-06-01');
 
 

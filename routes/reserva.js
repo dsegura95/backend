@@ -3,6 +3,7 @@ const express = require('express');
 //const fs = require('fs');
 const path = require("path");
 const ReservacService = require('../services/reserva');
+const boom = require('@hapi/boom');
 
 function reservACapi(app) {
     const router = express.Router();
@@ -130,7 +131,7 @@ function reservACapi(app) {
     router.get("/solicitudes/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
-            const requestFromUser = await reservacService.getResquetUser(userId);
+            const requestFromUser = await reservacService.getRequestUser(userId);
             res.send(requestFromUser.rows);
         } catch(err) {
             next(err);
@@ -141,13 +142,28 @@ function reservACapi(app) {
     router.get("/solicitudes/admin/:labId", async function (req, res, next) {
         const labId = req.params.labId;
         try {
-            const requestFromUser = await reservacService.getResquests(labId);
+            const requestFromUser = await reservacService.getRequest(labId);
             res.send(requestFromUser.rows);
         } catch (err) {
             next(err);
         }
     });
 
-
+    //  **************************** USUARIOS ********************************
+    // Obtener un usuario de la base de datos.
+    router.get("/usuario/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const requestFromUser = await reservacService.getUser(userId);
+            console.log(requestFromUser);
+            if (requestFromUser.rows.length){
+                res.send(requestFromUser.rows);
+            }else{
+                res.json(boom.notFound('missing').output.payload);
+            }
+        } catch (err) {
+            next(err);
+        }
+    });
 }
 module.exports = reservACapi;
