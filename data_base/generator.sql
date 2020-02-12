@@ -53,9 +53,8 @@ CREATE TABLE IF NOT EXISTS room(
     FOREIGN KEY (owner_id) REFERENCES usuario(id),
     manager_id VARCHAR(64) NOT NULL, --LDAC
     FOREIGN KEY (manager_id) REFERENCES usuario(id),
-    is_active BOOLEAN,
-    description VARCHAR(1024), --Lo llenara el usuario en un vista para informacion del laboratorio
-    type VARCHAR(64), --Sala o Lab
+    is_active BOOLEAN NOT NULL,
+    description VARCHAR(1024) NOT NULL, --Lo llenara el usuario en un vista para informacion del laboratorio
     last_used DATE, --LAB F puede modificarla para extenderla
     first_used DATE
 );
@@ -133,4 +132,3 @@ CREATE TABLE IF NOT EXISTS reservation_request_schedule(
     hour SMALLINT,
     week SMALLINT
 );
-

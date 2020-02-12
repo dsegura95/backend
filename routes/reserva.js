@@ -1,6 +1,9 @@
 const express = require('express');
-
-const ReservacService = require('../services/reserva')
+//const multer = require("multer");
+//const fs = require('fs');
+const path = require("path");
+const ReservacService = require('../services/reserva');
+const boom = require('@hapi/boom');
 
 function reservACapi(app) {
     const router = express.Router();
@@ -36,14 +39,8 @@ function reservACapi(app) {
         const name = req.body.name;
         const description = req.body.description;
         try {
-            const createItem = await reservacService.createItem(name, description);
-            res.send(201).json({
-                message: 'Item Agregado',
-                body: {
-                    Item: { name }
-                },
-                body2: createItem
-            })
+            await reservacService.createItem(name, description);
+            res.sendStatus(201);
         } catch (err) {
             next(err);
         }
@@ -72,10 +69,11 @@ function reservACapi(app) {
             next(err);
         };
     });
+    //  *******************************************************************
+    //  ************************ API REST ENDPOINTS ***********************
+    //  **************************** SALAS ********************************
 
-    //  ************************ API REST ENDPOINTS  ***********************
-
-    //  *** Mostrar todas las salas   http://localhost:3000/api/salas ***
+    //  *** Mostrar todas las salas http://localhost:3000/api/salas ***
     router.get("/salas", async function (req, res, next) {
         try {
             const salas = await reservacService.getSalas()
@@ -85,12 +83,84 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Mostrar datos de una Sala   http://localhost:3000/api/salas/<salaId=MYS-022> ***
+    //  *** Mostrar datos de una Sala http://localhost:3000/api/salas/<salaId=MYS-022> ***
     router.get("/salas/:salaId", async function (req, res, next) {
         const { salaId } = req.params;
         try {
             const sala = await reservacService.getSala(salaId);
             res.send(sala.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId>/items ***
+    router.get("/salas/:salaId/items", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            const salaItems = await reservacService.getSalaItems(salaId);
+            res.send(salaItems.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  *** Obtener todas las salas que son administradas por un laboratorio ***
+    router.get("/salas/admin/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const adminSalas = await reservacService.getAdminSalas(userId);
+            res.send(adminSalas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/salas/:salaId/picture", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`));
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** SOLICITUDES ********************************
+
+    //  Obtener todas las solicitudes hechas por un usuario
+    router.get("/solicitudes/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const requestFromUser = await reservacService.getRequestUser(userId);
+            res.send(requestFromUser.rows);
+        } catch(err) {
+            next(err);
+        }
+    });
+
+    // Obtener todas las solicitudes correspondientes a un laboratorio.
+    router.get("/solicitudes/admin/:labId", async function (req, res, next) {
+        const labId = req.params.labId;
+        try {
+            const requestFromUser = await reservacService.getRequest(labId);
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** USUARIOS ********************************
+    // Obtener un usuario de la base de datos.
+    router.get("/usuario/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        try {
+            const requestFromUser = await reservacService.getUser(userId);
+            console.log(requestFromUser);
+            if (requestFromUser.rows.length){
+                res.send(requestFromUser.rows);
+            }else{
+                res.json(boom.notFound('missing').output.payload);
+            }
         } catch (err) {
             next(err);
         }
