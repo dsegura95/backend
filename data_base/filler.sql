@@ -74,20 +74,22 @@ insert into usuario(id,name,email,type,is_active, chief) values
 
 /*Rellenamos la tabla de room*/
 
-insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
-('MYS-120','Sala baratheon','eduardo','ldc',true,'La salita de ldc para pruebas','2020-07-02','2018-06-05');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-120', 'Sala baratheon','eduardo', 'ldc', true, 'La salita de ldc para pruebas', '2020-07-02', '2018-06-05');
 
-insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
-('MYS-119','Sala Leal','eduardo','ldc',true,'La salita de ldc','2020-07-02','2018-06-05');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-119', 'Sala Leal','eduardo', 'ldc', true, 'La salita de ldc', '2020-07-02', '2018-06-05');
 
 insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
 ('MYS-019','Sala A','ldac','cchang',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
 
-insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
-('MYS-001','Sala F','ldac','cchang',true,'Sala F, el switch murio','2020-01-01','2018-01-05');
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-019', 'Sala A','cchang', 'ldac', true, 'La mejor sala del mundo', '2020-07-02', '2018-06-05');
+
+--superINSERT
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-014','Sala E','ldac','cchang',true,'Sala F, el switch murio','2020-01-01','2018-01-05');
+('MYS-001', 'Sala E','cchang', 'ldac', true, 'Sala multimedia, solicitar televisor de ser necesario','2020-01-01', '2019-06-01');
 
 
 
@@ -115,15 +117,17 @@ insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,d
 /*P de pendiente, A aceptado, R rechazado*/
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, status) values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Clases', 'Sillas y mesas', 'E');
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, status) values ('15-11523', 'MYS-001', 'CI2692', 'ENE-MAR2020', 'Prepas', 'Sillas y mesas', 'A');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, status) values ('15-11523', 'MYS-119', 'CI2692', 'ENE-MAR2020', 'Prepas', 'Sillas y mesas', 'A');
 
 /*Rellenamos reserve_req_schedule*/
 
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'LunMier', 1-3, 5);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 2-3, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 2-5, 7);
 
 
 /*Rellenamos asignation*/
 
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ENE-MAR2020', '2020-02-06');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-001', 'CI2693', 'ENE-MAR2020', '2020-02-08');
-insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-014', 'CO3321', 'ENE-MAR2020', '2020-01-02');
+insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-119', 'CO3321', 'ENE-MAR2020', '2020-01-02');

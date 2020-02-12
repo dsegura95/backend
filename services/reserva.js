@@ -105,8 +105,24 @@ class ReservacService {
 
     async getActualTrim() {
         const sql = 'SELECT id FROM trimester ORDER BY id DESC LIMIT 1';
-        const items = await pool.query(sql);
-        return items || [];
+        const trim = await pool.query(sql);
+        return trim || [];
+    }
+
+    //  ********************* SERVICIOS DE SOLICITUDES  *********************
+
+    async getResquetUser(userId) {
+        let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}'`;
+        const requestsUsers = await pool.query(query);
+        return requestsUsers || [];
+    }
+
+    async getResquests(labId) {
+        let query = `SELECT reservation_request.id, requester_id, room_id, subject_id, trimester_id, reason,
+        material_needed, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id 
+        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}'`;
+        const requests = await pool.query(query);
+        return requests || [];
     }
 }
 
