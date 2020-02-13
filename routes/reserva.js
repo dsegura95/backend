@@ -161,7 +161,19 @@ function reservACapi(app) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getUser(userId);
-            console.log(requestFromUser);
+            if (requestFromUser.rows.length){
+                res.send(requestFromUser.rows);
+            }else{
+                res.json(boom.notFound('missing').output.payload);
+            }
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/usuarios", async function (req, res, next) {
+        try {
+            const requestFromUser = await reservacService.getUsers();
             if (requestFromUser.rows.length){
                 res.send(requestFromUser.rows);
             }else{
