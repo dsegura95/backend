@@ -208,7 +208,7 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('ldac', 'MAC', 'ldac@usb.ve', 3333,  true, 'cchang');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LDC', 'Laboratorio docente de computacion', 'ldc@usb.ve', 3333,  true, 'eduardo');
+('ldc', 'Laboratorio docente de computacion', 'ldc@usb.ve', 3333,  true, 'eduardo');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('LAMEC', 'Laboratorio de Matematicas y Estadistica Computacional', 'lamec@usb.ve', 3333,  true, 'jacob');
@@ -220,7 +220,7 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('MMLab', 'Laboratorio de Computacion Grafica y Multimedia', 'MMLab@usb.ve', 3333,  false, 'labF');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LDCP', 'Laboratorio de Ciencias Politicas', 'ldcp@usb.ve', 3333,  true, 'avargas');
+('ldcP', 'Laboratorio de Ciencias Politicas', 'ldcp@usb.ve', 3333,  true, 'avargas');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('CADD', 'Laboratorio de Diseno Asisitdo por Computadora', 'cadd@usb.ve', 3333,  true, 'rosamariacuenca');
@@ -252,13 +252,13 @@ insert into usuario(id,name,email,type,is_active, chief) values
 /*Rellenamos la tabla de room*/
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-221', 'Sala Thompson','eduardo', 'LDC', true, 'Sala historica del ldc fundada por Thompson', '2020-07-02', '2018-06-05');
+('MYS-221', 'Sala Thompson','eduardo', 'ldc', true, 'Sala historica del ldc fundada por Thompson', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-220', 'Sala Baral','eduardo', 'LDC', true, 'La salita de ldc para pruebas', '2020-07-02', '2018-06-05');
+('MYS-220', 'Sala Baral','eduardo', 'ldc', true, 'La salita de ldc para pruebas', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-219', 'Sala Leal','eduardo', 'LDC', true, 'La salita de ldc para prestamo de clases', '2020-07-02', '2018-06-05');
+('MYS-219', 'Sala Leal','eduardo', 'ldc', true, 'La salita de ldc para prestamo de clases', '2020-07-02', '2018-06-05');
 
 insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
 ('MYS-019','Sala A','cchang','ldac',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
@@ -312,7 +312,7 @@ insert into room_item(room_id,trimester_id,item_id,quantity)values('MYS-220', 'E
 
 /*Rellenamos room_request*/
 
-insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'LDC', 'ENE-MAR2020', '2020-05-06','A');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-05-06','A');
 insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'cchang', 'ldac', 'ENE-MAR2020', '2020-01-06','E');
 
 /*Rellenamos reservation_request*/
