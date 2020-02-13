@@ -327,18 +327,7 @@ insert into reservation_request(requester_id, room_id, subject_id, trimester_id,
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('mcorniel', 'MYS-221', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'A');
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('CO', 'MYS-019', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'P');
 
-<<<<<<< HEAD
 /*Rellenamos reserve_req_schedule*/
-=======
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 2);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 2, 4);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 3, 6);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 8);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 10);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1-3, 12);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 23, 7);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'MarJue', 25, 7);
->>>>>>> 215e23b0ab8cebe5d59a233bc744473e0b4027b9
 
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 2);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 4);
@@ -367,5 +356,5 @@ insert into reservation_request_schedule(reservation_request_id, day, hour, week
 /*Rellenamos asignation*/
 
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ENE-MAR2020', '2020-02-06');
-insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-020', 'CI2693', 'ENE-MAR2020', '2020-02-08');
+insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-020GIT', 'CI2693', 'ENE-MAR2020', '2020-02-08');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-219', 'CO3321', 'ENE-MAR2020', '2020-01-02');
