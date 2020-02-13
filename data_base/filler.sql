@@ -171,37 +171,37 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('15-11523', 'Neil Villamizar', '15-11523@usb.ve', 1111, true, '15-11523');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('labF', 'Laboratorio F', 'labf@usb.ve', 3333, true, 'labF');
+('labf', 'Laboratorio F', 'labf@usb.ve', 4444, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, true, 'labF');
+('cchang', 'Carolina Chang', 'cchang@usb.ve', 2222, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, true, 'labF');
+('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('jacob', 'Alberto Mendoza', 'jacob@usb.ve', 2222, true, 'labF');
+('jacob', 'Alberto Mendoza', 'jacob@usb.ve', 2222, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('strefezza', 'Lin Son de Strefezza', 'strefezza@usb.ve', 2222,  true, 'labF');
+('strefezza', 'Lin Son de Strefezza', 'strefezza@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('avargas', 'Adolfo Vargas', 'avargas@usb.ve', 2222,  true, 'labF');
+('avargas', 'Adolfo Vargas', 'avargas@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('rosamariacuenca', 'Rosa Maria Cuenca Marcano', 'rosamariacuenca@usb.ve', 2222,  true, 'labF');
+('rosamariacuenca', 'Rosa Maria Cuenca Marcano', 'rosamariacuenca@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('vvilacha', 'Victor Vilacha', 'vvilacha@usb.ve', 2222,  true, 'labF');
+('vvilacha', 'Victor Vilacha', 'vvilacha@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('gonzalezl', 'Lourdes Yetzabe Gonzalez', 'gonzalezl@usb.ve', 2222,  true, 'labF');
+('gonzalezl', 'Lourdes Yetzabe Gonzalez', 'gonzalezl@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('lcornieles', 'Liseth Cornieles', 'lcornieles@usb.ve', 2222,  true, 'labF');
+('lcornieles', 'Liseth Cornieles', 'lcornieles@usb.ve', 2222,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222,  true, 'labF');
+('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222,  true, 'labf');
 --------------------------------------------------------------------
 
 insert into usuario(id,name,email,type,is_active, chief) values
@@ -217,7 +217,7 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('LAIAC', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 3333,  false, 'strefezza');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('MMLab', 'Laboratorio de Computacion Grafica y Multimedia', 'MMLab@usb.ve', 3333,  false, 'labF');
+('MMLab', 'Laboratorio de Computacion Grafica y Multimedia', 'MMLab@usb.ve', 3333,  false, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('ldcP', 'Laboratorio de Ciencias Politicas', 'ldcp@usb.ve', 3333,  true, 'avargas');
@@ -226,7 +226,7 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('CADD', 'Laboratorio de Diseno Asisitdo por Computadora', 'cadd@usb.ve', 3333,  true, 'rosamariacuenca');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('ET', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333,  true, 'labF');
+('ET', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('LGU', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 3333,  true, 'vvilacha');
@@ -238,16 +238,13 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('LJSU-CIU', 'Lab Jose Santos Urriola-CIU', 'ciu@usb.ve', 3333,  true, 'lcornieles');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('BWL', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333,  false, 'labF');
+('BWL', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333,  false, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('CI', 'Departamento de Computacion', 'dci@usb.ve', 0000, true, 'CI');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, true, 'CI');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('labf', 'Laboratorio F', 'labf@usb.ve', 4444, true, 'CI');
 
 /*Rellenamos la tabla de room*/
 

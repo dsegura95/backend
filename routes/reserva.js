@@ -183,5 +183,18 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    router.get("/usuarios/admin", async function (req, res, next) {
+        try {
+            const adminUsers = await reservacService.getAdminUsers();
+            if (adminUsers.rows.length){
+                res.send(adminUsers.rows);
+            }else{
+                res.json(boom.notFound('missing').output.payload);
+            }
+        } catch (err) {
+            next(err);
+        }
+    });
 }
 module.exports = reservACapi;

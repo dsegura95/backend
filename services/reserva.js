@@ -138,6 +138,12 @@ class ReservacService {
         const requestsUsers = await pool.query(query);
         return requestsUsers || [];
     }
+
+    async getAdminUsers() {
+        let query = `SELECT * FROM usuario WHERE type = 3333`;
+        const requestsUsers = await pool.query(query);
+        return requestsUsers || [];
+    }
 }
 
 module.exports = ReservacService
