@@ -126,6 +126,14 @@ class ReservacService {
         return requests || [];
     }
 
+    async updateRequest(id, requester, room, subject, reason, trimester, material, status) {
+        let query = `UPDATE reservation_request SET requester_id = '${requester}', room_id = '${room}',
+        subject_id = '${subject}', reason = '${reason}', trimester_id = '${trimester}', material_needed = '${material}',
+        status = '${status}' WHERE id = ${id}`;
+        const request_updated = await pool.query(query);
+        return request_updated;
+    }
+
     //  ********************* SERVICIOS DE USUARIOS  *********************
     async getUser(userId) {
         let query = `SELECT * FROM usuario WHERE id = '${userId}'`;

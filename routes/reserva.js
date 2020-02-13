@@ -155,6 +155,24 @@ function reservACapi(app) {
         }
     });
 
+    // Actualizar una solicitud por id = <request_id> .
+    router.put("/solicitudes/:requestId", async function (req, res, next) {
+        const id = req.params.requestId
+        const requester = req.body.requester_id;
+        const room = req.body.room_id;
+        const subject = req.body.subject_id;
+        const reason = req.body.reason;
+        const trimester = req.body.trimester_id;
+        const material = req.body.material_needed;
+        const status = req.body.status;
+        try {
+            await reservacService.updateRequest(id, requester, room, subject, reason, trimester, material, status);
+            res.send('Request actualizado');
+        } catch (err) {
+            next(err);
+        };
+    });
+
     //  **************************** USUARIOS ********************************
     // Obtener un usuario de la base de datos.
     router.get("/usuario/:userId", async function (req, res, next) {
