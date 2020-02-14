@@ -10,34 +10,34 @@ insert into dept(id, name) values
 ('CO', 'Departamento de Cómputo Científico y Estadística');
 
 insert into dept(id, name) values
-('CI', 'Departamento de Computacion y Tecnologia de la informacion');
+('CI', 'Departamento de Computación y Tecnología de la Información');
 
 insert into dept(id, name) values
 ('PS', 'Departamento de Procesos y Sistemas');
 
 insert into dept(id, name) values
-('QM', 'Departamento de Quimica');
+('QM', 'Departamento de Química');
 
 insert into dept(id, name) values
-('FIS', 'Departamento de Fisica');
+('FIS', 'Departamento de Física');
 
 insert into dept(id, name) values
-('MC', 'Departamento de Mecanica');
+('MC', 'Departamento de Mecánica');
 
 insert into dept(id, name) values
-('MA', 'Departamento de Matematicas Puras y Aplicadas');
+('MA', 'Departamento de Matemáticas Puras y Aplicadas');
 
 insert into dept(id, name) values
-('EC', 'Departamento de Electronica y Circuitos');
+('EC', 'Departamento de Electrónica y Circuitos');
 
 insert into dept(id, name) values
-('TF', 'Departamento de Termonidamica y Fenomenos de Transferencia');
+('TF', 'Departamento de Termodinámica y Fenómenos de Transferencia');
 
 insert into dept(id, name) values
 ('MT', 'Departamento de Ciencias de los Materiales');
 
 insert into dept(id, name) values
-('CC', 'Departamento de Ciencia y Tecnologia del Comportamiento');
+('CC', 'Departamento de Ciencia y Tecnología del Comportamiento');
 
 insert into dept(id, name) values
 ('GC', 'Departamento de Ciencias de La Tierra');
@@ -46,7 +46,7 @@ insert into dept(id, name) values
 ('LL', 'Departamento de Lengua y Literatura');
 
 insert into dept(id, name) values
-('CE', 'Departamento de Ciencias Economicas y Administrativas');
+('CE', 'Departamento de Ciencias Económicas y Administrativas');
 
 insert into dept(id, name) values
 ('ID', 'Departamento de Idiomas');
@@ -55,25 +55,25 @@ insert into dept(id, name) values
 ('CS', 'Departamento de Ciencias Sociales');
 
 insert into dept(id, name) values
-('DA', 'Departamento de Diseno, Arquitectura y Artes plasticas');
+('DA', 'Departamento de Diseño, Arquitectura y Artes Plásticas');
 
 insert into dept(id, name) values
-('PL', 'Departamento de Planificacion Urbana');
+('PL', 'Departamento de Planificación Urbana');
 
 insert into dept(id, name) values
-('BC', 'Departamento de Biologia Celular');
+('BC', 'Departamento de Biología Celular');
 
 insert into dept(id, name) values
 ('EA', 'Departamento de Estudios Ambientales');
 
 insert into dept(id, name) values
-('BO', 'Departamento de Biologia de Organismos');
+('BO', 'Departamento de Biología de Organismos');
 
 insert into dept(id, name) values
-('PB', 'Departamento de Procesos Biologicos y Bioquimicos');
+('PB', 'Departamento de Procesos Biológicos y Bioquímicos');
 
 insert into dept(id, name) values
-('DTI', 'Departamento de Tecnologia Industrial');
+('DTI', 'Departamento de Tecnología Industrial');
 
 
 /*Rellenamos trimester*/
@@ -85,6 +85,12 @@ insert into trimester(id, star, finish) values
 
 insert into trimester(id, star, finish) values
 ('ENE-MAR2019', '2019-01-26', '2019-06-01');
+
+insert into trimester(id, star, finish) values
+('SEP-DIC2018', '2018-09-26', '2018-12-06');
+
+insert into trimester(id, star, finish) values
+('ABR-JUL2018', '2018-04-26', '2018-06-06');
 
 insert into trimester(id, star, finish) values
 ('ENE-MAR2018', '2018-09-26', '2018-12-06');
@@ -103,13 +109,13 @@ insert into subject(id, dept, name) values
 ('CO3321', 'CO', 'Estadística');
 
 insert into subject(id, dept, name) values
-('PS1115', 'PS', 'Sistemas de Informacion I');
+('PS1115', 'PS', 'Sistemas de Información I');
 
 insert into subject(id, dept, name) values
-('CO2111', 'CO', 'Computo Cientifico');
+('CO2111', 'CO', 'Cómputo Científico');
 
 insert into subject(id, dept, name) values
-('CI3815', 'CI', 'Organizacion del Computador');
+('CI3815', 'CI', 'Organización del Computador');
 
 insert into subject(id, dept, name) values
 ('CO3121', 'CO', 'Fundamentos de Probabilidades para Ingenieros');
@@ -118,16 +124,16 @@ insert into subject(id, dept, name) values
 ('CI3391', 'CI', 'Laboratorio de Sistemas de Base de Datos I');
 
 insert into subject(id, dept, name) values
-('CI3825', 'CI', 'Sistemas de Operacion I');
+('CI3825', 'CI', 'Sistemas de Operación I');
 
 insert into subject(id, dept, name) values
-('CI3715', 'CI', 'Ingenieria de Software I');
+('CI3715', 'CI', 'Ingeniería de Software I');
 
 insert into subject(id, dept, name) values
 ('PS1111', 'PS', 'Modelos Lineales I');
 
 insert into subject(id, dept, name) values
-('CI3661', 'CI', 'Laboratorio de Lenguajes de Programacion');
+('CI3661', 'CI', 'Laboratorio de Lenguajes de Programación');
 
 insert into subject(id, dept, name) values
 ('CI4325', 'CI', 'Interfaces con el Usuario');
@@ -142,16 +148,17 @@ insert into subject(id, dept, name) values
 ('CI5833', 'CI', 'Redes de Computadoras III');
 
 insert into subject(id, dept, name) values
-('CI4721', 'CI', 'Lenguajes de Programacion II');
+('CI4721', 'CI', 'Lenguajes de Programación II');
 
 insert into subject(id, dept, name) values
-('CI4722', 'CI', 'Lenguajes de Programacion III');
+('CI4722', 'CI', 'Lenguajes de Programación III');
 
 insert into subject(id, dept, name) values
-('CI4821', 'CI', 'Sistemas de Operacion II');
+('CI4821', 'CI', 'Sistemas de Operación II');
 
 insert into subject(id, dept, name) values
-('CI4822', 'CI', 'Sistemas de Operacion III');
+('CI4822', 'CI', 'Sistemas de Operación III');
+
 /*Rellenamos la tabla usuario*/
 /*Type 0000 departamento, 1111 estudiante, 2222 profesor, 3333 laboratorio, 4444 laboratorio master*/
 
@@ -180,68 +187,44 @@ insert into usuario(id,name,email,type,is_active, chief) values
 ('eduardo', 'Eduardo Blanco', 'eduardo@usb.ve', 2222, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('jacob', 'Alberto Mendoza', 'jacob@usb.ve', 2222, true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('strefezza', 'Lin Son de Strefezza', 'strefezza@usb.ve', 2222,  true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('avargas', 'Adolfo Vargas', 'avargas@usb.ve', 2222,  true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('rosamariacuenca', 'Rosa Maria Cuenca Marcano', 'rosamariacuenca@usb.ve', 2222,  true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('vvilacha', 'Victor Vilacha', 'vvilacha@usb.ve', 2222,  true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('gonzalezl', 'Lourdes Yetzabe Gonzalez', 'gonzalezl@usb.ve', 2222,  true, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('lcornieles', 'Liseth Cornieles', 'lcornieles@usb.ve', 2222,  true, 'labf');
+('mgoncalves', 'Marlene Goncalves', 'mgoncalves@usb.ve', 2222, true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('mcorniel', 'Marla Corniel', 'mcornie@usb.ve', 2222,  true, 'labf');
 --------------------------------------------------------------------
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('ldac', 'MAC', 'ldac@usb.ve', 3333,  true, 'cchang');
+('ldac', 'Laboratorio Docente de Aulas Computarizadas', 'ldac@usb.ve', 3333,  true, 'cchang');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('ldc', 'Laboratorio docente de computacion', 'ldc@usb.ve', 3333,  true, 'eduardo');
+('ldc', 'Laboratorio Docente de Computación', 'ldc@usb.ve', 3333,  true, 'eduardo');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LAMEC', 'Laboratorio de Matematicas y Estadistica Computacional', 'lamec@usb.ve', 3333,  true, 'jacob');
+('lamec', 'Laboratorio de Matemáticas y Estadística Computacional', 'lamec@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LAIAC', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 3333,  false, 'strefezza');
+('laiac', 'Laboratorio de Aprendizaje de Idiomas Asistido por Computador', 'laiac@usb.ve', 3333,  false, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('MMLab', 'Laboratorio de Computacion Grafica y Multimedia', 'MMLab@usb.ve', 3333,  false, 'labf');
+('lcgm', 'Laboratorio de Computación Gráfica y Multimedia', 'lcgm@usb.ve', 3333,  false, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('ldcP', 'Laboratorio de Ciencias Politicas', 'ldcp@usb.ve', 3333,  true, 'avargas');
+('ldcp', 'Laboratorio de Ciencias Políticas', 'ldcp@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('CADD', 'Laboratorio de Diseno Asisitdo por Computadora', 'cadd@usb.ve', 3333,  true, 'rosamariacuenca');
+('et', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('ET', 'Laboratorio de Estudios Tecnologicos', 'et@usb.ve', 3333,  true, 'labf');
+('lgu', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LGU', 'Laboratorio de Geomatica Urbana', 'lgu@usb.ve', 3333,  true, 'vvilacha');
+('lie', 'Laboratorio de Informática Educativa', 'lie@usb.ve', 3333,  true, 'labf');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LIE', 'Laboratorio de Informatica Educativa', 'lie@usb.ve', 3333,  true, 'gonzalezl');
+('bwl', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333,  false, 'mgoncalves');
 
 insert into usuario(id,name,email,type,is_active, chief) values
-('LJSU-CIU', 'Lab Jose Santos Urriola-CIU', 'ciu@usb.ve', 3333,  true, 'lcornieles');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('BWL', 'Laboratorio de Redes y Bases de Datos', 'bwl@usb.ve', 3333,  false, 'labf');
-
-insert into usuario(id,name,email,type,is_active, chief) values
-('CI', 'Departamento de Computacion', 'dci@usb.ve', 0000, true, 'CI');
+('CI', 'Departamento de Computación', 'dci@usb.ve', 0000, true, 'CI');
 
 insert into usuario(id,name,email,type,is_active, chief) values
 ('CO', 'Departamento de Cómputo Científico y Estadística', 'dept-co@usb.ve', 0000, true, 'CI');
@@ -249,22 +232,25 @@ insert into usuario(id,name,email,type,is_active, chief) values
 /*Rellenamos la tabla de room*/
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-221', 'Sala Thompson','eduardo', 'ldc', true, 'Sala historica del ldc fundada por Thompson', '2020-07-02', '2018-06-05');
+('MYS-221', 'Sala Ken Thompson','eduardo', 'ldc', true, 'Aula computarizada fundada por Ken Thompson', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-220', 'Sala Baral','eduardo', 'ldc', true, 'La salita de ldc para pruebas', '2020-07-02', '2018-06-05');
+('MYS-220', 'Sala Jorge Baralt','eduardo', 'ldc', true, 'Aula audiovisual', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-219', 'Sala Leal','eduardo', 'ldc', true, 'La salita de ldc para prestamo de clases', '2020-07-02', '2018-06-05');
+('MYS-219', 'Sala Leal','eduardo', 'ldc', true, 'Aula audiovisual', '2020-07-02', '2018-06-05');
 
 insert into room(id,name,owner_id,manager_id,is_active,description,last_used,first_used) values
-('MYS-019','Sala A','cchang','ldac',true,'La mejor sala del mundo','2020-07-02','2018-06-05');
+('MYS-019','Sala A','cchang','ldac',true,'Aula computarizada disponible para prestamo estudiantil','2020-07-02','2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-018', 'Sala F','cchang', 'ldac', true, 'Sala de aulas computarizadas al servicio de prestamo para clases o activdades', '2020-07-02', '2018-06-05');
+('MYS-018', 'Sala F','cchang', 'ldac', true, 'Aula computarizada', '2020-07-02', '2018-06-05');
 
 insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
-('MYS-020', 'Sala E','cchang', 'ldac', true, 'Sala multimedia para exposiciones, solicitar televisor de ser necesario','2020-01-01', '2019-06-01');
+('MYS-020', 'Sala E','cchang', 'ldac', true, 'Sala multimedia, solicitar televisor de ser necesario','2020-01-01', '2019-06-01');
+
+insert into room(id, name,owner_id, manager_id, is_active,description , last_used, first_used) values
+('MYS-015', 'Laboratorio de Bases de Datos','mgoncalves', 'bwl', true, 'Sala multimedia', '2020-07-02', '2018-06-05');
 
 /*Rellenamos la tabla item*/
 
@@ -315,14 +301,32 @@ insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,d
 /*Rellenamos reservation_request*/
 /*P de pendiente, A aceptado, R rechazado*/
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas y mesas', 'E');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('15-11523', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas', 'P');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('15-11523', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'P');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('13-11341', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y televisor', 'P');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('12-10273', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'P');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('mcorniel', 'MYS-220', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'P');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('mcorniel', 'MYS-221', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'A');
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) values ('CO', 'MYS-019', 'CI2692', 'ENE-MAR2020', 'Sillas y mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status) 
+values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 'E');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('15-11523', 'MYS-020', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('15-11523', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('13-11341', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y televisor', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('mcorniel', 'MYS-220', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('mgoncalves', 'MYS-015', 'CI3391', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'A');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
+values ('CO', 'MYS-019', 'CO3321', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
 
 /*Rellenamos reserve_req_schedule*/
 
