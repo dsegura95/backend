@@ -218,6 +218,16 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener todos los usuarios que son profesor o estudiante
+    router.get("/usuarios/profesor", async function (req, res, next) {
+        try {
+            const profesor = await reservacService.getProfesor();
+            res.send(profesor.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
     //  **************************** MATERIAS ********************************
 
     // Obtener todas las materias
