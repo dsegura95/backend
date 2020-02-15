@@ -174,6 +174,7 @@ function reservACapi(app) {
     });
 
     //  **************************** USUARIOS ********************************
+
     // Obtener un usuario de la base de datos.
     router.get("/usuario/:userId", async function (req, res, next) {
         const userId = req.params.userId;
@@ -189,6 +190,7 @@ function reservACapi(app) {
         }
     });
 
+    //  Obtener todos los usuarios
     router.get("/usuarios", async function (req, res, next) {
         try {
             const requestFromUser = await reservacService.getUsers();
@@ -202,6 +204,7 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener todos los usuarios que son laboratorio docente
     router.get("/usuarios/admin", async function (req, res, next) {
         try {
             const adminUsers = await reservacService.getAdminUsers();
@@ -214,5 +217,18 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    //  **************************** MATERIAS ********************************
+
+    // Obtener todas las materias
+    router.get("/subjects", async function (req, res, next) {
+        try {
+            const subjects = await reservacService.getSubjects();
+            res.send(subjects.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 }
 module.exports = reservACapi;

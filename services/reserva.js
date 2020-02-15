@@ -152,6 +152,14 @@ class ReservacService {
         const requestsUsers = await pool.query(query);
         return requestsUsers || [];
     }
+
+    //  ********************* SERVICIOS DE MATERIAS  *********************
+
+    async getSubjects() {
+        let query = `SELECT * FROM subject`;
+        const subjects = await pool.query(query);
+        return subjects || [];
+    }
 }
 
 module.exports = ReservacService
