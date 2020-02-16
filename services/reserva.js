@@ -86,8 +86,8 @@ class ReservacService {
     //  ************************ Put  ***********************
 
 
-    async updateSala(id, name, description) {
-        let query = `UPDATE room SET name = '${name}', description = '${description}' WHERE id = ${id}`;
+    async updateSala(id, name, description, is_active) {
+        let query = `UPDATE room SET name = '${name}', description = '${description}', is_active = ${is_active} WHERE id = '${id}'`;
         const updateItem = await pool.query(query);
         return updateItem;
     }
@@ -111,13 +111,19 @@ class ReservacService {
 
     //  ********************* SERVICIOS DE SOLICITUDES  *********************
 
+    async getRequest(solicitudId) {
+        let query = `SELECT * FROM reservation_request WHERE id = ${solicitudId}`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+
     async getRequestUser(userId) {
         let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}'`;
         const requestsUsers = await pool.query(query);
         return requestsUsers || [];
     }
 
-    async getRequest(labId) {
+    async getRequests(labId) {
         let query = `SELECT name, requester_id, room_id, subject_id, send_time, reason, material_needed, type
         FROM (SELECT reservation_request.id, requester_id, room_id, subject_id, send_time, trimester_id, reason,
         material_needed, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id 
@@ -126,10 +132,8 @@ class ReservacService {
         return requests || [];
     }
 
-    async updateRequest(id, requester, room, subject, reason, trimester, material, status) {
-        let query = `UPDATE reservation_request SET requester_id = '${requester}', room_id = '${room}',
-        subject_id = '${subject}', reason = '${reason}', trimester_id = '${trimester}', material_needed = '${material}',
-        status = '${status}' WHERE id = ${id}`;
+    async updateRequest(id, reason, status) {
+        let query = `UPDATE reservation_request SET reason = '${reason}', status = '${status}' WHERE id = ${id}`;
         const request_updated = await pool.query(query);
         return request_updated;
     }

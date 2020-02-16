@@ -116,13 +116,14 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener la imagen de una sala
     router.get("/salas/:salaId/picture", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
-            res.sendFile(path.join((__dirname)+`/../media/${salaId}.jpg`),
+            res.sendFile(path.join((__dirname) + `/../media/${salaId}.jpg`),
                 function (err) {
                     if (err) {
-                        res.sendFile(path.join((__dirname)+`/../media/defaultImage.jpg`));
+                        res.sendFile(path.join((__dirname) + `/../media/defaultImage.jpg`));
                     }
                 }
             );
@@ -131,7 +132,31 @@ function reservACapi(app) {
         }
     });
 
+    //  *** Actualizar una sala ***
+    router.put("/salas/:salaId", async function (req, res, next) {
+        const { name, description, is_active } = req.body;
+        const id = req.params.salaId;
+        try {
+            await reservacService.updateSala(id, name, description, is_active);
+            res.send('Sala actualizada');
+        } catch (err) {
+            next(err);
+        };
+    });
+
     //  **************************** SOLICITUDES ********************************
+
+
+    //  Obtener informacion de una solicitud
+    router.get("/solicitudes/:solicitudId", async function (req, res, next) {
+        const solicitudId = req.params.solicitudId;
+        try {
+            const requestFromUser = await reservacService.getRequest(solicitudId);
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
 
     //  Obtener todas las solicitudes hechas por un usuario
     router.get("/solicitudes/:userId", async function (req, res, next) {
@@ -139,7 +164,7 @@ function reservACapi(app) {
         try {
             const requestFromUser = await reservacService.getRequestUser(userId);
             res.send(requestFromUser.rows);
-        } catch(err) {
+        } catch (err) {
             next(err);
         }
     });
@@ -148,7 +173,7 @@ function reservACapi(app) {
     router.get("/solicitudes/admin/:labId", async function (req, res, next) {
         const labId = req.params.labId;
         try {
-            const requestFromUser = await reservacService.getRequest(labId);
+            const requestFromUser = await reservacService.getRequests(labId);
             res.send(requestFromUser.rows);
         } catch (err) {
             next(err);
@@ -158,16 +183,10 @@ function reservACapi(app) {
     // Actualizar una solicitud por id = <request_id> .
     router.put("/solicitudes/:requestId", async function (req, res, next) {
         const id = req.params.requestId
-        const requester = req.body.requester_id;
-        const room = req.body.room_id;
-        const subject = req.body.subject_id;
-        const reason = req.body.reason;
-        const trimester = req.body.trimester_id;
-        const material = req.body.material_needed;
-        const status = req.body.status;
+        const { reason, status } = req.body;
         try {
-            await reservacService.updateRequest(id, requester, room, subject, reason, trimester, material, status);
-            res.send('Request actualizado');
+            await reservacService.updateRequest(id, reason, status);
+            res.send('Solicitud actualizada');
         } catch (err) {
             next(err);
         };
@@ -180,9 +199,9 @@ function reservACapi(app) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getUser(userId);
-            if (requestFromUser.rows.length){
+            if (requestFromUser.rows.length) {
                 res.send(requestFromUser.rows);
-            }else{
+            } else {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
@@ -194,9 +213,9 @@ function reservACapi(app) {
     router.get("/usuarios", async function (req, res, next) {
         try {
             const requestFromUser = await reservacService.getUsers();
-            if (requestFromUser.rows.length){
+            if (requestFromUser.rows.length) {
                 res.send(requestFromUser.rows);
-            }else{
+            } else {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
@@ -208,9 +227,9 @@ function reservACapi(app) {
     router.get("/usuarios/admin", async function (req, res, next) {
         try {
             const adminUsers = await reservacService.getAdminUsers();
-            if (adminUsers.rows.length){
+            if (adminUsers.rows.length) {
                 res.send(adminUsers.rows);
-            }else{
+            } else {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
