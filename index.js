@@ -13,11 +13,8 @@ const notFoundHandler = require('./middleware/notFoundHandler');
 
 const generator = require('./routes/generarSiguienteTrimestre.js');
 const { setIntervalAsync } = require('set-interval-async/dynamic')
-// const {
-//     dynamic: { setIntervalAsync: setIntervalAsyncD }
-//   } = require('set-interval-async')
 
-setIntervalAsync(generator, 30000)
+setIntervalAsync(generator, 500)
 
 // const bodyParser = require('body-parser')
 var path = require('path');
