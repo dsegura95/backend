@@ -6,7 +6,7 @@ async function generarSiguienteTrimestre(){
     const temp = await reservacService.getActualTrim();
     const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
 
-    if( !(moment().isAfter( moment(lasTrim).add(1, 'day') ) )){
+    if( (moment().isAfter( moment(lasTrim).add(1, 'day') ) )){
     const lasTrimMonth = moment(lasTrim).month();
     const lasTrimYear = moment(lasTrim).year();
 

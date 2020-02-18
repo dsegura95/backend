@@ -109,14 +109,23 @@ class ReservacService {
         return trim || [];
     }
 
-    async createTrim(id, star, finish) {
-        let query = `INSERT INTO trimester (id, star, finish) VALUES ('${id}','${star}','${finish}')`;
+    async createTrim(id, start, finish) {
+        let query = `INSERT INTO trimester (id, start, finish) VALUES ('${id}','${start}','${finish}')`;
         const createTrim = await pool.query(query);
         return createTrim;
     }
 
-    async updateTrim(id, finish) {
-        let query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
+    async updateTrim(id, start, finish) {
+        let query;
+        if ((!start)){
+            query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
+        }
+        else if ((!finish)){
+            query = `UPDATE trimester SET start = '${start}' WHERE id = '${id}'`;
+        }
+        else{
+            query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
+        }
         const updateTrim = await pool.query(query);
         return updateTrim;
     }

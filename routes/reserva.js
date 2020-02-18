@@ -10,7 +10,7 @@ function reservACapi(app) {
     const reservacService = new ReservacService
 
     app.use("/api/", router);
-/////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////
     const moment = require('moment');
 
 
@@ -21,36 +21,36 @@ function reservACapi(app) {
         const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
 
         try {
-            if( !(moment().isAfter( moment(lasTrim).add(1, 'day') ) )){
+            if (!(moment().isAfter(moment(lasTrim).add(1, 'day')))) {
                 const lasTrimMonth = moment(lasTrim).month();
                 const lasTrimYear = moment(lasTrim).year();
-    
-                if ( (2 <= lasTrimMonth) && (lasTrimMonth  <= 4) ){
+
+                if ((2 <= lasTrimMonth) && (lasTrimMonth <= 4)) {
                     await reservacService.createTrim('ABR-JUL' + lasTrimYear,
-                                                    moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
-                                                    moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
-                                                    )
+                        moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
+                        moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
+                    )
                     // res.json({id : 'ABR-JUL' + lasTrimYear,
                     //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
                     //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
                     //     })
                 }
-                else if ( (5 <= lasTrimMonth) && (lasTrimMonth <= 9) ){
+                else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
                     await reservacService.createTrim('SEP-DIC' + lasTrimYear,
-                                                    moment(lasTrim).add(2, 'week').add(3, 'day'),
-                                                    moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                                                    )
-    
+                        moment(lasTrim).add(2, 'week').add(3, 'day'),
+                        moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
+                    )
+
                     // res.json({id : 'SEP-DIC' + lasTrimYear,
                     //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
                     //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
                     //     })
                 }
-                else if ( (10 <= lasTrimMonth)  ){
+                else if ((10 <= lasTrimMonth)) {
                     await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
-                                                    moment(lasTrim).add(1, 'week').add(3, 'day'),
-                                                    moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
-                                                    )
+                        moment(lasTrim).add(1, 'week').add(3, 'day'),
+                        moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
+                    )
                     // res.json({id : 'ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
                     //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
                     //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
@@ -58,17 +58,17 @@ function reservACapi(app) {
                 }
                 else {
                     await reservacService.createTrim('ENE-MAR' + lasTrimYear,
-                                                    (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
-                                                    (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
-                                                    )
-    
+                        (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
+                        (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
+                    )
+
                     // res.json({id : 'ENE-MAR' + lasTrimYear,
                     //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
                     //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
                     //     })
                 }
                 res.json('el trimestre termino bicho')
-            }else{
+            } else {
                 res.json('el trimestre no ha terminado bicho')
             }
         } catch (err) {
@@ -89,17 +89,22 @@ function reservACapi(app) {
     });
 
     router.put("/trimestre/:Id", async function (req, res, next) {
-        const finish = req.body.finish;
-        const id = req.params.Id;
+        const { start, finish } = req.body;
+        //console.log("start:" + start, "finish: "+ finish)
+        //aqui
+        if (!start && !finish){
+            res.json(boom.badRequest('invalid query').output.payload);
+        }
+        const idParam = req.params.Id;
         try {
-            await reservacService.updateTrim(id, finish);
+            await reservacService.updateTrim(idParam, start, finish);
             res.send('Trimestre actualizado');
         } catch (err) {
             next(err);
         };
     });
 
-////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
 
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
 
