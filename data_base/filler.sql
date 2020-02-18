@@ -78,7 +78,7 @@ insert into dept(id, name) values
 
 /*Rellenamos trimester*/
 insert into trimester(id, star, finish) values
-('ENE-MAR2020', '2020-01-06', '2020-03-28');
+('ENE-MAR2020', '2020-01-06', '2020-04-17');
 
 insert into trimester(id, star, finish) values
 ('SEP-DIC2019', '2019-09-26', '2019-12-06');

@@ -46,7 +46,7 @@ class ReservacService {
         return deleteItem;
     }
 
-    //  ************************ SERVICIOS DE LAS SALAS  ***********************
+    //  ************************ SERVICIOS DE LAS SALA  ***********************
 
     //  ************************ GET  **********************
 
@@ -104,12 +104,33 @@ class ReservacService {
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
 
     async getActualTrim() {
-        const sql = 'SELECT id FROM trimester ORDER BY id DESC LIMIT 1';
+        const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
         const trim = await pool.query(sql);
         return trim || [];
     }
 
-    //  ********************* SERVICIOS DE SOLICITUDES  *********************
+    async createTrim(id, start, finish) {
+        let query = `INSERT INTO trimester (id, start, finish) VALUES ('${id}','${start}','${finish}')`;
+        const createTrim = await pool.query(query);
+        return createTrim;
+    }
+
+    async updateTrim(id, start, finish) {
+        let query;
+        if ((!start)){
+            query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
+        }
+        else if ((!finish)){
+            query = `UPDATE trimester SET start = '${start}' WHERE id = '${id}'`;
+        }
+        else{
+            query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
+        }
+        const updateTrim = await pool.query(query);
+        return updateTrim;
+    }
+
+    //  ********************* SERVICIOS DE SOLICITUD  *********************
 
     async getRequest(solicitudId) {
         let query = `SELECT * FROM reservation_request WHERE id = ${solicitudId}`;
@@ -138,7 +159,7 @@ class ReservacService {
         return request_updated;
     }
 
-    //  ********************* SERVICIOS DE USUARIOS  *********************
+    //  ********************* SERVICIOS DE USUARIO  *********************
     async getUser(userId) {
         let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
         const requestsUsers = await pool.query(query);
@@ -163,12 +184,19 @@ class ReservacService {
         return profesores || [];
     }
 
-    //  ********************* SERVICIOS DE MATERIAS  *********************
+    //  ********************* SERVICIOS DE MATERIA  *********************
 
     async getSubjects() {
         let query = `SELECT * FROM subject`;
         const subjects = await pool.query(query);
         return subjects || [];
+    }
+
+    //  ********************* SERVICIOS DE TRIMESTRE  *********************
+    async getEndDate(trimesterId) {
+        let query = `SELECT finish FROM trimester WHERE id = '${trimesterId}'`;
+        const endDate = await pool.query(query);
+        return endDate || [];
     }
 }
 
