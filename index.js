@@ -11,6 +11,9 @@ const {
 
 const notFoundHandler = require('./middleware/notFoundHandler');
 
+const generator = require('./routes/generarSiguienteTrimestre.js');
+setInterval(generator.generarSiguienteTrimestre(), 30000);
+
 // const bodyParser = require('body-parser')
 var path = require('path');
 var dir = path.join(__dirname, 'public');

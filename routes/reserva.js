@@ -13,6 +13,8 @@ function reservACapi(app) {
 /////////////////////////////////////////////////////////////////
     const moment = require('moment');
 
+
+
     router.get("/actualizarTrimestre", async function (req, res, next) {
 
         const temp = await reservacService.getActualTrim();
@@ -84,6 +86,17 @@ function reservACapi(app) {
         } catch (err) {
             next(err);
         }
+    });
+
+    router.put("/trimestre/:Id", async function (req, res, next) {
+        const finish = req.body.finish;
+        const id = req.params.Id;
+        try {
+            await reservacService.updateTrim(id, finish);
+            res.send('Trimestre actualizado');
+        } catch (err) {
+            next(err);
+        };
     });
 
 ////////////////////////////////////////////////////////////////

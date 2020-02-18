@@ -115,6 +115,12 @@ class ReservacService {
         return createTrim;
     }
 
+    async updateTrim(id, finish) {
+        let query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
+        const updateTrim = await pool.query(query);
+        return updateTrim;
+    }
+
     //  ********************* SERVICIOS DE SOLICITUD  *********************
 
     async getRequest(solicitudId) {
