@@ -138,6 +138,18 @@ class ReservacService {
         return request || [];
     }
 
+    async getScheduleFromRequest(solicitudId) {
+        let query = `SELECT * FROM reservation_request_schedule WHERE reservation_request_id = ${solicitudId}`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+
+    async getRequestsFromWeek(week) {
+        let query = `SELECT subject_id, day, hour, week FROM reservation_request AS r JOIN reservation_request_schedule AS s ON r.id = s.reservation_request_id WHERE week = ${week}`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+
     async getRequestUser(userId) {
         let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}'`;
         const requestsUsers = await pool.query(query);

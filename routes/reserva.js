@@ -242,12 +242,26 @@ function reservACapi(app) {
     //  **************************** SOLICITUDES ********************************
 
 
-    //  Obtener informacion de una solicitud
+    //  Obtener informacion de una solicitud y su horario
     router.get("/solicitudes/:solicitudId", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
+            const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             const requestFromUser = await reservacService.getRequest(solicitudId);
-            res.send(requestFromUser.rows);
+            res.json({solicitud: requestFromUser.rows, 
+                    horario: schedule.rows
+                    });
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  Obtener informacion de una solicitud y su horario
+    router.get("/solicitudes/semana/:week", async function (req, res, next) {
+        const week = req.params.week;
+        try {
+            const requestsOnWeek = await reservacService.getRequestsFromWeek(week);
+            res.json(requestsOnWeek.rows);
         } catch (err) {
             next(err);
         }
