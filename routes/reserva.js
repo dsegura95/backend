@@ -92,7 +92,7 @@ function reservACapi(app) {
         const { start, finish } = req.body;
         //console.log("start:" + start, "finish: "+ finish)
         //aqui
-        if (!start && !finish){
+        if (!start && !finish) {
             res.json(boom.badRequest('invalid query').output.payload);
         }
         const idParam = req.params.Id;
@@ -227,7 +227,7 @@ function reservACapi(app) {
         }
     });
 
-    //  *** Actualizar una sala ***
+    //  *** Actualizar descripcion nombre y status de una sala ***
     router.put("/salas/:salaId", async function (req, res, next) {
         const { name, description, is_active } = req.body;
         const id = req.params.salaId;
@@ -246,11 +246,19 @@ function reservACapi(app) {
     router.get("/solicitudes/:solicitudId", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
-            const schedule = await reservacService.getScheduleFromRequest(solicitudId);
+            // const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             const requestFromUser = await reservacService.getRequest(solicitudId);
-            res.json({solicitud: requestFromUser.rows, 
-                    horario: schedule.rows
-                    });
+            res.send(requestFromUser.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
+        const solicitudId = req.params.solicitudId;
+        try {
+            const schedule = await reservacService.getScheduleFromRequest(solicitudId);
+            res.send(schedule.rows);
         } catch (err) {
             next(err);
         }
@@ -358,7 +366,7 @@ function reservACapi(app) {
 
     //  **************************** MATERIAS ********************************
 
-    // Obtener todas las materias
+    // Obtener todas las materias en el sistema
     router.get("/subjects", async function (req, res, next) {
         try {
             const subjects = await reservacService.getSubjects();
