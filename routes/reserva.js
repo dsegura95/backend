@@ -164,6 +164,7 @@ function reservACapi(app) {
             next(err);
         };
     });
+
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
@@ -234,6 +235,16 @@ function reservACapi(app) {
         try {
             await reservacService.updateSala(id, name, description, is_active);
             res.send('Sala actualizada');
+        } catch (err) {
+            next(err);
+        };
+    });
+
+    router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
+        const id = req.params.itemId;
+        await reservacService.deleteItem(id);
+        try {
+            res.send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
         };

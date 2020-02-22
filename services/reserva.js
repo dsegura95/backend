@@ -48,10 +48,8 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
 
-    //  ************************ GET  **********************
-
     async getSalas() {
-        let query = 'SELECT * FROM room';
+        let query = 'SELECT * FROM room WHERE is_active = true';
         const items = await pool.query(query);
         return items || [];
     }
@@ -92,13 +90,23 @@ class ReservacService {
         return updateItem;
     }
 
-    //  ************************ Delete  ***********************
-
+    // 
     async deleteSala(id) {
         let query = `DELETE FROM room WHERE id = '${id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
     }
+
+    async deleteSalaItem(id) {
+        let query = `DELETE FROM room_item WHERE id = '${id}'`;
+        const deleteItem = await pool.query(query);
+        return deleteItem;
+    }
+
+    
+
+
+
 
 
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
