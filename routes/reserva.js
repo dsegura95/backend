@@ -159,11 +159,14 @@ function reservACapi(app) {
         const id = req.params.itemId;
         await reservacService.deleteItem(id);
         try {
+
             res.send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
         };
     });
+
+    
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
@@ -239,6 +242,19 @@ function reservACapi(app) {
         };
     });
 
+    router.post("/salas/crear", async function (req, res, next) {
+        
+        const {id ,name,owner_id,manager_id, is_active , description, first_used} = req.body;
+
+        
+        try {
+            await reservacService.createSala(id, name,owner_id,manager_id, is_active, description, first_used);
+            res.sendStatus(201);
+        } catch (err) {
+            next(err);
+        };
+    });
+
     //  **************************** SOLICITUDES ********************************
 
 
@@ -308,6 +324,48 @@ function reservACapi(app) {
             next(err);
         };
     });
+
+
+
+    router.put("/sala/solicitudes/:roomRequestId", async function(req,res,next){
+        const id= req.params.roomRequestId;
+
+        const status = req.body.status;
+        const result = await reservacService.updateRoomRequest(id,  status);
+       
+
+        if(!result){
+            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);           
+
+        }else{
+        
+        try{
+            
+            res.send(`Solicitud de sala id: ${id} modificada correctamente`);
+        }
+        catch(err){
+            next(err);
+         };
+        }
+    });
+
+    router.post("/sala/solicitudes/crear", async function (req,res,next){
+      
+        const {room_id, requested_id, owner_id, manager_id, trimester_id} = req.body;
+
+        let date=moment().format('YYYY-MM-DD');       
+
+        try{
+            await reservacService.createRoomRequest(room_id, requested_id,owner_id,manager_id,trimester_id, date);
+            res.sendStatus(201);
+
+        }catch(err){
+            next(err);
+        }
+
+    });
+
+
 
     //  **************************** USUARIOS ********************************
 

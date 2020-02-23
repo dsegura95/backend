@@ -29,7 +29,7 @@ class ReservacService {
     }
 
     async createItem(name, description) {
-        let query = `INSERT INTO item (name, description) VALUES ('${name}','${description}'`;
+        let query = `INSERT INTO item (name, description) VALUES ('${name}','${description}')`;
         const createItemId = await pool.query(query);
         return createItemId;
     }
@@ -77,10 +77,15 @@ class ReservacService {
 
     //  ************************ Post  ***********************
 
-    async createSala(name, description) {
-        let query = `INSERT INTO room (name, description) VALUES ('${name}','${description}'`;
-        const createItemId = await pool.query(query);
-        return createItemId;
+    async createSala(id, name,owner_id,manager_id, is_active, description, first_used){
+
+        let query = `INSERT into room(id, name, owner_id, manager_id, is_active, description, first_used) VALUES
+                                    ('${id}','${name}','${owner_id}','${manager_id}','${is_active}','${description}','${first_used}')`
+
+        const createSala = await pool.query(query);
+        return createSala;
+
+        
     }
 
     //  ************************ Put  ***********************
@@ -169,6 +174,38 @@ class ReservacService {
         let query = `UPDATE reservation_request SET reason = '${reason}', status = '${status}' WHERE id = ${id}`;
         const request_updated = await pool.query(query);
         return request_updated;
+    }
+
+    async createRoomRequest(room_id, requested_id,owner_id,manager_id,trimester_id, date){
+
+        let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
+                                             ('${room_id}', '${requested_id}','${owner_id}','${manager_id}','${trimester_id}','${date}', 'E')`;
+        const createRoomRequest= await pool.query(query);
+        return createRoomRequest;
+    }
+
+    async updateRoomRequest(id, status){
+        
+
+        let query1= `select room.id from room join room_request on room_id=room.id
+                     where room_request.id='${id}' and room.is_active='t'`;
+       
+        
+        const verificacionRoom = await pool.query(query1) ; //Se verifica que el room a actualizar el estado no se encuentre previamente en la lista de room
+      
+        if (verificacionRoom.rowCount>0 && status=='A'){ //Si el rowCount del query es mayor a 0, es decir, ya existe la sala en room y ademas el admin desea colocar como
+                                                        //aprobada la solicitud, entonces esta no pasa.
+
+            return null;
+        }else{
+
+    
+        let query2 = `UPDATE room_request SET status= '${status}'
+        WHERE id='${id}'`;
+        const roomRequest_updated = await pool.query(query2);
+        console.log(roomRequest_updated);
+        return roomRequest_updated;}
+
     }
 
     //  ********************* SERVICIOS DE USUARIO  *********************
