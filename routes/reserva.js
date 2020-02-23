@@ -250,6 +250,34 @@ function reservACapi(app) {
         };
     });
 
+    //  **************************** RESERVAS ********************************
+
+    // FALTA MODIFICAR EN EL DRIVE
+    //  Obtener todas las reservas de una semana y su horario
+    router.get("/reservas/:roomId", async function (req, res, next) {
+        const room = req.params.roomId;
+        try {
+            const reservationsRoom = await reservacService.getReservationByRoom(room);
+            res.json(reservationsRoom.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // FALTA ANOTAR EN EL DRIVE
+    //  Obtener todas las reservas de una semana y su horario
+    router.get("/reservas/:roomId/semana/:week", async function (req, res, next) {
+        const week = req.params.week;
+        const room = req.params.roomId;
+        try {
+            const reservationsOnWeek = await reservacService.getReservationFromWeek(room, week);
+            res.json(reservationsOnWeek.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
     //  **************************** SOLICITUDES ********************************
 
 
@@ -265,22 +293,12 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener el horario correspondiente a una solicitud
     router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
             const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             res.send(schedule.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Obtener informacion de una solicitud y su horario
-    router.get("/solicitudes/semana/:week", async function (req, res, next) {
-        const week = req.params.week;
-        try {
-            const requestsOnWeek = await reservacService.getRequestsFromWeek(week);
-            res.json(requestsOnWeek.rows);
         } catch (err) {
             next(err);
         }
@@ -308,12 +326,42 @@ function reservACapi(app) {
         }
     });
 
+    // ANADIR AL DRIVE
+    router.get("/solicitudes/salas/:roomId", async function (req, res, next) {
+        const room = req.params.roomId;
+        try {
+            const requestsRoom = await reservacService.getRequestsByRoom(room);
+            res.json(requestsRoom);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // ACTUALIZAR DRIVE
     // Actualizar una solicitud por id = <request_id> .
-    router.put("/solicitudes/:requestId", async function (req, res, next) {
-        const id = req.params.requestId
+    router.put("/solicitudes/:roomId/:requestId", async function (req, res, next) {
+        const request = req.params.requestId;
+        const room = req.params.roomId;
         const { reason, status } = req.body;
         try {
-            await reservacService.updateRequest(id, reason, status);
+            const horario = await reservacService.getScheduleFromRequest(request);
+            for (let index = 0; index < horario.rows.length; index++) {
+                const element = horario.rows[index];
+                const otrosHorarios = await reservacService.VerificarHorario(element.id, element.week, element.day, element.hour);
+                // console.log(otrosHorarios.rows);
+                if (JSON.stringify(otrosHorarios.rows) != "[]") {
+                    for (let index2 = 0; index2 < otrosHorarios.rows.length; index2++) {
+                        const idDeLaOtraSolicitud = otrosHorarios.rows[index2].reservation_request_id;
+                        // console.log(idDeLaOtraSolicitud);
+                        const SolicitudesIguales = await reservacService.getRequest(idDeLaOtraSolicitud)
+                        // console.log(SolicitudesIguales.rows);
+                        if (SolicitudesIguales.rows[0].room_id == room) {
+                            console.log(SolicitudesIguales.rows);
+                        }
+                    }
+                }
+            }
+            await reservacService.updateRequest(request, reason, status);
             res.send('Solicitud actualizada');
         } catch (err) {
             next(err);
