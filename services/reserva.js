@@ -87,7 +87,7 @@ class ReservacService {
 
         
     }
-    async createSalaFromRequest(requestId, first_used='2000-01-01'){        
+    async createSalaFromRequest(requestId, first_used){        
 
         let query1= `SELECT room.id from room join room_request on room_id=room.id
                      where room_request.id='${requestId}'`
@@ -106,6 +106,7 @@ class ReservacService {
             return updateSala;
         }
         else{
+
             let query3= `INSERT into room (id, name, owner_id, manager_id, is_active, description, first_used) 
             SELECT room_id, room_id, owner_id, manager_id, 't', 'Sala recien creada', '${first_used}' from 
             room_request where room_request.id='${requestId}'`;

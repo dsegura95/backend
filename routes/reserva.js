@@ -328,10 +328,9 @@ function reservACapi(app) {
 
     router.put("/sala/solicitudes/:roomRequestId", async function(req,res,next){
         const id= req.params.roomRequestId;
-
         const status = req.body.status;
-        const first_used= req.body.first_used;
         const result = await reservacService.updateRoomRequest(id,  status);
+        let date=moment().format('YYYY-MM-DD');  
        
 
         if(!result){
@@ -343,7 +342,7 @@ function reservACapi(app) {
             
             if(status=='A'){
                 try{                    
-                    await reservacService.createSalaFromRequest(id, first_used);
+                    await reservacService.createSalaFromRequest(id, date);
                 }
                 catch(err){
                     next(err);
