@@ -326,11 +326,11 @@ function reservACapi(app) {
     });
 
 
-
     router.put("/sala/solicitudes/:roomRequestId", async function(req,res,next){
         const id= req.params.roomRequestId;
 
         const status = req.body.status;
+        const first_used= req.body.first_used;
         const result = await reservacService.updateRoomRequest(id,  status);
        
 
@@ -339,8 +339,16 @@ function reservACapi(app) {
 
         }else{
         
-        try{
+        try{            
             
+            if(status=='A'){
+                try{                    
+                    await reservacService.createSalaFromRequest(id, first_used);
+                }
+                catch(err){
+                    next(err);
+                }   
+            }
             res.send(`Solicitud de sala id: ${id} modificada correctamente`);
         }
         catch(err){
@@ -351,12 +359,11 @@ function reservACapi(app) {
 
     router.post("/sala/solicitudes/crear", async function (req,res,next){
       
-        const {room_id, requested_id, owner_id, manager_id, trimester_id} = req.body;
-
+        const {room_id,  manager_id} = req.body;               
         let date=moment().format('YYYY-MM-DD');       
 
         try{
-            await reservacService.createRoomRequest(room_id, requested_id,owner_id,manager_id,trimester_id, date);
+            await reservacService.createRoomRequest(room_id, manager_id, date);
             res.sendStatus(201);
 
         }catch(err){
@@ -364,8 +371,6 @@ function reservACapi(app) {
         }
 
     });
-
-
 
     //  **************************** USUARIOS ********************************
 
