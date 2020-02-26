@@ -295,38 +295,39 @@ insert into room_item(room_id,trimester_id,item_id,quantity)values('MYS-220', 'E
 
 /*Rellenamos room_request*/
 
-insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-05-06','A');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-05-06','E');
 insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'cchang', 'ldac', 'ENE-MAR2020', '2020-01-06','E');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-01-06','E');
 
 /*Rellenamos reservation_request*/
 /*P de pendiente, A aceptado, R rechazado*/
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 'E');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 10, 'E');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('15-11523', 'MYS-020', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('15-11523', 'MYS-020', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 20, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('15-11523', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('15-11523', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 30, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('13-11341', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y televisor', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('13-11341', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y televisor', 24, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('mcorniel', 'MYS-220', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('mcorniel', 'MYS-220', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 10, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('mgoncalves', 'MYS-015', 'CI3391', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('mgoncalves', 'MYS-015', 'CI3391', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 15, 'P');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'A');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 24, 'A');
 
-insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, status)
-values ('CO', 'MYS-019', 'CO3321', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 'P');
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('CO', 'MYS-019', 'CO3321', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 20, 'P');
 
 /*Rellenamos reserve_req_schedule*/
 

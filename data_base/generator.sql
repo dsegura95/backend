@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     trimester_id VARCHAR(12),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
+    quantity SMALLINT,
     status CHAR(1) --A(aprobado),R(rechazado),E(espera)
 );
 

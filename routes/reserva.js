@@ -166,7 +166,7 @@ function reservACapi(app) {
         };
     });
 
-    
+
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
@@ -242,13 +242,11 @@ function reservACapi(app) {
         };
     });
 
+    // Crear Sala
     router.post("/salas/crear", async function (req, res, next) {
-        
-        const {id ,name,owner_id,manager_id, is_active , description, first_used} = req.body;
-
-        
+        const { id, name, owner_id, manager_id, is_active, description, first_used } = req.body;
         try {
-            await reservacService.createSala(id, name,owner_id,manager_id, is_active, description, first_used);
+            await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
             res.sendStatus(201);
         } catch (err) {
             next(err);
@@ -270,6 +268,7 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener horario de una solicitud de reserva
     router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
@@ -325,51 +324,56 @@ function reservACapi(app) {
         };
     });
 
-
-    router.put("/sala/solicitudes/:roomRequestId", async function(req,res,next){
-        const id= req.params.roomRequestId;
+    // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
+    router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
+        const id = req.params.roomRequestId;
         const status = req.body.status;
-        const result = await reservacService.updateRoomRequest(id,  status);
-        let date=moment().format('YYYY-MM-DD');  
-       
-
-        if(!result){
-            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);           
-
-        }else{
-        
-        try{            
-            
-            if(status=='A'){
-                try{                    
-                    await reservacService.createSalaFromRequest(id, date);
+        const result = await reservacService.updateRoomRequest(id, status);
+        let date = moment().format('YYYY-MM-DD');
+        if (!result) {
+            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);
+        } else {
+            try {
+                if (status == 'A') {
+                    try {
+                        await reservacService.createSalaFromRequest(id, date);
+                    }
+                    catch (err) {
+                        next(err);
+                    }
                 }
-                catch(err){
-                    next(err);
-                }   
+                res.send(`Solicitud de sala id: ${id} modificada correctamente`);
             }
-            res.send(`Solicitud de sala id: ${id} modificada correctamente`);
-        }
-        catch(err){
-            next(err);
-         };
+            catch (err) {
+                next(err);
+            };
         }
     });
 
-    router.post("/sala/solicitudes/crear", async function (req,res,next){
-      
-        const {room_id,  manager_id} = req.body;               
-        let date=moment().format('YYYY-MM-DD');       
-
-        try{
+    // Crear una solicitud para agregar sala (DRIVE)
+    router.post("/sala/solicitudes/crear", async function (req, res, next) {
+        const { room_id, manager_id } = req.body;
+        let date = moment().format('YYYY-MM-DD');
+        try {
             await reservacService.createRoomRequest(room_id, manager_id, date);
             res.sendStatus(201);
-
-        }catch(err){
+        } catch (err) {
             next(err);
         }
-
     });
+
+    //  **************************** SOLICITUDES DE ROOM REQUEST ********************************
+
+    // Obtener todas las room_request
+    router.get("/labf/solicitudes", async function (req, res, next) {
+        try {
+            const requests = await reservacService.getRoomRequest();
+            res.send(requests.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
     //  **************************** USUARIOS ********************************
 
