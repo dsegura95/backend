@@ -291,7 +291,7 @@ function reservACapi(app) {
     });
 
     //  Obtener todas las solicitudes hechas por un usuario
-    router.get("/solicitudes/:userId", async function (req, res, next) {
+    router.get("/solicitudes/usuario/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getRequestUser(userId);
