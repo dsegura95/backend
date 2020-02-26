@@ -239,7 +239,7 @@ function reservACapi(app) {
         };
     });
 
-    //  **************************** SOLICITUDES ********************************
+    //  **************************** SOLICITUDES DE RESERVA ********************************
 
 
     //  Obtener informacion de una solicitud y su horario
@@ -308,6 +308,19 @@ function reservACapi(app) {
             next(err);
         };
     });
+
+    //  **************************** SOLICITUDES DE ROOM REQUEST ********************************
+
+    // Obtener todas las room_request
+    router.get("/labf/solicitudes", async function (req, res, next) {
+        try {
+            const requests = await reservacService.getRoomRequest();
+            res.send(requests.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
     //  **************************** USUARIOS ********************************
 
