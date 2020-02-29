@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS asig_schedule(
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT,
-    UNIQUE (day, hour, week)
+    UNIQUE (asignation_id ,day, hour, week)
 );
 
 CREATE TABLE IF NOT EXISTS reservation_request(

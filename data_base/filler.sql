@@ -303,7 +303,7 @@ insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,d
 /*P de pendiente, A aceptado, R rechazado*/
 
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
-values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 10, 'E');
+values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 10, 'P');
 
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('15-11523', 'MYS-020', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 20, 'P');
@@ -328,6 +328,9 @@ values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computa
 
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('CO', 'MYS-019', 'CO3321', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 20, 'P');
+
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
 
 /*Rellenamos reserve_req_schedule*/
 
@@ -358,11 +361,61 @@ insert into reservation_request_schedule(reservation_request_id, day, hour, week
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 10);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 12);
 
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'MarJue', 2, 7);
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'MarJue', 2, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Lunes', 1, 8);
+-- insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Lunes', 2, 8);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(7,'Lunes', 2, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(7,'Lunes', 3, 8);
 
 /*Rellenamos asignation*/
 
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ENE-MAR2020', '2020-02-06');
+insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'PS1111', 'ENE-MAR2020', '2020-02-07');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-020', 'CI2693', 'ENE-MAR2020', '2020-02-08');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-219', 'CO3321', 'ENE-MAR2020', '2020-01-02');
+
+/*Rellenamos Horarios de las asignation*/
+
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 12);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 2, 12);
+
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 1, 12);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(2,'Martes', 2, 12);
+
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 1, 12);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 4);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 6);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 8);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 10);
+insert into asig_schedule(asignation_id, day, hour, week) values(3,'Martes', 2, 12);
+
+insert into asig_schedule(asignation_id, day, hour, week) values(4,'Lunes', 1, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(4,'Lunes', 2, 2);
+insert into asig_schedule(asignation_id, day, hour, week) values(4,'Lunes', 3, 2);
+

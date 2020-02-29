@@ -166,7 +166,6 @@ function reservACapi(app) {
         };
     });
 
-
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
@@ -253,6 +252,34 @@ function reservACapi(app) {
         };
     });
 
+    //  **************************** RESERVAS ********************************
+
+    // FALTA MODIFICAR EN EL DRIVE
+    //  Obtener todas las reservas de una semana y su horario
+    router.get("/reservas/:roomId", async function (req, res, next) {
+        const room = req.params.roomId;
+        try {
+            const reservationsRoom = await reservacService.getReservationByRoom(room);
+            res.json(reservationsRoom.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // FALTA ANOTAR EN EL DRIVE
+    //  Obtener todas las reservas de una semana y su horario
+    router.get("/reservas/:roomId/semana/:week", async function (req, res, next) {
+        const week = req.params.week;
+        const room = req.params.roomId;
+        try {
+            const reservationsOnWeek = await reservacService.getReservationFromWeek(room, week);
+            res.json(reservationsOnWeek.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
     //  **************************** SOLICITUDES ********************************
 
 
@@ -274,17 +301,6 @@ function reservACapi(app) {
         try {
             const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             res.send(schedule.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Obtener informacion de una solicitud y su horario
-    router.get("/solicitudes/semana/:week", async function (req, res, next) {
-        const week = req.params.week;
-        try {
-            const requestsOnWeek = await reservacService.getRequestsFromWeek(week);
-            res.json(requestsOnWeek.rows);
         } catch (err) {
             next(err);
         }
@@ -312,13 +328,47 @@ function reservACapi(app) {
         }
     });
 
-    // Actualizar una solicitud por id = <request_id> .
-    router.put("/solicitudes/:requestId", async function (req, res, next) {
-        const id = req.params.requestId
-        const { reason, status } = req.body;
+    // ANADIR AL DRIVE
+    router.get("/solicitudes/salas/:roomId", async function (req, res, next) {
+        const room = req.params.roomId;
         try {
-            await reservacService.updateRequest(id, reason, status);
-            res.send('Solicitud actualizada');
+            const requestsRoom = await reservacService.getAsignationByRoom(room);
+            res.json(requestsRoom.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // ACTUALIZAR DRIVE
+    // Actualizar una solicitud por id = <request_id> .
+    router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
+        const requestId = req.params.requestId;
+        let { reason, status } = req.body;
+        try {
+            const solicitud = await reservacService.getScheduleFromRequest(requestId);
+            if (solicitud.rowCount == 0) {
+                res.status(403).json({error: `La reserva no posee ningun horario`});
+            }
+            const result = solicitud.rows[0];
+            let room = solicitud.rows[0].room_id;
+            const checkSchedule = await reservacService.checkIfExists(room, requestId);
+            if (status == 'A') {
+                // Existe un horario ya asignado en ese horario que se solicita
+                if (checkSchedule.rowCount > 0) {
+                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
+                } else {
+                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10));
+                    res.send(`Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`);
+                }
+            } else {
+                if (!reason) {
+                    reason = 'Solicitud Rechazada';
+                    console.log('asdas');
+
+                }
+                await reservacService.updateRequest(requestId, reason, 'R');
+                res.send('Solicitud Actualizada');
+            }
         } catch (err) {
             next(err);
         };

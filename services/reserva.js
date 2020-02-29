@@ -48,10 +48,8 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
 
-    //  ************************ GET  **********************
-
     async getSalas() {
-        let query = 'SELECT * FROM room';
+        let query = 'SELECT * FROM room WHERE is_active = true';
         const items = await pool.query(query);
         return items || [];
     }
@@ -112,13 +110,23 @@ class ReservacService {
         return updateItem;
     }
 
-    //  ************************ Delete  ***********************
-
+    // 
     async deleteSala(id) {
         let query = `DELETE FROM room WHERE id = '${id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
     }
+
+    async deleteSalaItem(id) {
+        let query = `DELETE FROM room_item WHERE id = '${id}'`;
+        const deleteItem = await pool.query(query);
+        return deleteItem;
+    }
+
+
+
+
+
 
 
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
@@ -151,6 +159,27 @@ class ReservacService {
         return updateTrim;
     }
 
+    //  ********************* SERVICIOS DE RESERVA (ASIGNATION)  *********************
+
+    async getReservationByRoom(roomId) {
+        let query = `SELECT * FROM asignation WHERE room_id = '${roomId}'`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+
+    async getReservationFromWeek(room, week) {
+        let query = `SELECT subject_id, day, hour, week FROM asignation AS r JOIN asig_schedule AS s ON r.id = s.asignation_id WHERE week = ${week} AND room_id = '${room}'`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+
+    // Poner en el Drive
+    async createReservation(room, subject_id, trimester_id, date) {
+        let query = `INSERT INTO asignation (room_id, subject_id, trimester_id, date) VALUES ('${room}','${subject_id}','${trimester_id}','${date}')`;
+        const createAsignation = await pool.query(query);
+        return createAsignation;
+    }
+
     //  ********************* SERVICIOS DE SOLICITUD  *********************
 
     async getRequest(solicitudId) {
@@ -159,14 +188,25 @@ class ReservacService {
         return request || [];
     }
 
+    // async VerificarHorario(id, week, day, hour) {
+    //     let query = `SELECT reservation_request_id FROM reservation_request_schedule WHERE week = ${week} AND day = '${day}' AND hour = ${hour} AND id != ${id} GROUP BY reservation_request_id`;
+    //     const horariosDeOtroRequest = pool.query(query);
+    //     return horariosDeOtroRequest || [];
+    // }
+
+
     async getScheduleFromRequest(solicitudId) {
-        let query = `SELECT * FROM reservation_request_schedule WHERE reservation_request_id = ${solicitudId}`;
+        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+                     horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || [];
     }
 
-    async getRequestsFromWeek(week) {
-        let query = `SELECT subject_id, day, hour, week FROM reservation_request AS r JOIN reservation_request_schedule AS s ON r.id = s.reservation_request_id WHERE week = ${week}`;
+    //tomo el horario de la solicitud, tomo la sala a la cual va la solicitud, busco todos los horarios de esa sala
+    async checkIfExists(roomId, solicitudId) {
+        let query = `SELECT * FROM reservation_request_schedule AS r JOIN (SELECT * FROM asignation JOIN
+            asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${roomId}')
+            AS result ON result.day = r.day AND result.hour = r.hour WHERE r.reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || [];
     }
@@ -178,12 +218,19 @@ class ReservacService {
     }
 
     async getRequests(labId) {
-        let query = `SELECT name, requester_id, room_id, subject_id, send_time, reason, material_needed, quantity, type
+        let query = `SELECT result.id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type, status
         FROM (SELECT reservation_request.id, requester_id, room_id, subject_id, send_time, trimester_id, reason,
         material_needed, quantity, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id
-        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id`;
+        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id
+        WHERE status = 'P'`;
         const requests = await pool.query(query);
         return requests || [];
+    }
+
+    async getAsignationByRoom(roomId) {
+        let query = `SELECT * FROM asignation WHERE room_id = '${roomId}'`;
+        const request = await pool.query(query);
+        return request || "hola";
     }
 
     async updateRequest(id, reason, status) {
