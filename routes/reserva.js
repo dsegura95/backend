@@ -339,30 +339,34 @@ function reservACapi(app) {
 
     // ACTUALIZAR DRIVE
     // Actualizar una solicitud por id = <request_id> .
-    router.put("/solicitudes/:roomId/:requestId", async function (req, res, next) {
-        const request = req.params.requestId;
-        const room = req.params.roomId;
-        const { reason, status } = req.body;
+    router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
+        const requestId = req.params.requestId;
+        let { reason, status } = req.body;
         try {
-            const horario = await reservacService.getScheduleFromRequest(request);
-            for (let index = 0; index < horario.rows.length; index++) {
-                const element = horario.rows[index];
-                const otrosHorarios = await reservacService.VerificarHorario(element.id, element.week, element.day, element.hour);
-                // console.log(otrosHorarios.rows);
-                if (JSON.stringify(otrosHorarios.rows) != "[]") {
-                    for (let index2 = 0; index2 < otrosHorarios.rows.length; index2++) {
-                        const idDeLaOtraSolicitud = otrosHorarios.rows[index2].reservation_request_id;
-                        // console.log(idDeLaOtraSolicitud);
-                        const SolicitudesIguales = await reservacService.getRequest(idDeLaOtraSolicitud)
-                        // console.log(SolicitudesIguales.rows);
-                        if (SolicitudesIguales.rows[0].room_id == room) {
-                            console.log(SolicitudesIguales.rows);
-                        }
-                    }
-                }
+            const solicitud = await reservacService.getScheduleFromRequest(requestId);
+            if (solicitud.rowCount == 0) {
+                res.status(403).json({error: `La reserva no posee ningun horario`});
             }
-            await reservacService.updateRequest(request, reason, status);
-            res.send('Solicitud actualizada');
+            const result = solicitud.rows[0];
+            let room = solicitud.rows[0].room_id;
+            const checkSchedule = await reservacService.checkIfExists(room, requestId);
+            if (status == 'A') {
+                // Existe un horario ya asignado en ese horario que se solicita
+                if (checkSchedule.rowCount > 0) {
+                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
+                } else {
+                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10));
+                    res.send(`Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`);
+                }
+            } else {
+                if (!reason) {
+                    reason = 'Solicitud Rechazada';
+                    console.log('asdas');
+
+                }
+                await reservacService.updateRequest(requestId, reason, 'R');
+                res.send('Solicitud Actualizada');
+            }
         } catch (err) {
             next(err);
         };
