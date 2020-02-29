@@ -4,16 +4,16 @@ const express = require('express');
 const path = require("path");
 const ReservacService = require('../services/reserva');
 const boom = require('@hapi/boom');
+const Auth= require('../authentication/auth.js');
 
 function reservACapi(app) {
     const router = express.Router();
-    const reservacService = new ReservacService
+    const reservacService = new ReservacService;
+    const auth = new Auth;
 
     app.use("/api/", router);
     /////////////////////////////////////////////////////////////////
     const moment = require('moment');
-
-
 
     router.get("/actualizarTrimestre", async function (req, res, next) {
 
@@ -109,7 +109,7 @@ function reservACapi(app) {
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
 
     //  *** Mostrar todos los items   http://localhost:3000/api/items ***
-    router.get("/items", async function (req, res, next) {
+    router.get("/items",auth.verifyToken ,async function (req, res, next) {
         try {
             const items = await reservacService.getItems()
             res.send(items.rows);
@@ -245,7 +245,6 @@ function reservACapi(app) {
     router.post("/salas/crear", async function (req, res, next) {
         
         const {id ,name,owner_id,manager_id, is_active , description, first_used} = req.body;
-
         
         try {
             await reservacService.createSala(id, name,owner_id,manager_id, is_active, description, first_used);
@@ -438,5 +437,46 @@ function reservACapi(app) {
         }
     });
 
+
+    //  *****************************Registro y autenticacion de Usuarios************
+
+    router.post("/signup", async function (req,res,next){
+        try{
+            const {usbId, name, email, type, chief,clave} = req.body;
+            const registro= await reservacService.registerUser(usbId,name,email,type,chief,clave);
+            
+            res.json ({auth: true, token : registro});           
+
+        }catch(err){
+
+            next(err);
+        }
+    });
+
+    router.post("/signin", async function (req,res,next){
+        try{
+
+            const {usbId, clave} = req.body;
+            const login= await reservacService.loginUser(usbId, clave);
+            if (login==0){
+                res.status(404).send("Usuario no registrado en la base de datos");
+            }else if(login==1){
+                res.status(403).send("Clave incorrecta");
+            }
+            else{
+            res.json({auth: true, token: login});
+            }
+        
+
+        }catch(err){
+
+            next(err);
+
+        }
+
+
+
+
+    });
 }
 module.exports = reservACapi;

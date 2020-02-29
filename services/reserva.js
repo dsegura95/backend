@@ -1,4 +1,6 @@
 const { Pool } = require('pg')
+const Auth= require('../authentication/auth.js')
+
 
     //  ************************ ACCESO A BD POSTGRESQL  ***********************
 
@@ -9,6 +11,10 @@ const pool = new Pool({
     database: 'reserva',
     port: '5432'
 })
+
+// *********************Se importan metodos de autenticacion ********************
+
+const auth = new Auth;
 
 //const ACTUAL_TRIM = pool.query('SELECT id FROM trimester ORDER BY id DESC LIMIT 1');
 
@@ -250,6 +256,36 @@ class ReservacService {
         let query = `SELECT * FROM usuario WHERE type = 1111 or type = 2222`;
         const profesores = await pool.query(query);
         return profesores || [];
+    }
+
+    async registerUser(usbId,name,email,type,chief,clave){
+
+        const claveEncrypt= await auth.encryptPassword(clave);
+
+        let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
+        values('${usbId}','${name}','${email}','${type}','t', '${chief}', '${claveEncrypt}')`;
+
+        await pool.query(query);
+
+        const token= await auth.createToken(usbId);
+
+        return token;
+    }
+    async loginUser(usbId, clave){
+        let query = `SELECT id, clave from usuario where id='${usbId}'`;
+        const login= await pool.query(query);
+        if(login.rows<1){
+            return 0;
+        }
+        const validPassword = await auth.comparePassword(clave, login.rows[0].clave);
+        if(!validPassword){
+            return 1;
+        }
+        else{
+            const token = await auth.createToken(login.rows[0].id);
+            return token;
+        }
+
     }
 
     //  ********************* SERVICIOS DE MATERIA  *********************
