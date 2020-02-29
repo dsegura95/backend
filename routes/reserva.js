@@ -159,6 +159,7 @@ function reservACapi(app) {
         const id = req.params.itemId;
         await reservacService.deleteItem(id);
         try {
+
             res.send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
@@ -240,11 +241,12 @@ function reservACapi(app) {
         };
     });
 
-    router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
-        const id = req.params.itemId;
-        await reservacService.deleteItem(id);
+    // Crear Sala
+    router.post("/salas/crear", async function (req, res, next) {
+        const { id, name, owner_id, manager_id, is_active, description, first_used } = req.body;
         try {
-            res.send(`Item Id: ${id} Eliminado correctamente`);
+            await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
+            res.sendStatus(201);
         } catch (err) {
             next(err);
         };
@@ -293,7 +295,7 @@ function reservACapi(app) {
         }
     });
 
-    // Obtener el horario correspondiente a una solicitud
+    // Obtener horario de una solicitud de reserva
     router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
@@ -305,7 +307,7 @@ function reservACapi(app) {
     });
 
     //  Obtener todas las solicitudes hechas por un usuario
-    router.get("/solicitudes/:userId", async function (req, res, next) {
+    router.get("/solicitudes/usuario/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getRequestUser(userId);
@@ -371,6 +373,57 @@ function reservACapi(app) {
             next(err);
         };
     });
+
+    // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
+    router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
+        const id = req.params.roomRequestId;
+        const status = req.body.status;
+        const result = await reservacService.updateRoomRequest(id, status);
+        let date = moment().format('YYYY-MM-DD');
+        if (!result) {
+            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);
+        } else {
+            try {
+                if (status == 'A') {
+                    try {
+                        await reservacService.createSalaFromRequest(id, date);
+                    }
+                    catch (err) {
+                        next(err);
+                    }
+                }
+                res.send(`Solicitud de sala id: ${id} modificada correctamente`);
+            }
+            catch (err) {
+                next(err);
+            };
+        }
+    });
+
+    // Crear una solicitud para agregar sala (DRIVE)
+    router.post("/sala/solicitudes/crear", async function (req, res, next) {
+        const { room_id, manager_id } = req.body;
+        let date = moment().format('YYYY-MM-DD');
+        try {
+            await reservacService.createRoomRequest(room_id, manager_id, date);
+            res.sendStatus(201);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  **************************** SOLICITUDES DE ROOM REQUEST ********************************
+
+    // Obtener todas las room_request
+    router.get("/labf/solicitudes", async function (req, res, next) {
+        try {
+            const requests = await reservacService.getRoomRequest();
+            res.send(requests.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
     //  **************************** USUARIOS ********************************
 

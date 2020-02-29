@@ -29,7 +29,7 @@ class ReservacService {
     }
 
     async createItem(name, description) {
-        let query = `INSERT INTO item (name, description) VALUES ('${name}','${description}'`;
+        let query = `INSERT INTO item (name, description) VALUES ('${name}','${description}')`;
         const createItemId = await pool.query(query);
         return createItemId;
     }
@@ -75,10 +75,30 @@ class ReservacService {
 
     //  ************************ Post  ***********************
 
-    async createSala(name, description) {
-        let query = `INSERT INTO room (name, description) VALUES ('${name}','${description}'`;
-        const createItemId = await pool.query(query);
-        return createItemId;
+    async createSala(id, name, owner_id, manager_id, is_active, description, first_used) {
+        let query = `INSERT into room(id, name, owner_id, manager_id, is_active, description, first_used) VALUES
+        ('${id}','${name}','${owner_id}','${manager_id}','${is_active}','${description}','${first_used}')`;
+        const createSala = await pool.query(query);
+        return createSala;
+    }
+
+    async createSalaFromRequest(requestId, first_used) {
+        let query1 = `SELECT room.id from room join room_request on room_id=room.id
+        where room_request.id='${requestId}'`;
+        const roomExistente = await pool.query(query1);
+        if (roomExistente.rowCount > 0) {
+            let query2 = `UPDATE room SET owner_id=(SELECT owner_id from room_request where room_request.id='${requestId}'),
+            manager_id=(SELECT manager_id from room_request where room_request.id='${requestId}'),
+            is_active='t' where room.id=(${query1})`;
+            const updateSala = await pool.query(query2);
+            return updateSala;
+        } else {
+            let query3 = `INSERT into room (id, name, owner_id, manager_id, is_active, description, first_used) 
+            SELECT room_id, room_id, owner_id, manager_id, 't', 'Sala recien creada', '${first_used}' from 
+            room_request where room_request.id='${requestId}'`;
+            const createSala = await pool.query(query3);
+            return createSala;
+        }
     }
 
     //  ************************ Put  ***********************
@@ -114,6 +134,7 @@ class ReservacService {
     async getActualTrim() {
         const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
         const trim = await pool.query(sql);
+
         return trim || [];
     }
 
@@ -199,7 +220,7 @@ class ReservacService {
     async getRequests(labId) {
         let query = `SELECT id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type
         FROM (SELECT reservation_request.id, requester_id, room_id, subject_id, send_time, trimester_id, reason,
-        material_needed, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id 
+        material_needed, quantity, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id
         JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id`;
         const requests = await pool.query(query);
         return requests || [];
@@ -217,7 +238,30 @@ class ReservacService {
         return request_updated;
     }
 
+    async createRoomRequest(room_id, manager_id, date) {
+        const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
+        let queryChief = `SELECT chief from usuario where usuario.id='${manager_id}'`;
+        const owner = await pool.query(queryChief);    //Obtenemos el jefe de laboratorio correspondiente
+        let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
+        ('${room_id}', 'labf','${owner.rows[0].chief}','${manager_id}','${trimestre.rows[0].id}','${date}', 'E')`;
+        const createRoomRequest = await pool.query(query);
+        return createRoomRequest;
+    }
+
+    async updateRoomRequest(id, status) {
+        let query1 = `SELECT room.id from room join room_request on room_id=room.id WHERE room_request.id='${id}' and room.is_active='t'`;
+        const verificacionRoom = await pool.query(query1); //Se verifica que el room a actualizar el estado no se encuentre previamente en la lista de room      
+        if (verificacionRoom.rowCount > 0 && status == 'A') { //Si el rowCount del query es mayor a 0, es decir, ya existe la sala en room y ademas el admin desea colocar como
+            return null; //aprobada la solicitud, entonces esta no pasa.
+        } else {
+            let query2 = `UPDATE room_request SET status= '${status}' WHERE id='${id}'`;
+            const roomRequest_updated = await pool.query(query2);
+            return roomRequest_updated;
+        }
+    }
+
     //  ********************* SERVICIOS DE USUARIO  *********************
+
     async getUser(userId) {
         let query = `SELECT * FROM usuario WHERE id = '${userId}'`;
         const requestsUsers = await pool.query(query);
@@ -251,11 +295,22 @@ class ReservacService {
     }
 
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
+
     async getEndDate(trimesterId) {
         let query = `SELECT finish FROM trimester WHERE id = '${trimesterId}'`;
         const endDate = await pool.query(query);
         return endDate || [];
     }
+
+    //  ********************* SERVICIOS DE ROOM REQUEST  *********************
+    async getRoomRequest() {
+        let query = `SELECT * FROM room_request`;
+        const roomRequests = await pool.query(query);
+        return roomRequests;
+    }
+
 }
+
+
 
 module.exports = ReservacService
