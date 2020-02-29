@@ -173,7 +173,6 @@ class ReservacService {
         return request || [];
     }
 
-    // Poner en el Drive
     async createReservation(room, subject_id, trimester_id, date) {
         let query = `INSERT INTO asignation (room_id, subject_id, trimester_id, date) VALUES ('${room}','${subject_id}','${trimester_id}','${date}')`;
         const createAsignation = await pool.query(query);
@@ -225,12 +224,6 @@ class ReservacService {
         WHERE status = 'P'`;
         const requests = await pool.query(query);
         return requests || [];
-    }
-
-    async getAsignationByRoom(roomId) {
-        let query = `SELECT * FROM asignation WHERE room_id = '${roomId}'`;
-        const request = await pool.query(query);
-        return request || "hola";
     }
 
     async updateRequest(id, reason, status) {

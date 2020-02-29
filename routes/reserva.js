@@ -254,8 +254,7 @@ function reservACapi(app) {
 
     //  **************************** RESERVAS ********************************
 
-    // FALTA MODIFICAR EN EL DRIVE
-    //  Obtener todas las reservas de una semana y su horario
+    //  Obtener todas las reservas de una sala
     router.get("/reservas/:roomId", async function (req, res, next) {
         const room = req.params.roomId;
         try {
@@ -266,7 +265,6 @@ function reservACapi(app) {
         }
     });
 
-    // FALTA ANOTAR EN EL DRIVE
     //  Obtener todas las reservas de una semana y su horario
     router.get("/reservas/:roomId/semana/:week", async function (req, res, next) {
         const week = req.params.week;
@@ -280,7 +278,7 @@ function reservACapi(app) {
     });
 
 
-    //  **************************** SOLICITUDES ********************************
+    //  **************************** SOLICITUDES DE RESERVA ********************************
 
 
     //  Obtener informacion de una solicitud y su horario
@@ -328,18 +326,6 @@ function reservACapi(app) {
         }
     });
 
-    // ANADIR AL DRIVE
-    router.get("/solicitudes/salas/:roomId", async function (req, res, next) {
-        const room = req.params.roomId;
-        try {
-            const requestsRoom = await reservacService.getAsignationByRoom(room);
-            res.json(requestsRoom.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    // ACTUALIZAR DRIVE
     // Actualizar una solicitud por id = <request_id> .
     router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
         const requestId = req.params.requestId;
@@ -374,6 +360,8 @@ function reservACapi(app) {
         };
     });
 
+    //  ****************************  SOLICITUDES ROOM REQUEST ********************************
+
     // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
     router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
         const id = req.params.roomRequestId;
@@ -400,7 +388,7 @@ function reservACapi(app) {
         }
     });
 
-    // Crear una solicitud para agregar sala (DRIVE)
+    // Crear una solicitud de sala
     router.post("/sala/solicitudes/crear", async function (req, res, next) {
         const { room_id, manager_id } = req.body;
         let date = moment().format('YYYY-MM-DD');
@@ -411,8 +399,6 @@ function reservACapi(app) {
             next(err);
         }
     });
-
-    //  **************************** SOLICITUDES DE ROOM REQUEST ********************************
 
     // Obtener todas las room_request
     router.get("/labf/solicitudes", async function (req, res, next) {
