@@ -218,15 +218,16 @@ class ReservacService {
     }
 
     async getRequests(labId) {
-        let query = `SELECT id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type
+        let query = `SELECT result.id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type, status
         FROM (SELECT reservation_request.id, requester_id, room_id, subject_id, send_time, trimester_id, reason,
         material_needed, quantity, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id
-        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id`;
+        JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id
+        WHERE status = 'P'`;
         const requests = await pool.query(query);
         return requests || [];
     }
 
-    async getRequestsByRoom(roomId) {
+    async getAsignationByRoom(roomId) {
         let query = `SELECT * FROM asignation WHERE room_id = '${roomId}'`;
         const request = await pool.query(query);
         return request || "hola";

@@ -332,8 +332,8 @@ function reservACapi(app) {
     router.get("/solicitudes/salas/:roomId", async function (req, res, next) {
         const room = req.params.roomId;
         try {
-            const requestsRoom = await reservacService.getRequestsByRoom(room);
-            res.json(requestsRoom);
+            const requestsRoom = await reservacService.getAsignationByRoom(room);
+            res.json(requestsRoom.rows);
         } catch (err) {
             next(err);
         }
