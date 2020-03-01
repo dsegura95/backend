@@ -277,6 +277,18 @@ function reservACapi(app) {
         }
     });
 
+    // DRIVE
+    //  Obtener el horario de una reserva
+    router.get("/reservas/:reservaID/horario", async function (req, res, next) {
+        const id = req.params.reservaID;
+        try {
+            const asinationSchedule = await reservacService.getScheduleFromAsignation(id);
+            res.json(asinationSchedule.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
     //  **************************** SOLICITUDES DE RESERVA ********************************
 
@@ -343,7 +355,7 @@ function reservACapi(app) {
                 if (checkSchedule.rowCount > 0) {
                     res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
                 } else {
-                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10));
+                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
                     res.send(`Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`);
                 }
             } else {

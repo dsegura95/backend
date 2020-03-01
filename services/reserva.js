@@ -161,6 +161,12 @@ class ReservacService {
 
     //  ********************* SERVICIOS DE RESERVA (ASIGNATION)  *********************
 
+    async getScheduleFromAsignation(id) {
+        let query = `SELECT * FROM asig_schedule WHERE asignation_id = ${id}`;
+        const schedule = await pool.query(query);
+        return schedule || [];
+    }
+
     async getReservationByRoom(roomId) {
         let query = `SELECT * FROM asignation WHERE room_id = '${roomId}'`;
         const request = await pool.query(query);
@@ -173,9 +179,17 @@ class ReservacService {
         return request || [];
     }
 
-    async createReservation(room, subject_id, trimester_id, date) {
-        let query = `INSERT INTO asignation (room_id, subject_id, trimester_id, date) VALUES ('${room}','${subject_id}','${trimester_id}','${date}')`;
+    // Crea la reserva y su horario a partir de la solicitud y el horario de solicitud
+    async createReservation(room, subject_id, trimester_id, date, requestId) {
+        let query = `INSERT INTO asignation (room_id, subject_id, trimester_id, date) VALUES ('${room}','${subject_id}','${trimester_id}','${date}') RETURNING id`;
         const createAsignation = await pool.query(query);
+        const id = createAsignation.rows[0].id
+        const request_schedule = await this.getScheduleFromRequest(requestId);
+        for (let index = 0; index < request_schedule.rowCount ; index++) {
+            const element = request_schedule.rows[index];
+            let query1 = `INSERT INTO asig_schedule (asignation_id, week, day, hour) VALUES (${id},${element.week},'${element.day}',${element.hour})`
+            await pool.query(query1);
+        }
         return createAsignation;
     }
 
@@ -231,6 +245,8 @@ class ReservacService {
         const request_updated = await pool.query(query);
         return request_updated;
     }
+
+    //  ********************* SERVICIOS DE ROOM REQUEST  *********************
 
     async createRoomRequest(room_id, manager_id, date) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
