@@ -109,9 +109,10 @@ function reservACapi(app) {
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
 
     //  *** Mostrar todos los items   http://localhost:3000/api/items ***
-    router.get("/items",auth.verifyToken ,async function (req, res, next) {
+    router.get("/items", auth.verifyToken,async function (req, res, next) {
         try {
-            const items = await reservacService.getItems()
+            
+            const items = await reservacService.getItems();
             res.send(items.rows);
         } catch (err) {
             next(err);
@@ -122,6 +123,7 @@ function reservACapi(app) {
     router.get("/items/:itemId", async function (req, res, next) {
         try {
             const id = req.params.itemId;
+           
             const item = await reservacService.getItem(id);
             res.send(item.rows)
         } catch (err) {

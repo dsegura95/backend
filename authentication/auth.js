@@ -14,15 +14,15 @@ class authControl{
 		return bcrypt.compare(password1,password2);
 	}
 
-	async createToken(id){
+	async createToken(id, type){
 
-		const token = jwt.sign({id:id}, 'mysecretkey',{
-
+		const token = jwt.sign({id:id,type: type}, 'mysecretkey',{
 			expiresIn : 60 * 60
+			
 		})		
 		return token;
 	}
-
+	
 	async verifyToken(req,res,next){
 
 		const token = req.headers['x-access-token'];
@@ -32,8 +32,9 @@ class authControl{
 		try{
 
 		const decoded = await jwt.verify(token,'mysecretkey');
-		console.log(decoded);
+		
 		req.userId = decoded.id;
+		req.userType= decoded.type;
 		next();
 		}catch(err){next(err);}
 	}

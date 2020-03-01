@@ -267,12 +267,12 @@ class ReservacService {
 
         await pool.query(query);
 
-        const token= await auth.createToken(usbId);
+        const token= await auth.createToken(usbId, type);
 
         return token;
     }
     async loginUser(usbId, clave){
-        let query = `SELECT id, clave from usuario where id='${usbId}'`;
+        let query = `SELECT id, clave, type from usuario where id='${usbId}'`;
         const login= await pool.query(query);
         if(login.rows<1){
             return 0;
@@ -282,7 +282,7 @@ class ReservacService {
             return 1;
         }
         else{
-            const token = await auth.createToken(login.rows[0].id);
+            const token = await auth.createToken(login.rows[0].id, login.rows[0].type);
             return token;
         }
 
