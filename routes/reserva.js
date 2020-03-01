@@ -277,7 +277,6 @@ function reservACapi(app) {
         }
     });
 
-    // DRIVE
     //  Obtener el horario de una reserva
     router.get("/reservas/:reservaID/horario", async function (req, res, next) {
         const id = req.params.reservaID;
