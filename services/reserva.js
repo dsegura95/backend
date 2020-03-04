@@ -60,12 +60,37 @@ class ReservacService {
         return sala || [];
     }
 
+///////////////////////////////////////////////////////////////////////////////
+    //Crud Sala Items
     async getSalaItems(id) {
-        //const TRIM_ACTUAL = await this.getActualTrim()
-        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}'`;
+        let actualTrimId = this.getActualTrim();
+        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId}`;
         const itemsSala = await pool.query(sql);
         return itemsSala || [];
     }
+
+    async deleteSalaItem(id, salaId) {
+        let actualTrimId = this.getActualTrim();
+        let query = `DELETE FROM room_item AS r WHERE id = '${id}' AND room_id = '${salaId}' AND trimester_id = '${actualTrimId}'`;
+        const deleteItem = await pool.query(query);
+        return deleteItem;
+    }
+
+    async updateSalaItem(room_id, item_id, quantity) {
+        let trimester_id = this.getActualTrim();
+        let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id}' AND item_id = '${item_id}'`;
+        const updateItem = await pool.query(query);
+        return updateItem;
+    }
+
+    async createSalaItem(room_id, item_id, quantity) {
+        let trimester_id = this.getActualTrim();
+        let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id}','${item_id}','${quantity}')`;
+        const createItemId = await pool.query(query);
+        return createItemId;
+    }
+
+///////////////////////////////////////////////////////////////////////////////
 
     async getAdminSalas(id) {
         const sql = `SELECT * FROM room WHERE manager_id = '${id}'`;
@@ -105,9 +130,27 @@ class ReservacService {
 
 
     async updateSala(id, name, description, is_active) {
-        let query = `UPDATE room SET name = '${name}', description = '${description}', is_active = ${is_active} WHERE id = '${id}'`;
-        const updateItem = await pool.query(query);
-        return updateItem;
+        let query = [];
+        let change = [];
+        
+        if (name){
+            query  = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
+            change = await pool.query(query);
+        }
+        if (description){
+            query  = `UPDATE room SET description = '${description}' WHERE id = '${id}'`;
+            change = await pool.query(query);
+        }
+        if (is_active){
+            query  = `UPDATE room SET is_active = ${is_active} WHERE id = '${id}'`;
+            change = await pool.query(query);
+        }
+        if (change != []){
+            return change;
+        }
+        else{
+            return change;
+        }
     }
 
     // 
@@ -117,24 +160,11 @@ class ReservacService {
         return deleteItem;
     }
 
-    async deleteSalaItem(id) {
-        let query = `DELETE FROM room_item WHERE id = '${id}'`;
-        const deleteItem = await pool.query(query);
-        return deleteItem;
-    }
-
-
-
-
-
-
-
     //  ********************* SERVICIOS DE TRIMESTRE  *********************
 
     async getActualTrim() {
         const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
         const trim = await pool.query(sql);
-
         return trim || [];
     }
 
@@ -146,14 +176,22 @@ class ReservacService {
 
     async updateTrim(id, start, finish) {
         let query;
-        if ((!start)) {
+
+        let dates = this.getActualTrim();
+        let strt = dates.rows.start
+        let fnsh = dates.rows.finish
+
+        if ((!start) && ( finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
-        else if ((!finish)) {
+        else if ((!finish) && (fnsh > start)) {
             query = `UPDATE trimester SET start = '${start}' WHERE id = '${id}'`;
         }
-        else {
+        else if (finish > start) {
             query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
+        }
+        else{
+            return [];
         }
         const updateTrim = await pool.query(query);
         return updateTrim;
@@ -319,6 +357,23 @@ class ReservacService {
         return roomRequests;
     }
 
+    //  ********************* SERVICIOS DE HORARIO  *********************
+
+    async getSalaHorasOcupadasTodas(salaId) {
+        let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' GROUP BY subject_id, day, hour`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+    async getSalaHorasOcupadasPares(salaId) {
+        let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND (( week % 2 ) = 0) GROUP BY subject_id, day, hour`;
+        const request = await pool.query(query);
+        return request || [];
+    }
+    async getSalaHorasOcupadasImpares(salaId) {
+        let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND (( week % 2 ) = 1) GROUP BY subject_id, day, hour`;
+        const request = await pool.query(query);
+        return request || [];
+    }
 }
 
 

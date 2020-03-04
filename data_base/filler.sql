@@ -466,7 +466,8 @@ insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-020', '
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-219', 'CO3321', 'ENE-MAR2020', '2020-01-02');
 
 /*Rellenamos Horarios de las asignation*/
-
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 1);
+insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 3, 1);
 insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 2);
 insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 4);
 insert into asig_schedule(asignation_id, day, hour, week) values(1,'Lunes', 1, 6);
