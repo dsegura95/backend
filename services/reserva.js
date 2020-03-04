@@ -269,7 +269,7 @@ class ReservacService {
     }
 
     async getRequests(labId) {
-        let query = `SELECT result.id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type, status
+        let query = `SELECT result.id, name, requester_id, room_id, subject_id, send_time, reason, material_needed, type, status, quantity
         FROM (SELECT reservation_request.id, requester_id, room_id, subject_id, send_time, trimester_id, reason,
         material_needed, quantity, status FROM reservation_request JOIN room ON reservation_request.room_id = room.id
         JOIN usuario ON usuario.id = room.manager_id WHERE manager_id = '${labId}') AS result JOIN usuario ON usuario.id = result.requester_id
