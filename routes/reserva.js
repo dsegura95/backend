@@ -4,12 +4,12 @@ const multer = require("multer");
 const path = require("path");
 const ReservacService = require('../services/reserva');
 const boom = require('@hapi/boom');
-const Auth= require('../authentication/auth.js');
+//const Auth= require('../authentication/auth.js');
 
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService;
-    const auth = new Auth;
+   // const auth = new Auth;
 
     app.use("/api/", router);
     //////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ function reservACapi(app) {
     //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
 
     //  *** Mostrar todos los items   http://localhost:3000/api/items ***
-    router.get("/items", auth.verifyToken,async function (req, res, next) {
+    router.get("/items", async function (req, res, next) {
         try {
             
             const items = await reservacService.getItems();
