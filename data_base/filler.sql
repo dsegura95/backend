@@ -301,37 +301,54 @@ insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,d
 
 /*Rellenamos reservation_request*/
 /*P de pendiente, A aceptado, R rechazado*/
-
+-- 1
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('15-10611', 'MYS-019', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 10, 'P');
-
+-- 2
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('15-11523', 'MYS-020', 'CI2693', 'ENE-MAR2020', 'Sillas, mesas', 20, 'P');
-
+-- 3
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('15-11523', 'MYS-018', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 30, 'P');
-
+-- 4
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('13-11341', 'MYS-020', 'CI2692', 'ENE-MAR2020', 'Sillas, mesas y televisor', 24, 'P');
-
+-- 5
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
-
+-- 6
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('mcorniel', 'MYS-220', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 10, 'P');
-
+-- 7
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('mgoncalves', 'MYS-015', 'CI3391', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 15, 'P');
-
+-- 8
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
-values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 24, 'A');
-
+values ('mcorniel', 'MYS-221', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 24, 'P');
+-- 9
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('CO', 'MYS-019', 'CO3321', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 20, 'P');
-
+-- 10
 insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
 values ('12-10273', 'MYS-018', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
-
+-- 11
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('12-10273', 'MYS-020', 'CI4821', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 21, 'P');
+-- 12
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('12-10273', 'MYS-019', 'CI4822', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 41, 'P');
+-- 13
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('13-11341', 'MYS-018', 'PS1115', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 10, 'P');
+-- 14
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('13-11341', 'MYS-020', 'CI5832', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
+-- 15
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('13-11341', 'MYS-019', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 40, 'P');
+-- 16
+insert into reservation_request(requester_id, room_id, subject_id, trimester_id, material_needed, quantity, status)
+values ('eduardo', 'MYS-020', 'CI2691', 'ENE-MAR2020', 'Sillas, mesas y computadoras', 30, 'P');
 /*Rellenamos reserve_req_schedule*/
 
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(1,'Lunes', 1, 2);
@@ -354,6 +371,25 @@ insert into reservation_request_schedule(reservation_request_id, day, hour, week
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'Lunes', 1, 10);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(2,'Lunes', 1, 12);
 
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 3);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(3,'Miercoles', 5, 11);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(4,'Viernes', 7, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(4,'Jueves', 7, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(4,'Viernes', 8, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(4,'Jueves', 8, 11);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 3);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Viernes', 7, 11);
+
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 2);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 4);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 6);
@@ -361,12 +397,67 @@ insert into reservation_request_schedule(reservation_request_id, day, hour, week
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 10);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(6,'Miercoles', 5, 12);
 
-insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Lunes', 1, 8);
--- insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(5,'Lunes', 2, 8);
-
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(7,'Lunes', 2, 8);
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(7,'Lunes', 3, 8);
 
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(8,'Jueves', 6, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(8,'Jueves', 7, 5);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(9,'Martes', 3, 12);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(10,'Jueves', 8, 12);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(11,'Viernes', 8, 12);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 2);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 4);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 6);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 8);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 10);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(12,'Martes', 4, 12);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 3);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(13,'Viernes', 10, 11);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 1, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 2, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 3, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 4, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 5, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(14,'Miercoles', 6, 1);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 3);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(15,'Lunes', 7, 11);
+
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 1);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 3);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 5);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 7);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 9);
+insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 11);
 /*Rellenamos asignation*/
 
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ENE-MAR2020', '2020-02-06');
