@@ -345,6 +345,7 @@ function reservACapi(app) {
             const solicitud = await reservacService.getScheduleFromRequest(requestId);
             if (solicitud.rowCount == 0) {
                 res.status(403).json({error: `La reserva no posee ningun horario`});
+                return
             }
             const result = solicitud.rows[0];
             let room = solicitud.rows[0].room_id;
@@ -353,18 +354,20 @@ function reservACapi(app) {
                 // Existe un horario ya asignado en ese horario que se solicita
                 if (checkSchedule.rowCount > 0) {
                     res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
+                    return
                 } else {
                     await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
                     res.send(`Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`);
+                    return
                 }
             } else {
                 if (!reason) {
                     reason = 'Solicitud Rechazada';
-                    console.log('asdas');
-
+                    return
                 }
                 await reservacService.updateRequest(requestId, reason, 'R');
                 res.send('Solicitud Actualizada');
+                return
             }
         } catch (err) {
             next(err);
