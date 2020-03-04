@@ -357,6 +357,7 @@ function reservACapi(app) {
                     return
                 } else {
                     await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
+                    await reservacService.updateRequest(requestId, 'Aprobado', 'A');
                     res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
                     return
                 }
