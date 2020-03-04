@@ -525,7 +525,7 @@ function reservACapi(app) {
         const result = await reservacService.updateRoomRequest(id, status);
         let date = moment().format('YYYY-MM-DD');
         if (!result) {
-            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);
+            res.status(403).json({message: 'La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa'});
         } else {
             try {
                 if (status == 'A') {
