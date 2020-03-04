@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS item(
 CREATE TABLE IF NOT EXISTS trimester(
     id VARCHAR(12) PRIMARY KEY,
     start DATE,
-    finish DATE
+    finish DATE,
+    CONSTRAINT correctDate CHECK (start < finish)
 );
 
 --NA si no tiene dpt
