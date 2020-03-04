@@ -1,5 +1,5 @@
 const express = require('express');
-//const multer = require("multer");
+const multer = require("multer");
 //const fs = require('fs');
 const path = require("path");
 const ReservacService = require('../services/reserva');
@@ -12,7 +12,7 @@ function reservACapi(app) {
     const auth = new Auth;
 
     app.use("/api/", router);
-    /////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     const moment = require('moment');
 
     router.get("/actualizarTrimestre", async function (req, res, next) {
@@ -97,8 +97,13 @@ function reservACapi(app) {
         }
         const idParam = req.params.Id;
         try {
-            await reservacService.updateTrim(idParam, start, finish);
-            res.send('Trimestre actualizado');
+            const response = await reservacService.updateTrim(idParam, start, finish);
+            if (response == []){
+                res.send('Fecha Invalida');
+            }
+            else{
+                res.send('Trimestre actualizado');
+            }
         } catch (err) {
             next(err);
         };
@@ -168,7 +173,6 @@ function reservACapi(app) {
         };
     });
 
-    
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
@@ -194,6 +198,8 @@ function reservACapi(app) {
         }
     });
 
+    //  **************************** ITEMS DE SALA ********************************
+
     //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId>/items ***
     router.get("/salas/:salaId/items", async function (req, res, next) {
         const salaId = req.params.salaId;
@@ -204,6 +210,46 @@ function reservACapi(app) {
             next(err);
         }
     });
+
+    //  *** Eliminar un item de una sala en el trimestre actual ***
+    router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
+        const id = req.params.itemId;
+        const salaId = req.params.salaId;
+        await reservacService.deleteSalaItem(id, salaId);
+        try {
+            res.send(`Item Id: ${id} Eliminado correctamente`);
+        } catch (err) {
+            next(err);
+        };
+    });
+
+    //  *** Actualizar descripcion nombre y status de una sala ***
+    router.put("/salas/:salaId/:itemId", async function (req, res, next) {
+        const { quantity } = req.body;
+        const room_id = req.params.salaId;
+        const item_id = req.params.itemId;
+        try {
+            await reservacService.updateSalaItem(room_id, item_id, quantity);
+            res.send('Item actualizado');
+        } catch (err) {
+            next(err);
+        };
+    });
+
+    //  *** Actualizar descripcion nombre y status de una sala ***
+    router.post("/salas/:salaId/:itemId", async function (req, res, next) {
+        const { quantity } = req.body;
+        const room_id = req.params.salaId;
+        const item_id = req.params.itemId;
+        try {
+            await reservacService.crearSalaItem(room_id, item_id, quantity);
+            res.send('Item actualizado');
+        } catch (err) {
+            next(err);
+        };
+    });
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
     //  *** Obtener todas las salas que son administradas por un laboratorio ***
     router.get("/salas/admin/:userId", async function (req, res, next) {
@@ -232,31 +278,159 @@ function reservACapi(app) {
         }
     });
 
+    router.post("/salas/:salaId/picture", async function (req, res) {
+
+        // Set The Storage Engine
+        const storage = multer.diskStorage({
+            destination: '/../media/',
+            filename: function(req, file, cb){
+            cb(null,'${salaId}.jpg');
+            }
+        });
+
+        // Init Upload
+        const upload = multer({
+            storage: storage,
+            limits:{fileSize: 10000000},
+            fileFilter: function(req, file, cb){
+            checkFileType(file, cb);
+            }
+        }).single('myImage');
+            
+        // Check File Type
+        function checkFileType(file, cb){
+            // Allowed ext
+            const filetypes = /jpg/;
+            // Check ext
+            const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+            // Check mime
+            const mimetype = filetypes.test(file.mimetype);
+            if(mimetype && extname){
+            return cb(null,true);
+            } else {
+            cb('Error: Images Only!');
+            }
+        }
+
+        upload(req, res, (err) => {
+            if(err){
+                res.json(boom.notFound(err).output.payload);
+            } else {
+                if(req.file == undefined){
+                res.json(boom.notFound('Error: No File Selected!').output.payload);
+                } else {
+                    res.send('File Uploaded!');
+                }
+            }
+        });
+    });
+
+
     //  *** Actualizar descripcion nombre y status de una sala ***
     router.put("/salas/:salaId", async function (req, res, next) {
         const { name, description, is_active } = req.body;
         const id = req.params.salaId;
         try {
-            await reservacService.updateSala(id, name, description, is_active);
-            res.send('Sala actualizada');
+            let change = await reservacService.updateSala(id, name, description, is_active);
+            if (change != []){
+                res.status(200).json({ message: 'Sala actualizada'});
+            }
+            else {
+                res.status(403).json({ error: 'Update invalido'});
+            }
         } catch (err) {
             next(err);
         };
     });
 
+    // Crear Sala
     router.post("/salas/crear", async function (req, res, next) {
+
         
         const {id ,name,owner_id,manager_id, is_active , description, first_used} = req.body;
-        
+
         try {
-            await reservacService.createSala(id, name,owner_id,manager_id, is_active, description, first_used);
+            await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
             res.sendStatus(201);
         } catch (err) {
             next(err);
         };
     });
 
-    //  **************************** SOLICITUDES ********************************
+    //  **************************** RESERVAS ********************************
+
+    //  *** Mostrar las horas reservadas de todas las semanas para una sala en el trim actual ***
+    router.get("/reservas/:salaId/semana/todas", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasTodas(salaId);
+            res.send(salaHorasOcupadas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  *** Mostrar las horas reservadas de las semanas pares para una sala en el trim actual ***
+    router.get("/reservas/:salaId/semana/pares", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasPares(salaId);
+            res.send(salaHorasOcupadas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  *** Mostrar las horas reservadas de las semanas impares para una sala en el trim actual ***
+    router.get("/reservas/:salaId/semana/impares", async function (req, res, next) {
+        const salaId = req.params.salaId;
+        try {
+            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasImpares(salaId);
+            res.send(salaHorasOcupadas.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  Obtener todas las reservas de una sala
+    router.get("/reservas/:roomId", async function (req, res, next) {
+        const room = req.params.roomId;
+        try {
+            const reservationsRoom = await reservacService.getReservationByRoom(room);
+            res.json(reservationsRoom.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  Obtener todas las reservas de una semana y su horario
+    router.get("/reservas/:roomId/semana/:week", async function (req, res, next) {
+        const week = req.params.week;
+        const room = req.params.roomId;
+        try {
+            const reservationsOnWeek = await reservacService.getReservationFromWeek(room, week);
+            res.json(reservationsOnWeek.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    //  Obtener el horario de una reserva
+    router.get("/reservas/:reservaID/horario", async function (req, res, next) {
+        const id = req.params.reservaID;
+        try {
+            const asinationSchedule = await reservacService.getScheduleFromAsignation(id);
+            res.json(asinationSchedule.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
+    //  **************************** SOLICITUDES DE RESERVA ********************************
+
+
+    // Obtener todos los horarios reservados para una sala todas las semanas
 
 
     //  Obtener informacion de una solicitud y su horario
@@ -271,6 +445,7 @@ function reservACapi(app) {
         }
     });
 
+    // Obtener horario de una solicitud de reserva
     router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
         const solicitudId = req.params.solicitudId;
         try {
@@ -281,19 +456,8 @@ function reservACapi(app) {
         }
     });
 
-    //  Obtener informacion de una solicitud y su horario
-    router.get("/solicitudes/semana/:week", async function (req, res, next) {
-        const week = req.params.week;
-        try {
-            const requestsOnWeek = await reservacService.getRequestsFromWeek(week);
-            res.json(requestsOnWeek.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
     //  Obtener todas las solicitudes hechas por un usuario
-    router.get("/solicitudes/:userId", async function (req, res, next) {
+    router.get("/solicitudes/usuario/:userId", async function (req, res, next) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getRequestUser(userId);
@@ -315,62 +479,93 @@ function reservACapi(app) {
     });
 
     // Actualizar una solicitud por id = <request_id> .
-    router.put("/solicitudes/:requestId", async function (req, res, next) {
-        const id = req.params.requestId
-        const { reason, status } = req.body;
+    router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
+        const requestId = req.params.requestId;
+        let { reason, status } = req.body;
         try {
-            await reservacService.updateRequest(id, reason, status);
-            res.send('Solicitud actualizada');
+            const solicitud = await reservacService.getScheduleFromRequest(requestId);
+            if (solicitud.rowCount == 0) {
+                res.status(403).json({error: `La reserva no posee ningun horario`});
+                return
+            }
+            const result = solicitud.rows[0];
+            let room = solicitud.rows[0].room_id;
+            const checkSchedule = await reservacService.checkIfExists(room, requestId);
+            if (status == 'A') {
+                // Existe un horario ya asignado en ese horario que se solicita
+                if (checkSchedule.rowCount > 0) {
+                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
+                    return
+                } else {
+                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
+                    await reservacService.updateRequest(requestId, 'Aprobado', 'A');
+                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
+                    return
+                }
+            } else {
+                if (!reason) {
+                    reason = 'Solicitud Rechazada';
+                    return
+                }
+                await reservacService.updateRequest(requestId, reason, 'R');
+                res.status(200).json({message: 'Solicitud Actualizada'});
+                return
+            }
         } catch (err) {
             next(err);
         };
     });
 
+    //  ****************************  SOLICITUDES ROOM REQUEST ********************************
 
-    router.put("/sala/solicitudes/:roomRequestId", async function(req,res,next){
-        const id= req.params.roomRequestId;
+    // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
+    router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
+        const id = req.params.roomRequestId;
         const status = req.body.status;
-        const result = await reservacService.updateRoomRequest(id,  status);
-        let date=moment().format('YYYY-MM-DD');  
-       
-
-        if(!result){
-            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);           
-
-        }else{
-        
-        try{            
-            
-            if(status=='A'){
-                try{                    
-                    await reservacService.createSalaFromRequest(id, date);
+        const result = await reservacService.updateRoomRequest(id, status);
+        let date = moment().format('YYYY-MM-DD');
+        if (!result) {
+            res.send(`La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`);
+        } else {
+            try {
+                if (status == 'A') {
+                    try {
+                        await reservacService.createSalaFromRequest(id, date);
+                    }
+                    catch (err) {
+                        next(err);
+                    }
                 }
-                catch(err){
-                    next(err);
-                }   
+                res.send(`Solicitud de sala id: ${id} modificada correctamente`);
             }
-            res.send(`Solicitud de sala id: ${id} modificada correctamente`);
-        }
-        catch(err){
-            next(err);
-         };
+            catch (err) {
+                next(err);
+            };
         }
     });
 
-    router.post("/sala/solicitudes/crear", async function (req,res,next){
-      
-        const {room_id,  manager_id} = req.body;               
-        let date=moment().format('YYYY-MM-DD');       
-
-        try{
+    // Crear una solicitud de sala
+    router.post("/sala/solicitudes/crear", async function (req, res, next) {
+        const { room_id, manager_id } = req.body;
+        let date = moment().format('YYYY-MM-DD');
+        try {
             await reservacService.createRoomRequest(room_id, manager_id, date);
             res.sendStatus(201);
-
-        }catch(err){
+        } catch (err) {
             next(err);
         }
-
     });
+
+    // Obtener todas las room_request
+    router.get("/labf/solicitudes", async function (req, res, next) {
+        try {
+            const requests = await reservacService.getRoomRequest();
+            res.send(requests.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
 
     //  **************************** USUARIOS ********************************
 
@@ -440,6 +635,7 @@ function reservACapi(app) {
     });
 
 
+
     //  *****************************Registro y autenticacion de Usuarios************
 
     router.post("/signup", async function (req,res,next){
@@ -480,5 +676,6 @@ function reservACapi(app) {
 
 
     });
+
 }
 module.exports = reservACapi;

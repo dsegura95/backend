@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS item(
 CREATE TABLE IF NOT EXISTS trimester(
     id VARCHAR(12) PRIMARY KEY,
     start DATE,
-    finish DATE
+    finish DATE,
+    CONSTRAINT correctDate CHECK (start < finish)
 );
 
 --NA si no tiene dpt
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS asig_schedule(
     day VARCHAR(9),
     hour SMALLINT,
     week SMALLINT,
-    UNIQUE (day, hour, week)
+    UNIQUE (asignation_id ,day, hour, week)
 );
 
 CREATE TABLE IF NOT EXISTS reservation_request(
@@ -120,6 +121,7 @@ CREATE TABLE IF NOT EXISTS reservation_request(
     trimester_id VARCHAR(12),
     reason VARCHAR(128),
     material_needed VARCHAR(512),
+    quantity SMALLINT,
     status CHAR(1) --A(aprobado),R(rechazado),E(espera)
 );
 
