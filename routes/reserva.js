@@ -357,7 +357,7 @@ function reservACapi(app) {
                     return
                 } else {
                     await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
-                    res.send(`Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`);
+                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
                     return
                 }
             } else {
@@ -366,7 +366,7 @@ function reservACapi(app) {
                     return
                 }
                 await reservacService.updateRequest(requestId, reason, 'R');
-                res.send('Solicitud Actualizada');
+                res.status(200).json({message: 'Solicitud Actualizada'});
                 return
             }
         } catch (err) {
