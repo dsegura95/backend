@@ -128,7 +128,6 @@ class ReservacService {
 
     //  ************************ Put  ***********************
 
-
     async updateSala(id, name, description, is_active) {
         let query = [];
         let change = [];
@@ -142,7 +141,8 @@ class ReservacService {
             change = await pool.query(query);
         }
         if (is_active){
-            query  = `UPDATE room SET is_active = ${is_active} WHERE id = '${id}'`;
+
+            query  = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
             change = await pool.query(query);
         }
         if (change != []){
