@@ -98,11 +98,11 @@ function reservACapi(app) {
         const idParam = req.params.Id;
         try {
             const response = await reservacService.updateTrim(idParam, start, finish);
-            if (response == []){
-                res.send('Fecha Invalida');
+            if (!response){
+                res.status(403).json({message: 'Fecha Invalida'});
             }
             else{
-                res.send('Trimestre actualizado');
+                res.status(200).json({message: 'Trimestre actualizado'});
             }
         } catch (err) {
             next(err);

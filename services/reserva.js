@@ -178,9 +178,8 @@ class ReservacService {
         let query;
 
         let dates = await this.getActualTrim();
-        let strt = dates.rows[0].start
-        let fnsh = dates.rows[0].finish
-
+        let strt = dates.rows[0].start.toISOString().substring(0, 10);
+        let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
         if ((!start) && ( finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
@@ -191,7 +190,7 @@ class ReservacService {
             query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
         }
         else{
-            return [];
+            return null;
         }
         const updateTrim = await pool.query(query);
         return updateTrim;
