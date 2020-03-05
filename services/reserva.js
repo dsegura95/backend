@@ -63,29 +63,29 @@ class ReservacService {
 ///////////////////////////////////////////////////////////////////////////////
     //Crud Sala Items
     async getSalaItems(id) {
-        let actualTrimId = this.getActualTrim();
-        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId}`;
+        let actualTrimId = await this.getActualTrim();
+        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
         const itemsSala = await pool.query(sql);
         return itemsSala || [];
     }
 
     async deleteSalaItem(id, salaId) {
         let actualTrimId = this.getActualTrim();
-        let query = `DELETE FROM room_item AS r WHERE id = '${id}' AND room_id = '${salaId}' AND trimester_id = '${actualTrimId}'`;
+        let query = `DELETE FROM room_item AS r WHERE id = '${id}' AND room_id = '${salaId}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
     }
 
     async updateSalaItem(room_id, item_id, quantity) {
         let trimester_id = this.getActualTrim();
-        let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id}' AND item_id = '${item_id}'`;
+        let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id.rows[0].id}' AND item_id = '${item_id}'`;
         const updateItem = await pool.query(query);
         return updateItem;
     }
 
     async createSalaItem(room_id, item_id, quantity) {
         let trimester_id = this.getActualTrim();
-        let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id}','${item_id}','${quantity}')`;
+        let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id.rows[0].id}','${item_id}','${quantity}')`;
         const createItemId = await pool.query(query);
         return createItemId;
     }
@@ -177,9 +177,9 @@ class ReservacService {
     async updateTrim(id, start, finish) {
         let query;
 
-        let dates = this.getActualTrim();
-        let strt = dates.rows.start
-        let fnsh = dates.rows.finish
+        let dates = await this.getActualTrim();
+        let strt = dates.rows[0].start
+        let fnsh = dates.rows[0].finish
 
         if ((!start) && ( finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
