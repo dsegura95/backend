@@ -64,27 +64,27 @@ class ReservacService {
     //Crud Sala Items
     async getSalaItems(id) {
         let actualTrimId = await this.getActualTrim();
-        let sql = `SELECT r.quantity, i.name, i.description FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
+        let sql = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
         const itemsSala = await pool.query(sql);
         return itemsSala || [];
     }
 
     async deleteSalaItem(id, salaId) {
-        let actualTrimId = this.getActualTrim();
+        let actualTrimId =  await this.getActualTrim();
         let query = `DELETE FROM room_item AS r WHERE id = '${id}' AND room_id = '${salaId}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
     }
 
     async updateSalaItem(room_id, item_id, quantity) {
-        let trimester_id = this.getActualTrim();
+        let trimester_id = await this.getActualTrim();
         let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id.rows[0].id}' AND item_id = '${item_id}'`;
         const updateItem = await pool.query(query);
         return updateItem;
     }
 
     async createSalaItem(room_id, item_id, quantity) {
-        let trimester_id = this.getActualTrim();
+        let trimester_id = await this.getActualTrim();
         let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id.rows[0].id}','${item_id}','${quantity}')`;
         const createItemId = await pool.query(query);
         return createItemId;
@@ -129,28 +129,37 @@ class ReservacService {
     //  ************************ Put  ***********************
 
     async updateSala(id, name, description, is_active) {
-        let query = [];
-        let change = [];
+        let query;
+        let change = 0;
         
         if (name){
             query  = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
-            change = await pool.query(query);
+            await pool.query(query);
+            change = 1;
         }
         if (description){
             query  = `UPDATE room SET description = '${description}' WHERE id = '${id}'`;
-            change = await pool.query(query);
+            await pool.query(query);
+            change = 1;
         }
-        if (is_active){
-
+        if (is_active == "true"){
             query  = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
-            change = await pool.query(query);
+            await pool.query(query);
+            change = 1;
         }
-        if (change != []){
-            return change;
+        if (is_active == "false"){
+            let howManyAsig = await this.getReservationByRoom(id);
+            if (howManyAsig.rowCount == 0){
+                query  = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+                change = await pool.query(query);
+                change = 1;
+            }
+            else
+            {
+                change = -1;
+            }
         }
-        else{
-            return change;
-        }
+        return change;
     }
 
     // 
