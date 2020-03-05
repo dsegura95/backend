@@ -30,42 +30,24 @@ function reservACapi(app) {
                         moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
                         moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
                     )
-                    // res.json({id : 'ABR-JUL' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
                     await reservacService.createTrim('SEP-DIC' + lasTrimYear,
                         moment(lasTrim).add(2, 'week').add(3, 'day'),
                         moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
                     )
-
-                    // res.json({id : 'SEP-DIC' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else if ((10 <= lasTrimMonth)) {
                     await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
                         moment(lasTrim).add(1, 'week').add(3, 'day'),
                         moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
                     )
-                    // res.json({id : 'ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else {
                     await reservacService.createTrim('ENE-MAR' + lasTrimYear,
                         (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
                         (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
                     )
-
-                    // res.json({id : 'ENE-MAR' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 res.json('el trimestre termino bicho')
             } else {

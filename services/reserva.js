@@ -71,7 +71,7 @@ class ReservacService {
 
     async deleteSalaItem(id, salaId) {
         let actualTrimId =  await this.getActualTrim();
-        let query = `DELETE FROM room_item AS r WHERE id = '${id}' AND room_id = '${salaId}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
+        let query = `DELETE FROM room_item AS r WHERE r.room_id = '${salaId}' AND r.item_id = ${id} AND r.trimester_id = '${actualTrimId.rows[0].id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
     }
@@ -174,6 +174,7 @@ class ReservacService {
     async getActualTrim() {
         const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
         const trim = await pool.query(sql);
+        console.log(trim)
         return trim || [];
     }
 

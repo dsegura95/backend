@@ -26,3 +26,5 @@ WHERE room_id = 'MYS-019'
 GROUP BY subject_id, day, hour;
 
 SELECT COUNT(*) FROM asignation WHERE room_id = 'MYS-019' AND trimester_id = 'ENE-MAR2020';
+
+SELECT * FROM trimester ORDER BY finish DESC LIMIT 1;
