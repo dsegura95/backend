@@ -361,7 +361,7 @@ class ReservacService {
 
     //  ********************* SERVICIOS DE ROOM REQUEST  *********************
     async getRoomRequest() {
-        let query = `SELECT * FROM room_request`;
+        let query = `SELECT * FROM room_request WHERE status = 'P'`;
         const roomRequests = await pool.query(query);
         return roomRequests;
     }

@@ -295,9 +295,9 @@ insert into room_item(room_id,trimester_id,item_id,quantity)values('MYS-220', 'E
 
 /*Rellenamos room_request*/
 
-insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-05-06','E');
-insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'cchang', 'ldac', 'ENE-MAR2020', '2020-01-06','E');
-insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-01-06','E');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-215', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-05-06','P');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'cchang', 'ldac', 'ENE-MAR2020', '2020-01-06','P');
+insert into room_request(room_id,requested_id,owner_id,manager_id,trimester_id,date,status)values('MYS-006', 'labf', 'eduardo', 'ldc', 'ENE-MAR2020', '2020-01-06','P');
 
 /*Rellenamos reservation_request*/
 /*P de pendiente, A aceptado, R rechazado*/
