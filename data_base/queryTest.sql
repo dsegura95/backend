@@ -25,14 +25,6 @@ JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id
 WHERE room_id = 'MYS-019'
 GROUP BY subject_id, day, hour;
 
-SELECT subject_id, day, hour
-FROM asignation
-JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id
-WHERE room_id = 'MYS-019' AND (( week % 2 ) = 0)
-GROUP BY subject_id, day, hour;
+SELECT COUNT(*) FROM asignation WHERE room_id = 'MYS-019' AND trimester_id = 'ENE-MAR2020';
 
-SELECT subject_id, day, hour
-FROM asignation
-JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id
-WHERE room_id = 'MYS-019' AND (( week % 2 ) = 1)
-GROUP BY subject_id, day, hour;
+SELECT * FROM trimester ORDER BY finish DESC LIMIT 1;

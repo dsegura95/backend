@@ -30,42 +30,24 @@ function reservACapi(app) {
                         moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
                         moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
                     )
-                    // res.json({id : 'ABR-JUL' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
                     await reservacService.createTrim('SEP-DIC' + lasTrimYear,
                         moment(lasTrim).add(2, 'week').add(3, 'day'),
                         moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
                     )
-
-                    // res.json({id : 'SEP-DIC' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else if ((10 <= lasTrimMonth)) {
                     await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
                         moment(lasTrim).add(1, 'week').add(3, 'day'),
                         moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
                     )
-                    // res.json({id : 'ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 else {
                     await reservacService.createTrim('ENE-MAR' + lasTrimYear,
                         (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
                         (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
                     )
-
-                    // res.json({id : 'ENE-MAR' + lasTrimYear,
-                    //         start : moment(lasTrim).add(2, 'week').add(3, 'day'),
-                    //         finish : moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    //     })
                 }
                 res.json('el trimestre termino bicho')
             } else {
@@ -82,7 +64,7 @@ function reservACapi(app) {
     router.get("/trimestre/ultimo", async function (req, res, next) {
         try {
             const trimestreUltimo = await reservacService.getActualTrim()
-            res.send(trimestreUltimo.rows);
+            res.status(200).send(trimestreUltimo.rows);
         } catch (err) {
             next(err);
         }
@@ -98,11 +80,11 @@ function reservACapi(app) {
         const idParam = req.params.Id;
         try {
             const response = await reservacService.updateTrim(idParam, start, finish);
-            if (response == []){
-                res.send('Fecha Invalida');
+            if (!response){
+                res.status(403).json({message: 'Fecha Invalida'});
             }
             else{
-                res.send('Trimestre actualizado');
+                res.status(200).json({message: 'Trimestre actualizado'});
             }
         } catch (err) {
             next(err);
@@ -117,8 +99,9 @@ function reservACapi(app) {
     router.get("/items", async function (req, res, next) {
         try {
             
-            const items = await reservacService.getItems();
-            res.send(items.rows);
+            const items = await reservacService.getItems()
+            res.status(200).send(items.rows);
+
         } catch (err) {
             next(err);
         }
@@ -130,7 +113,7 @@ function reservACapi(app) {
             const id = req.params.itemId;
            
             const item = await reservacService.getItem(id);
-            res.send(item.rows)
+            res.status(200).send(item.rows)
         } catch (err) {
             next(err);
         };
@@ -142,7 +125,7 @@ function reservACapi(app) {
         const description = req.body.description;
         try {
             await reservacService.createItem(name, description);
-            res.sendStatus(201);
+            res.status(201).json({message : `Item ${name} creado`});
         } catch (err) {
             next(err);
         }
@@ -155,7 +138,7 @@ function reservACapi(app) {
         const description = req.body.description;
         try {
             await reservacService.updateItem(id, name, description);
-            res.send('Item actualizado');
+            res.status(200).json({message: `Item ${id} actualizado`});
         } catch (err) {
             next(err);
         };
@@ -167,7 +150,7 @@ function reservACapi(app) {
         await reservacService.deleteItem(id);
         try {
 
-            res.send(`Item Id: ${id} Eliminado correctamente`);
+            res.status(200).send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
         };
@@ -181,7 +164,7 @@ function reservACapi(app) {
     router.get("/salas", async function (req, res, next) {
         try {
             const salas = await reservacService.getSalas()
-            res.send(salas.rows);
+            res.status(200).send(salas.rows);
         } catch (err) {
             next(err);
         }
@@ -192,7 +175,7 @@ function reservACapi(app) {
         const { salaId } = req.params;
         try {
             const sala = await reservacService.getSala(salaId);
-            res.send(sala.rows);
+            res.status(200).send(sala.rows);
         } catch (err) {
             next(err);
         }
@@ -205,7 +188,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         try {
             const salaItems = await reservacService.getSalaItems(salaId);
-            res.send(salaItems.rows);
+            res.status(200).send(salaItems.rows);
         } catch (err) {
             next(err);
         }
@@ -217,33 +200,33 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         await reservacService.deleteSalaItem(id, salaId);
         try {
-            res.send(`Item Id: ${id} Eliminado correctamente`);
+            res.status(200).send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
         };
     });
 
-    //  *** Actualizar descripcion nombre y status de una sala ***
+    //  *** Actualizar la cantidad de un item de una sala en el trimestre actual ***
     router.put("/salas/:salaId/:itemId", async function (req, res, next) {
         const { quantity } = req.body;
         const room_id = req.params.salaId;
         const item_id = req.params.itemId;
         try {
             await reservacService.updateSalaItem(room_id, item_id, quantity);
-            res.send('Item actualizado');
+            res.status(200).json({message: `Item ${item_id} actualizado en Sala ${room_id}`});
         } catch (err) {
             next(err);
         };
     });
 
-    //  *** Actualizar descripcion nombre y status de una sala ***
+    //  *** Asignar un item a la sala para el trimestre acual ***
     router.post("/salas/:salaId/:itemId", async function (req, res, next) {
         const { quantity } = req.body;
         const room_id = req.params.salaId;
         const item_id = req.params.itemId;
         try {
             await reservacService.crearSalaItem(room_id, item_id, quantity);
-            res.send('Item actualizado');
+            res.status(200).json({message : `${quantity} Item ${item_id} Asignado a Sala ${room_id}`});
         } catch (err) {
             next(err);
         };
@@ -256,7 +239,7 @@ function reservACapi(app) {
         const userId = req.params.userId;
         try {
             const adminSalas = await reservacService.getAdminSalas(userId);
-            res.send(adminSalas.rows);
+            res.status(200).send(adminSalas.rows);
         } catch (err) {
             next(err);
         }
@@ -266,10 +249,10 @@ function reservACapi(app) {
     router.get("/salas/:salaId/picture", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {
-            res.sendFile(path.join((__dirname) + `/../media/${salaId}.jpg`),
+            res.status(200).sendFile(path.join((__dirname) + `/../media/${salaId}.jpg`),
                 function (err) {
                     if (err) {
-                        res.sendFile(path.join((__dirname) + `/../media/defaultImage.jpg`));
+                        res.status(200).sendFile(path.join((__dirname) + `/../media/defaultImage.jpg`));
                     }
                 }
             );
@@ -319,7 +302,7 @@ function reservACapi(app) {
                 if(req.file == undefined){
                 res.json(boom.notFound('Error: No File Selected!').output.payload);
                 } else {
-                    res.send('File Uploaded!');
+                    res.status(200).json({message : 'File Uploaded!'});
                 }
             }
         });
@@ -332,11 +315,14 @@ function reservACapi(app) {
         const id = req.params.salaId;
         try {
             let change = await reservacService.updateSala(id, name, description, is_active);
-            if (change != []){
-                res.status(200).json({ message: 'Sala actualizada'});
+            if (change == 1){
+                res.status(200).json({ message: 'Sala Actualizada'});
             }
-            else {
-                res.status(403).json({ error: 'Update invalido'});
+            else if (change == 0) {
+                res.status(403).json({ error: 'Update Invalido'});
+            }
+            else if (change == -1){
+                res.status(403).json({ error: 'Hay reservas asignadas a esta sala'});
             }
         } catch (err) {
             next(err);
@@ -351,7 +337,7 @@ function reservACapi(app) {
 
         try {
             await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
-            res.sendStatus(201);
+            res.status(201).json({ message: `Sala ${id} Creada`});
         } catch (err) {
             next(err);
         };
@@ -364,7 +350,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         try {
             const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasTodas(salaId);
-            res.send(salaHorasOcupadas.rows);
+            res.status(200).send(salaHorasOcupadas.rows);
         } catch (err) {
             next(err);
         }
@@ -375,7 +361,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         try {
             const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasPares(salaId);
-            res.send(salaHorasOcupadas.rows);
+            res.status(200).send(salaHorasOcupadas.rows);
         } catch (err) {
             next(err);
         }
@@ -386,7 +372,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         try {
             const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasImpares(salaId);
-            res.send(salaHorasOcupadas.rows);
+            res.status(200).send(salaHorasOcupadas.rows);
         } catch (err) {
             next(err);
         }
@@ -439,7 +425,7 @@ function reservACapi(app) {
         try {
             // const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             const requestFromUser = await reservacService.getRequest(solicitudId);
-            res.send(requestFromUser.rows);
+            res.status(200).send(requestFromUser.rows);
         } catch (err) {
             next(err);
         }
@@ -450,7 +436,7 @@ function reservACapi(app) {
         const solicitudId = req.params.solicitudId;
         try {
             const schedule = await reservacService.getScheduleFromRequest(solicitudId);
-            res.send(schedule.rows);
+            res.status(200).send(schedule.rows);
         } catch (err) {
             next(err);
         }
@@ -461,7 +447,7 @@ function reservACapi(app) {
         const userId = req.params.userId;
         try {
             const requestFromUser = await reservacService.getRequestUser(userId);
-            res.send(requestFromUser.rows);
+            res.status(200).send(requestFromUser.rows);
         } catch (err) {
             next(err);
         }
@@ -472,7 +458,7 @@ function reservACapi(app) {
         const labId = req.params.labId;
         try {
             const requestFromUser = await reservacService.getRequests(labId);
-            res.send(requestFromUser.rows);
+            res.status(200).send(requestFromUser.rows);
         } catch (err) {
             next(err);
         }
@@ -525,7 +511,9 @@ function reservACapi(app) {
         const result = await reservacService.updateRoomRequest(id, status);
         let date = moment().format('YYYY-MM-DD');
         if (!result) {
-            res.status(403).json({message: 'La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa'});
+
+            res.status(403).json({error : `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`});
+
         } else {
             try {
                 if (status == 'A') {
@@ -536,7 +524,7 @@ function reservACapi(app) {
                         next(err);
                     }
                 }
-                res.send(`Solicitud de sala id: ${id} modificada correctamente`);
+                res.status(200).json({error : `Solicitud de sala id: ${id} modificada correctamente`});
             }
             catch (err) {
                 next(err);
@@ -550,7 +538,7 @@ function reservACapi(app) {
         let date = moment().format('YYYY-MM-DD');
         try {
             await reservacService.createRoomRequest(room_id, manager_id, date);
-            res.sendStatus(201);
+            res.status(201).json({message :  `Sala ${room_id} creada exitosamente`});
         } catch (err) {
             next(err);
         }
@@ -560,7 +548,7 @@ function reservACapi(app) {
     router.get("/labf/solicitudes", async function (req, res, next) {
         try {
             const requests = await reservacService.getRoomRequest();
-            res.send(requests.rows);
+            res.status(200).send(requests.rows);
         } catch (err) {
             next(err);
         }
@@ -575,7 +563,7 @@ function reservACapi(app) {
         try {
             const requestFromUser = await reservacService.getUser(userId);
             if (requestFromUser.rows.length) {
-                res.send(requestFromUser.rows);
+                res.status(200).send(requestFromUser.rows);
             } else {
                 res.json(boom.notFound('missing').output.payload);
             }
@@ -589,7 +577,7 @@ function reservACapi(app) {
         try {
             const requestFromUser = await reservacService.getUsers();
             if (requestFromUser.rows.length) {
-                res.send(requestFromUser.rows);
+                res.status(200).send(requestFromUser.rows);
             } else {
                 res.json(boom.notFound('missing').output.payload);
             }
@@ -603,7 +591,7 @@ function reservACapi(app) {
         try {
             const adminUsers = await reservacService.getAdminUsers();
             if (adminUsers.rows.length) {
-                res.send(adminUsers.rows);
+                res.status(200).send(adminUsers.rows);
             } else {
                 res.json(boom.notFound('missing').output.payload);
             }
@@ -616,7 +604,7 @@ function reservACapi(app) {
     router.get("/usuarios/profesor", async function (req, res, next) {
         try {
             const profesor = await reservacService.getProfesor();
-            res.send(profesor.rows);
+            res.status(200).send(profesor.rows);
         } catch (err) {
             next(err);
         }
@@ -628,7 +616,7 @@ function reservACapi(app) {
     router.get("/subjects", async function (req, res, next) {
         try {
             const subjects = await reservacService.getSubjects();
-            res.send(subjects.rows);
+            res.status(200).send(subjects.rows);
         } catch (err) {
             next(err);
         }
