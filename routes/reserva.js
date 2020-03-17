@@ -219,7 +219,7 @@ function reservACapi(app) {
         };
     });
 
-    //  *** Asignar un item a la sala para el trimestre acual ***
+    //  *** Asignar un item a la sala para el trimestre actual ***
     router.post("/salas/:salaId/:itemId", async function (req, res, next) {
         const { quantity } = req.body;
         const room_id = req.params.salaId;
@@ -533,14 +533,20 @@ function reservACapi(app) {
     });
 
     // Crear una solicitud de sala
-    router.post("/sala/solicitudes/crear", async function (req, res, next) {
-        const { room_id, manager_id } = req.body;
+    router.post("/sala/solicitudes/crear/:userId", async function (req, res, next) {
+        const userId = req.params.userId;
+        const room_id = req.body.room_id;
         let date = moment().format('YYYY-MM-DD');
-        try {
-            await reservacService.createRoomRequest(room_id, manager_id, date);
-            res.status(201).json({message :  `Sala ${room_id} creada exitosamente`});
-        } catch (err) {
-            next(err);
+        const result = await reservacService.createRoomRequest(room_id,userId, date);
+        if(result==null){
+            res.status(403).json({error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`});
+        }
+        else{
+            try {            
+                res.status(201).json({message :  `Solicitud de sala ${room_id} creada exitosamente`});
+            } catch (err) {
+                next(err);
+            }
         }
     });
 
@@ -659,10 +665,6 @@ function reservACapi(app) {
             next(err);
 
         }
-
-
-
-
     });
 
 }

@@ -179,8 +179,7 @@ class ReservacService {
 
     async getActualTrim() {
         const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
-        const trim = await pool.query(sql);
-        console.log(trim)
+        const trim = await pool.query(sql);      
         return trim || [];
     }
 
@@ -301,12 +300,15 @@ class ReservacService {
 
     //  ********************* SERVICIOS DE ROOM REQUEST  *********************
 
-    async createRoomRequest(room_id, manager_id, date) {
+    async createRoomRequest(room_id, userId, date) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
-        let queryChief = `SELECT chief from usuario where usuario.id='${manager_id}'`;
-        const owner = await pool.query(queryChief);    //Obtenemos el jefe de laboratorio correspondiente
+        let queryChief = `SELECT chief, type from usuario where usuario.id='${userId}'`;
+        const owner = await pool.query(queryChief);    //Obtenemos el jefe de laboratorio correspondiente       
+        if(owner.rows[0].type!=3333 || room_id==undefined){
+            return null
+        }
         let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
-        ('${room_id}', 'labf','${owner.rows[0].chief}','${manager_id}','${trimestre.rows[0].id}','${date}', 'E')`;
+        ('${room_id}', 'labf','${owner.rows[0].chief}','${userId}','${trimestre.rows[0].id}','${date}', 'E')`;
         const createRoomRequest = await pool.query(query);
         return createRoomRequest;
     }
