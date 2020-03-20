@@ -325,6 +325,20 @@ class ReservacService {
         }
     }
 
+    async getRoomRequest() {
+        let query = `SELECT * FROM room_request WHERE status = 'P'`;
+        const roomRequests = await pool.query(query);
+        return roomRequests;
+    }
+    async getRoomRequestFromUser(userId){
+
+        let query = `SELECT * FROM room_request where manager_id='${userId}'`;
+        const requests= await pool.query(query);
+        return requests || [];
+
+
+    }
+
     //  ********************* SERVICIOS DE USUARIO  *********************
 
     async getUser(userId) {
@@ -397,12 +411,8 @@ class ReservacService {
         return endDate || [];
     }
 
-    //  ********************* SERVICIOS DE ROOM REQUEST  *********************
-    async getRoomRequest() {
-        let query = `SELECT * FROM room_request WHERE status = 'P'`;
-        const roomRequests = await pool.query(query);
-        return roomRequests;
-    }
+    
+
 
     //  ********************* SERVICIOS DE HORARIO  *********************
 

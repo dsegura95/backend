@@ -504,6 +504,23 @@ function reservACapi(app) {
 
     //  ****************************  SOLICITUDES ROOM REQUEST ********************************
 
+    //Obtener solicitudes de sala por parte de un usuario en especifico
+
+    router.get("/sala/solicitudes/crear/:userId", async function(req,res,next){
+        const userId= req.params.userId;
+      
+        try{
+
+            const result= await reservacService.getRoomRequestFromUser(userId);
+            res.status(200).send(result.rows);
+        }
+        catch(err){
+            next(err);
+        }
+
+    });
+
+
     // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
     router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
         const id = req.params.roomRequestId;
