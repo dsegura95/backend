@@ -689,7 +689,6 @@ function reservACapi(app) {
             res.status(403).json({error: `No se ha introducido ninguna fecha`})
             return
         }
-
         try {
             const result = await reservacService.usoDesdeFecha(room_id, fechaInicio);
             if (result!=null){
@@ -702,8 +701,30 @@ function reservACapi(app) {
             next(err);
         }
     });
-
-
-
+    router.get("/metrics/totalReservas", async function (req, res, next) {               
+        const modo= req.body.modo;
+        let result;
+        try {
+            result= await reservacService.numeroDeReservas(modo);
+        }
+        catch(err){
+            next(err);
+        }
+        if(modo=='A'){
+            res.status(200).send(`Existen un total de ${result} reservas aprobadas en el sistema`);
+        }
+        else if(modo=='P'){
+            res.status(200).send(`Existen un total de ${result} reservas en espera en el sistema`);
+        }
+        else if(modo=='R'){
+            res.status(200).send(`Existen un total de ${result} reservas rechazadas en el sistema`);
+        }
+        else if(modo=='T'){
+            res.status(200).send(`Existen un total de ${result} reservas en el sistema`);
+        }
+        else{
+            res.status(403).json({error : `El filtro seleccionado no es valido`});
+        }
+    });
 }
 module.exports = reservACapi;

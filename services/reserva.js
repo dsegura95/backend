@@ -438,12 +438,17 @@ class ReservacService {
         let query = `SELECT sum(quantity) from reservation_request WHERE status='A' and send_time> '${fechaInicio}' and room_id='${room_id}'`;
         const request= await pool.query(query);        
         return request.rows[0].sum;
-
-
-
+    }
+    async numeroDeReservas(modo){
+        let query;
+        if(modo=='T'){
+            query = `SELECT count(id) from reservation_request`;
+        }
+        else{
+            query = `SELECT count(id) from reservation_request WHERE status='${modo}'`;           
+        }
+        const request = await pool.query(query);            
+        return request.rows[0].count;        
     }
 }
-
-
-
 module.exports = ReservacService
