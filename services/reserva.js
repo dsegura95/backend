@@ -332,7 +332,7 @@ class ReservacService {
     }
     async getRoomRequestFromUser(userId){
 
-        let query = `SELECT * FROM room_request where manager_id='${userId}'`;
+        let query = `SELECT * FROM room_request WHERE manager_id='${userId}'`;
         const requests= await pool.query(query);
         return requests || [];
 
