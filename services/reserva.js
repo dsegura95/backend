@@ -431,6 +431,17 @@ class ReservacService {
         const request = await pool.query(query);
         return request || [];
     }
+
+    //***************** Metricas ***************************************
+    async usoDesdeFecha(room_id, fechaInicio){
+
+        let query = `SELECT sum(quantity) from reservation_request WHERE status='A' and send_time> '${fechaInicio}' and room_id='${room_id}'`;
+        const request= await pool.query(query);        
+        return request.rows[0].sum;
+
+
+
+    }
 }
 
 

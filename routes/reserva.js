@@ -674,15 +674,36 @@ function reservACapi(app) {
             }
             else{
             res.json({auth: true, token: login});
-            }
-        
+            }       
 
         }catch(err){
-
             next(err);
-
         }
     });
+    //  *****************************Metricas************************************
+    router.get("/metrics/usoDeSala/:RoomId", async function (req, res, next) {
+
+        const room_id=req.params.RoomId;
+        const fechaInicio= req.body.fechaInicio;
+        if(fechaInicio==undefined){
+            res.status(403).json({error: `No se ha introducido ninguna fecha`})
+            return
+        }
+
+        try {
+            const result = await reservacService.usoDesdeFecha(room_id, fechaInicio);
+            if (result!=null){
+                res.status(200).send(`La sala ha sido utilizada por ${result} estudiantes desde la fecha ${fechaInicio} hasta la fecha actual`);
+            }
+            else{
+                res.status(200).send(`La sala no ha sido utilizada por ningun estudiante desde la fecha ${fechaInicio} hasta la fecha actual`);
+            }
+        } catch (err) {
+            next(err);
+        }
+    });
+
+
 
 }
 module.exports = reservACapi;
