@@ -726,5 +726,28 @@ function reservACapi(app) {
             res.status(403).json({error : `El filtro seleccionado no es valido`});
         }
     });
+    router.get("/metrics/variacionItems/:RoomId", async function (req, res, next) {
+
+        const room_id=req.params.RoomId;
+        const trimestreInicio= req.body.trimestreInicio;
+        const trimestreFinal= req.body.trimestreFinal;
+
+        if(trimestreInicio==undefined || trimestreFinal==undefined){
+            res.status(403).json({error: `No se ha introducido el trimestre inicio o trimestre final`})
+            return
+        }
+        try {
+            const result = await reservacService.variacionItems(room_id, trimestreInicio, trimestreFinal);
+            if (result==0){
+                res.status(404).json({error : `El trimestre de inicio o trimestre final introducidos no existen en el sistema o son iguales`});
+            }
+            else{
+               res.status(200).send(result.rows)
+            }
+        } catch (err) {
+            next(err);
+        }
+    });
+
 }
 module.exports = reservACapi;

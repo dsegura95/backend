@@ -450,5 +450,17 @@ class ReservacService {
         const request = await pool.query(query);            
         return request.rows[0].count;        
     }
+    async variacionItems(room_id, trimestreInicio, trimestreFinal){
+        let query = `SELECT id, start from trimester where trimester.id='${trimestreInicio}' or trimester.id='${trimestreFinal}'`;
+        let result = await pool.query(query);
+        if(result.rowCount<=1){            
+            return 0;
+        }
+        query = `SELECT trimester_id, room_id, item_id, name, description, quantity from room_item JOIN item on item.id=item_id JOIN trimester on trimester.id=trimester_id 
+        WHERE start BETWEEN (SELECT start from trimester WHERE trimester.id='${trimestreInicio}')
+        and (SELECT start from trimester WHERE trimester.id='${trimestreFinal}') and room_id='${room_id}' ORDER BY item_id, start`;
+        result= await pool.query(query);
+        return result || [];
+    }
 }
 module.exports = ReservacService
