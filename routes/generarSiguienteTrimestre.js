@@ -4,7 +4,7 @@ const reservacService = new ReservacService
 
 async function generarSiguienteTrimestre(){
     const temp = await reservacService.getActualTrim();
-    console.log(temp.rows)
+    // console.log(temp.rows)
     const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
 
     if( (moment().isAfter( moment(lasTrim).add(1, 'day') ) )){
