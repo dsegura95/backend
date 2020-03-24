@@ -464,6 +464,36 @@ function reservACapi(app) {
         }
     });
 
+    // const data = [{
+    //     requester: "12-10273",
+    //     subject: "PS1115",
+    //     room: "MYS-019",
+    //     quantity: 30,
+    //     material: "Debian 10 y GCC",
+    //     semana: "todas",
+    // } , {
+    //  dia: "lunes",
+    //  hora: 2 
+    //   } , {
+    //   dia: "lunes",
+    //   hora: 3,
+    //    } , {
+
+    // Crear una solicitud reserva
+    router.post("/crear/solicitudes/reserva", async function (req, res, next) {
+        const { requester, subject, room, quantity, material } = req.body[0]; //datos de la solicitud
+        try {
+            if (!req.body[1]) {
+                res.status(403).json({error: "Debe llenar un horario a reservar"})
+            } else {
+                await reservacService.createReservationRequest(requester, subject, room, material, quantity)
+                res.status(201).json({message: "Se creo correctamente la solicitud"})
+            }
+        } catch (err) {
+            next(err)
+        }
+    });
+
     // Actualizar una solicitud por id = <request_id> .
     router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
         const requestId = req.params.requestId;

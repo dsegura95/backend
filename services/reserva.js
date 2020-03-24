@@ -297,6 +297,15 @@ class ReservacService {
         return request_updated;
     }
 
+    async createReservationRequest(requester, subject, room, material, quantity) {
+        const temp = await this.getActualTrim();
+        const trimestreActual = (temp.rows[0].id);
+        let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
+                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'En espera', '${material}', ${quantity}, 'P')`;
+        const createdRequest = await pool.query(query);
+        return createdRequest;
+    }
+
     async deleteRequest(id) {
         // Elimina primero el horario asignado a esa solicitud y luego la solicitud de reserva como tal
         let queryDeleteSchedule = `DELETE FROM reservation_request_schedule WHERE reservation_request_id = ${id}`;
