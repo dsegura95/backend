@@ -301,9 +301,26 @@ class ReservacService {
         const temp = await this.getActualTrim();
         const trimestreActual = (temp.rows[0].id);
         let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
-                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'En espera', '${material}', ${quantity}, 'P')`;
+                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'En espera', '${material}', ${quantity}, 'P') RETURNING id`;
         const createdRequest = await pool.query(query);
-        return createdRequest;
+        const id = createdRequest.rows[0].id
+        return createdRequest,id;
+    }
+
+    // Funcion para insertar horario en una semana especifica (utilizar con loop todas, pares, impares, especifica)
+    async insertarhorario(semana, horarios,id) {
+        for (let index = 1; index < horarios.length; index++) {
+            const horario = horarios[index];
+            const { dia, hora } = horario
+            await this.createReservationRequestSchedule(dia, hora, semana, id)
+        }
+    }
+
+    async createReservationRequestSchedule(day, hour, week, reservationId) {
+        let query = `INSERT into reservation_request_schedule(reservation_request_id, day, hour, week) VALUES
+                    (${reservationId}, '${day}', ${hour}, ${week})`;
+        const createdSchedule = await pool.query(query);
+        return createdSchedule;
     }
 
     async deleteRequest(id) {

@@ -464,29 +464,31 @@ function reservACapi(app) {
         }
     });
 
-    // const data = [{
-    //     requester: "12-10273",
-    //     subject: "PS1115",
-    //     room: "MYS-019",
-    //     quantity: 30,
-    //     material: "Debian 10 y GCC",
-    //     semana: "todas",
-    // } , {
-    //  dia: "lunes",
-    //  hora: 2 
-    //   } , {
-    //   dia: "lunes",
-    //   hora: 3,
-    //    } , {
-
     // Crear una solicitud reserva
     router.post("/crear/solicitudes/reserva", async function (req, res, next) {
-        const { requester, subject, room, quantity, material } = req.body[0]; //datos de la solicitud
+        const { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
         try {
             if (!req.body[1]) {
-                res.status(403).json({error: "Debe llenar un horario a reservar"})
+                res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
             } else {
-                await reservacService.createReservationRequest(requester, subject, room, material, quantity)
+                const id = await reservacService.createReservationRequest(requester, subject, room, material, quantity)
+                if (semanas == "todas") {
+                    for (let index = 1; index < 13; index++) {
+                        await reservacService.insertarhorario(index,req.body, id);
+                    }
+                } else if (semanas == "pares") {
+                    for (let index = 2; index < 13; index += 2) {
+                        await reservacService.insertarhorario(index,req.body, id);
+                    }
+                } else if (semanas == "impares") {
+                    for (let index = 1; index < 13; index += 2) {
+                        await reservacService.insertarhorario(index,req.body, id);
+                    }
+                } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
+                    await reservacService.insertarhorario(semanas,req.body, id);
+                } else {
+                    res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
+                }
                 res.status(201).json({message: "Se creo correctamente la solicitud"})
             }
         } catch (err) {
