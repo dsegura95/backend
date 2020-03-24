@@ -307,6 +307,16 @@ class ReservacService {
         return createdRequest,id;
     }
 
+    async createReservationAsAdmin(requester, subject, room, material, quantity) {
+        const temp = await this.getActualTrim();
+        const trimestreActual = (temp.rows[0].id);
+        let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
+                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'Solicitud Aceptada', '${material}', ${quantity}, 'A') RETURNING id`;
+        const createdRequest = await pool.query(query);
+        const id = createdRequest.rows[0].id
+        return createdRequest,id;
+    }
+
     // Funcion para insertar horario en una semana especifica (utilizar con loop todas, pares, impares, especifica)
     async insertarhorario(semana, horarios,id) {
         for (let index = 1; index < horarios.length; index++) {

@@ -412,6 +412,51 @@ function reservACapi(app) {
         }
     });
 
+    // Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva)
+    router.post("/crear/reserva", async function (req, res, next) {
+        const { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
+        try {
+            if (!req.body[1]) {
+                res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
+            } else {
+                // creamos la solicitud de reserva, tomamos el id, verificamos el tipo de semana y crean los horarios de esa solicitud
+                const idCreatedRequest = await reservacService.createReservationAsAdmin(requester, subject, room, material, quantity)
+                if (semanas == "todas") {
+                    for (let index = 1; index < 13; index++) {
+                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
+                    }
+                } else if (semanas == "pares") {
+                    for (let index = 2; index < 13; index += 2) {
+                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
+                    }
+                } else if (semanas == "impares") {
+                    for (let index = 1; index < 13; index += 2) {
+                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
+                    }
+                } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
+                    await reservacService.insertarhorario(semanas,req.body, idCreatedRequest);
+                } else {
+                    res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
+                }
+                // Se verifica que los datos del front son correctos, y se crea la reserva a partir de la solicitud
+                const solicitud = await reservacService.getScheduleFromRequest(idCreatedRequest);
+                const result = solicitud.rows[0];
+                const checkSchedule = await reservacService.checkIfExists(room, idCreatedRequest);
+                if (checkSchedule.rowCount > 0) {
+                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud (Comunicate con los administradores del ldac)`});
+                    return
+                } else {
+                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), idCreatedRequest);
+                    await reservacService.updateRequest(idCreatedRequest, 'Aprobado', 'A');
+                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
+                    return
+                }
+            }
+        } catch (err) {
+            next(err)
+        }
+    });
+
 
     //  **************************** SOLICITUDES DE RESERVA ********************************
 
