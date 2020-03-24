@@ -502,6 +502,17 @@ function reservACapi(app) {
         };
     });
 
+    // Eliminar solicitud de reserva de una sala
+    router.delete("/eliminar/solicitud/reserva/:idResquest", async function (req, res, next) {
+        const requestId = req.params.idResquest;
+        await reservacService.deleteRequest(requestId);
+        try {
+            res.status(200).json({message: 'Solicitud eliminada satisfactoriamente'});
+        } catch (err) {
+            next(err);
+        };
+    });
+
     //  ****************************  SOLICITUDES ROOM REQUEST ********************************
 
     //Obtener solicitudes de sala por parte de un usuario en especifico

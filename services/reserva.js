@@ -1,5 +1,5 @@
 const { Pool } = require('pg')
-const Auth= require('../authentication/auth.js')
+const Auth = require('../authentication/auth.js')
 
 
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
@@ -66,7 +66,7 @@ class ReservacService {
         return sala || [];
     }
 
-///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
     //Crud Sala Items
     async getSalaItems(id) {
         let actualTrimId = await this.getActualTrim();
@@ -76,7 +76,7 @@ class ReservacService {
     }
 
     async deleteSalaItem(id, salaId) {
-        let actualTrimId =  await this.getActualTrim();
+        let actualTrimId = await this.getActualTrim();
         let query = `DELETE FROM room_item AS r WHERE r.room_id = '${salaId}' AND r.item_id = ${id} AND r.trimester_id = '${actualTrimId.rows[0].id}'`;
         const deleteItem = await pool.query(query);
         return deleteItem;
@@ -96,7 +96,7 @@ class ReservacService {
         return createItemId;
     }
 
-///////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////
 
     async getAdminSalas(id) {
         const sql = `SELECT * FROM room WHERE manager_id = '${id}'`;
@@ -137,31 +137,30 @@ class ReservacService {
     async updateSala(id, name, description, is_active) {
         let query;
         let change = 0;
-        
-        if (name){
-            query  = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
+
+        if (name) {
+            query = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
             await pool.query(query);
             change = 1;
         }
-        if (description){
-            query  = `UPDATE room SET description = '${description}' WHERE id = '${id}'`;
+        if (description) {
+            query = `UPDATE room SET description = '${description}' WHERE id = '${id}'`;
             await pool.query(query);
             change = 1;
         }
-        if (is_active == "true"){
-            query  = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+        if (is_active == "true") {
+            query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
             await pool.query(query);
             change = 1;
         }
-        if (is_active == "false"){
+        if (is_active == "false") {
             let howManyAsig = await this.getReservationByRoom(id);
-            if (howManyAsig.rowCount == 0){
-                query  = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+            if (howManyAsig.rowCount == 0) {
+                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
                 change = await pool.query(query);
                 change = 1;
             }
-            else
-            {
+            else {
                 change = -1;
             }
         }
@@ -179,7 +178,7 @@ class ReservacService {
 
     async getActualTrim() {
         const sql = 'SELECT * FROM trimester ORDER BY finish DESC LIMIT 1';
-        const trim = await pool.query(sql);      
+        const trim = await pool.query(sql);
         return trim || [];
     }
 
@@ -195,7 +194,7 @@ class ReservacService {
         let dates = await this.getActualTrim();
         let strt = dates.rows[0].start.toISOString().substring(0, 10);
         let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
-        if ((!start) && ( finish > strt)) {
+        if ((!start) && (finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
         else if ((!finish) && (fnsh > start)) {
@@ -204,7 +203,7 @@ class ReservacService {
         else if (finish > start) {
             query = `UPDATE trimester SET start = '${start}', finish = '${finish}' WHERE id = '${id}'`;
         }
-        else{
+        else {
             return null;
         }
         const updateTrim = await pool.query(query);
@@ -237,7 +236,7 @@ class ReservacService {
         const createAsignation = await pool.query(query);
         const id = createAsignation.rows[0].id
         const request_schedule = await this.getScheduleFromRequest(requestId);
-        for (let index = 0; index < request_schedule.rowCount ; index++) {
+        for (let index = 0; index < request_schedule.rowCount; index++) {
             const element = request_schedule.rows[index];
             let query1 = `INSERT INTO asig_schedule (asignation_id, week, day, hour) VALUES (${id},${element.week},'${element.day}',${element.hour})`
             await pool.query(query1);
@@ -298,13 +297,22 @@ class ReservacService {
         return request_updated;
     }
 
+    async deleteRequest(id) {
+        // Elimina primero el horario asignado a esa solicitud y luego la solicitud de reserva como tal
+        let queryDeleteSchedule = `DELETE FROM reservation_request_schedule WHERE reservation_request_id = ${id}`;
+        let queryDeleteRequest = `DELETE FROM reservation_request WHERE id = ${id}`;
+        const deletedRequestSchedule = await pool.query(queryDeleteSchedule);
+        const deletedRequest = await pool.query(queryDeleteRequest);
+        return deletedRequest, deletedRequestSchedule;
+    }
+
     //  ********************* SERVICIOS DE ROOM REQUEST  *********************
 
     async createRoomRequest(room_id, userId, date) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
         let queryChief = `SELECT chief, type from usuario where usuario.id='${userId}'`;
         const owner = await pool.query(queryChief);    //Obtenemos el jefe de laboratorio correspondiente       
-        if(owner.rows[0].type!=3333 || room_id==undefined){
+        if (owner.rows[0].type != 3333 || room_id == undefined) {
             return null
         }
         let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
@@ -330,10 +338,10 @@ class ReservacService {
         const roomRequests = await pool.query(query);
         return roomRequests;
     }
-    async getRoomRequestFromUser(userId){
+    async getRoomRequestFromUser(userId) {
 
         let query = `SELECT * FROM room_request WHERE manager_id='${userId}'`;
-        const requests= await pool.query(query);
+        const requests = await pool.query(query);
         return requests || [];
 
 
@@ -365,30 +373,30 @@ class ReservacService {
         return profesores || [];
     }
 
-    async registerUser(usbId,name,email,type,chief,clave){
+    async registerUser(usbId, name, email, type, chief, clave) {
 
-        const claveEncrypt= await auth.encryptPassword(clave);
+        const claveEncrypt = await auth.encryptPassword(clave);
 
         let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
         values('${usbId}','${name}','${email}','${type}','t', '${chief}', '${claveEncrypt}')`;
 
         await pool.query(query);
 
-        const token= await auth.createToken(usbId, type);
+        const token = await auth.createToken(usbId, type);
 
         return token;
     }
-    async loginUser(usbId, clave){
+    async loginUser(usbId, clave) {
         let query = `SELECT id, clave, type from usuario where id='${usbId}'`;
-        const login= await pool.query(query);
-        if(login.rows<1){
+        const login = await pool.query(query);
+        if (login.rows < 1) {
             return 0;
         }
         const validPassword = await auth.comparePassword(clave, login.rows[0].clave);
-        if(!validPassword){
+        if (!validPassword) {
             return 1;
         }
-        else{
+        else {
             const token = await auth.createToken(login.rows[0].id, login.rows[0].type);
             return token;
         }
@@ -411,7 +419,7 @@ class ReservacService {
         return endDate || [];
     }
 
-    
+
 
 
     //  ********************* SERVICIOS DE HORARIO  *********************
