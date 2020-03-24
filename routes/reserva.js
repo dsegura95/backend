@@ -731,7 +731,6 @@ function reservACapi(app) {
         const room_id=req.params.RoomId;
         const trimestreInicio= req.body.trimestreInicio;
         const trimestreFinal= req.body.trimestreFinal;
-
         if(trimestreInicio==undefined || trimestreFinal==undefined){
             res.status(403).json({error: `No se ha introducido el trimestre inicio o trimestre final`})
             return
