@@ -1,6 +1,5 @@
 const express = require('express');
-const multer = require("multer");
-//const fs = require('fs');
+const fs = require('fs');
 const path = require("path");
 const ReservacService = require('../services/reserva');
 const boom = require('@hapi/boom');
@@ -225,7 +224,7 @@ function reservACapi(app) {
         const room_id = req.params.salaId;
         const item_id = req.params.itemId;
         try {
-            await reservacService.crearSalaItem(room_id, item_id, quantity);
+            await reservacService.createSalaItem(room_id, item_id, quantity);
             res.status(200).json({message : `${quantity} Item ${item_id} Asignado a Sala ${room_id}`});
         } catch (err) {
             next(err);
@@ -261,53 +260,20 @@ function reservACapi(app) {
         }
     });
 
-    router.post("/salas/:salaId/picture", async function (req, res) {
-
-        // Set The Storage Engine
-        const storage = multer.diskStorage({
-            destination: '/../media/',
-            filename: function(req, file, cb){
-            cb(null,'${salaId}.jpg');
-            }
-        });
-
-        // Init Upload
-        const upload = multer({
-            storage: storage,
-            limits:{fileSize: 10000000},
-            fileFilter: function(req, file, cb){
-            checkFileType(file, cb);
-            }
-        }).single('myImage');
-            
-        // Check File Type
-        function checkFileType(file, cb){
-            // Allowed ext
-            const filetypes = /jpg/;
-            // Check ext
-            const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-            // Check mime
-            const mimetype = filetypes.test(file.mimetype);
-            if(mimetype && extname){
-            return cb(null,true);
-            } else {
-            cb('Error: Images Only!');
-            }
-        }
-
-        upload(req, res, (err) => {
-            if(err){
-                res.json(boom.notFound(err).output.payload);
-            } else {
-                if(req.file == undefined){
-                res.json(boom.notFound('Error: No File Selected!').output.payload);
-                } else {
-                    res.status(200).json({message : 'File Uploaded!'});
-                }
-            }
-        });
+    router.post("/salas/:salaId/picture/new", async function (req, res, next) {
+        try {
+            const salaId = req.params.salaId;
+            const { picture } = req.body;
+            let base64String = picture; // Not a real image
+            // Remove header
+            let base64Image = base64String.split(';base64,').pop();
+            fs.writeFile(path.join((__dirname) + `/../media/${salaId}.jpg`), base64Image, {encoding: 'base64'}, function() {
+                res.status(201).json({ message: `Imagen de ${salaId} Actualizada`});
+            });
+        } catch (err) {
+            next(err);
+        };
     });
-
 
     //  *** Actualizar descripcion nombre y status de una sala ***
     router.put("/salas/:salaId", async function (req, res, next) {
