@@ -54,6 +54,7 @@ async function generarSiguienteTrimestre(){
     }
     //
     mantenerItemDeSalaDeTrimestreAnterior(temp);
+    rechazarSolicitudesPendientesDeTrimestreAnterior(temp);
 }
 }
 
@@ -68,6 +69,18 @@ async function mantenerItemDeSalaDeTrimestreAnterior(pastTrim){
                 await reservacService.createSalaItem(elem.id, item.id, item.quantity);
             }
         }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function rechazarSolicitudesPendientesDeTrimestreAnterior(pastTrim){
+    try {
+            const reservation_request_id = await reservacService.getAllPendingRequestOfLastTrim(pastTrim.rows[0].id);
+            const idRR = reservation_request_id.rows;
+            for (let elem of idRR) {
+                await reservacService.updateRequest(elem.id, 'Trimestre Solicitado Termino', 'R');
+            }
     } catch (err) {
         console.log(err);
     }
