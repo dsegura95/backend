@@ -54,6 +54,12 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
 
+    async getSalasId() {
+        let query = 'SELECT id FROM room WHERE is_active = true';
+        const items = await pool.query(query);
+        return items || [];
+    }
+
     async getSalas() {
         let query = 'SELECT * FROM room WHERE is_active = true';
         const items = await pool.query(query);
@@ -68,6 +74,13 @@ class ReservacService {
 
     ///////////////////////////////////////////////////////////////////////////////
     //Crud Sala Items
+
+    async getSalaItemsByTrim(id, trimId) {
+        let sql = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${trimId}'`;
+        const itemsSala = await pool.query(sql);
+        return itemsSala || [];
+    }
+
     async getSalaItems(id) {
         let actualTrimId = await this.getActualTrim();
         let sql = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;

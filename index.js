@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 const { config } = require('./config/index.js');
-const reservACapi = require('./routes/reserva.js')
+const reservACapi = require('./routes/reserva.js');
 
 const {
     logErrors,
@@ -13,12 +13,11 @@ const {
 const notFoundHandler = require('./middleware/notFoundHandler');
 
 const generator = require('./routes/generarSiguienteTrimestre.js');
-const { setIntervalAsync } = require('set-interval-async/dynamic')
+const { setIntervalAsync } = require('set-interval-async/dynamic');
 
-// setIntervalAsync(generator, 86400000)
-setIntervalAsync(generator, 12000)
+// Check if Trimester has ended
+setIntervalAsync(generator, 12000);
 
-// const bodyParser = require('body-parser')
 var path = require('path');
 var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
@@ -27,7 +26,7 @@ app.use(express.static(dir));
 
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');

@@ -71,8 +71,6 @@ function reservACapi(app) {
 
     router.put("/trimestre/:Id", async function (req, res, next) {
         const { start, finish } = req.body;
-        //console.log("start:" + start, "finish: "+ finish)
-        //aqui
         if (!start && !finish) {
             res.json(boom.badRequest('invalid query').output.payload);
         }
