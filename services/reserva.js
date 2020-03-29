@@ -365,7 +365,7 @@ class ReservacService {
             return null
         }
         let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
-        ('${room_id}', 'labf','${owner.rows[0].chief}','${userId}','${trimestre.rows[0].id}','${date}', 'E')`;
+        ('${room_id}', 'labf','${owner.rows[0].chief}','${userId}','${trimestre.rows[0].id}','${date}', 'P')`;
         const createRoomRequest = await pool.query(query);
         return createRoomRequest;
     }
