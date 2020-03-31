@@ -26,6 +26,7 @@ app.use(express.static(dir));
 
 app.use(express.json());
 
+app.use(express.json({limit: '4mb'}));
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
