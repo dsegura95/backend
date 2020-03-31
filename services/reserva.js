@@ -61,8 +61,8 @@ class ReservacService {
 
     async deleteItem(id) {
         let query = `DELETE FROM item WHERE id = '${id}'`;
-        const deleteItem = await pool.query(query);
-        return deleteItem;
+        await pool.query(query);
+        return;
     }
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
@@ -104,8 +104,8 @@ class ReservacService {
     async deleteSalaItem(id, salaId) {
         let actualTrimId = await this.getActualTrim();
         let query = `DELETE FROM room_item AS r WHERE r.room_id = '${salaId}' AND r.item_id = ${id} AND r.trimester_id = '${actualTrimId.rows[0].id}'`;
-        const deleteItem = await pool.query(query);
-        return deleteItem;
+        await pool.query(query);
+        return;
     }
 
     async updateSalaItem(room_id, item_id, quantity) {
