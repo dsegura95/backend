@@ -232,7 +232,8 @@ function reservACapi(app) {
         const item_id = req.params.itemId;
         try {
             await reservacService.createSalaItem(room_id, item_id, quantity);
-            res.status(200).json({message : `${quantity} Item ${item_id} Asignado a Sala ${room_id}`});
+            const salaItems = await reservacService.getSalaItems(room_id);
+            res.status(200).send(salaItems.rows);
         } catch (err) {
             next(err);
         };
