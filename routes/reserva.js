@@ -204,9 +204,10 @@ function reservACapi(app) {
     router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
         const id = req.params.itemId;
         const salaId = req.params.salaId;
-        await reservacService.deleteSalaItem(id, salaId);
         try {
-            res.status(200).json({message: `Item Id: ${id} Eliminado correctamente`});
+            await reservacService.deleteSalaItem(id, salaId);
+            const salaItems = await reservacService.getSalaItems(salaId);
+            res.status(200).send(salaItems.rows);
         } catch (err) {
             next(err);
         };
@@ -232,8 +233,7 @@ function reservACapi(app) {
         const item_id = req.params.itemId;
         try {
             await reservacService.createSalaItem(room_id, item_id, quantity);
-            const salaItems = await reservacService.getSalaItems(room_id);
-            res.status(200).send(salaItems.rows);
+            res.status(200).json({message : `${quantity} Item ${item_id} Asignado a Sala ${room_id}`});
         } catch (err) {
             next(err);
         };
