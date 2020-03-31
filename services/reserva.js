@@ -28,6 +28,19 @@ class ReservacService {
         return items || [];
     }
 
+    async getItemsNoOwned(roomId) {
+        let arrayOfItems = []
+        const idsItems = await this.getSalaItems(roomId);
+        // Obtenemos todos los items perteneciente a la sala y guardamos sus ids en un arreglo
+        for (let index = 0; index < idsItems.rowCount; index++) {
+            const element = idsItems.rows[index];
+            arrayOfItems.push(element.id)
+        }
+        // Obtiene todos los items que no posee esa sala
+        let query = `SELECT * FROM item WHERE id NOT IN (${arrayOfItems})`;
+        const ItemsNoOwned = await pool.query(query);
+        return ItemsNoOwned || [];
+    }
     async getItem(id) {
         let query = `SELECT * FROM item WHERE id = ${id}`;
         const item = await pool.query(query);
