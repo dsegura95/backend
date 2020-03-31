@@ -206,7 +206,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         await reservacService.deleteSalaItem(id, salaId);
         try {
-            res.status(200).send(`Item Id: ${id} Eliminado correctamente`);
+            res.status(200).json({message: `Item Id: ${id} Eliminado correctamente`});
         } catch (err) {
             next(err);
         };
