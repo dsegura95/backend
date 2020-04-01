@@ -95,19 +95,9 @@ function reservACapi(app) {
     //  *** Mostrar todos los items   http://localhost:3000/api/items ***
     router.get("/items", async function (req, res, next) {
         try {
+            
             const items = await reservacService.getItems()
             res.status(200).send(items.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Mostrar todos los items menos los de que ya posee una sala
-    router.get("/not/items/:roomId", async function (req, res, next) {
-        const roomId = req.params.roomId
-        try {
-            const itemsNoOwned = await reservacService.getItemsNoOwned(roomId)
-            res.status(200).send(itemsNoOwned.rows);
 
         } catch (err) {
             next(err);
@@ -118,6 +108,7 @@ function reservACapi(app) {
     router.get("/items/:itemId", async function (req, res, next) {
         try {
             const id = req.params.itemId;
+           
             const item = await reservacService.getItem(id);
             res.status(200).send(item.rows)
         } catch (err) {
@@ -206,7 +197,7 @@ function reservACapi(app) {
         const salaId = req.params.salaId;
         await reservacService.deleteSalaItem(id, salaId);
         try {
-            res.status(200).json({message: `Item Id: ${id} Eliminado correctamente`});
+            res.status(200).send(`Item Id: ${id} Eliminado correctamente`);
         } catch (err) {
             next(err);
         };
@@ -454,7 +445,7 @@ function reservACapi(app) {
         const solicitudId = req.params.solicitudId;
         try {
             const schedule = await reservacService.getScheduleFromRequest(solicitudId);
-            res.status(200).send(schedule.rows);
+            res.json(schedule);
         } catch (err) {
             next(err);
         }

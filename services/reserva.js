@@ -291,7 +291,39 @@ class ReservacService {
         let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
                      horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
-        return request || [];
+        const content = request.rows;
+        const response = {
+            typeWeek: "-1",
+            shedule: content
+        };
+        if (content.length == 1) {
+            response.typeWeek = content[0].week.toString();
+        }
+        else if (content.length > 1) {
+            const first = content[0];
+            const second = content[1];
+            if (first.hour == second.hour) {
+                if (first.week % 2 == 0) {
+                    if (second.week % 2 == 0) {
+                        response.typeWeek = "pares";
+                    }
+                    else{
+                        response.typeWeek = "todas";
+                    }
+                }
+                else{
+                    if (second.week % 2 != 0) {
+                        response.typeWeek = "impares";
+                    }
+                    else{
+                        response.typeWeek = "todas";
+                    }
+                }
+            }else{
+                response.typeWeek = content[0].week.toString();
+            }
+        }
+        return response;
     }
 
     //tomo el horario de la solicitud, tomo la sala a la cual va la solicitud, busco todos los horarios de esa sala
