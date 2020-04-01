@@ -291,6 +291,12 @@ class ReservacService {
     //     return horariosDeOtroRequest || [];
     // }
 
+    async getScheduleFromRequestForPut(solicitudId) {
+        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+                     horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
+        const request = await pool.query(query);
+        return request || []
+    }
 
     async getScheduleFromRequest(solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 

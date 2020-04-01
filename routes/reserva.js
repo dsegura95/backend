@@ -511,7 +511,7 @@ function reservACapi(app) {
         const requestId = req.params.requestId;
         let { reason, status } = req.body;
         try {
-            const solicitud = await reservacService.getScheduleFromRequest(requestId);
+            const solicitud = await reservacService.getScheduleFromRequestForPut(requestId);
             if (solicitud.rowCount == 0) {
                 res.status(403).json({error: `La reserva no posee ningun horario`});
                 return
