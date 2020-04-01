@@ -404,7 +404,7 @@ function reservACapi(app) {
                     res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
                 }
                 // Se verifica que los datos del front son correctos, y se crea la reserva a partir de la solicitud
-                const solicitud = await reservacService.getScheduleFromRequest(idCreatedRequest);
+                const solicitud = await reservacService.getScheduleFromRequestForPut(idCreatedRequest);
                 const result = solicitud.rows[0];
                 const checkSchedule = await reservacService.checkIfExists(room, idCreatedRequest);
                 if (checkSchedule.rowCount > 0) {
