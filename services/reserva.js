@@ -268,7 +268,7 @@ class ReservacService {
         let query = `INSERT INTO asignation (room_id, subject_id, trimester_id, date) VALUES ('${room}','${subject_id}','${trimester_id}','${date}') RETURNING id`;
         const createAsignation = await pool.query(query);
         const id = createAsignation.rows[0].id
-        const request_schedule = await this.getScheduleFromRequest(requestId);
+        const request_schedule = await this.getScheduleFromRequestForPut(requestId);
         for (let index = 0; index < request_schedule.rowCount; index++) {
             const element = request_schedule.rows[index];
             let query1 = `INSERT INTO asig_schedule (asignation_id, week, day, hour) VALUES (${id},${element.week},'${element.day}',${element.hour})`
