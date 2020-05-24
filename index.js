@@ -1,5 +1,4 @@
 const express = require('express');
-// const bodyParser = require('body-parser');
 
 const app = express();
 const { config } = require('./config/index.js');
@@ -25,12 +24,9 @@ app.use(express.static(dir));
 
 // Body Parser middlewares
 
-app.use(express.json());
+// app.use(express.json());
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
-
-// app.use(bodyParser.json({limit: '300mb'}));
-// app.use(bodyParser.urlencoded({limit: '300mb', extended: true}));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
