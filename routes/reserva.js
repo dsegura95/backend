@@ -191,6 +191,17 @@ function reservACapi(app) {
         }
     });
 
+    //  Mostrar todos los items menos los de que ya posee una sala
+    router.get("/not/items/:roomId", async function (req, res, next) {
+        const roomId = req.params.roomId
+        try {
+            const itemsNoOwned = await reservacService.getItemsNoOwned(roomId)
+            res.status(200).send(itemsNoOwned.rows);
+        } catch (err) {
+            next(err);
+        }
+    });
+
     //  *** Eliminar un item de una sala en el trimestre actual ***
     router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
         const id = req.params.itemId;
