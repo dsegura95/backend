@@ -481,6 +481,10 @@ function reservACapi(app) {
             if (!req.body[1]) {
                 res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
             } else {
+                if (isNaN(quantity) || quantity < 0) {
+                    console.log("OKOKOK")
+                    res.status(403).json({error: "La cantidad de estudiantes debe ser un numero positivo"})
+                }
                 const id = await reservacService.createReservationRequest(requester, subject, room, material, quantity)
                 if (semanas == "todas") {
                     for (let index = 1; index < 13; index++) {
@@ -594,7 +598,7 @@ function reservACapi(app) {
                         next(err);
                     }
                 }
-                res.status(200).json({error : `Solicitud de sala id: ${id} modificada correctamente`});
+                res.status(200).json({error : `Solicitud de agregar sala Atendida`});
             }
             catch (err) {
                 next(err);
