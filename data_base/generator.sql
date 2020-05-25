@@ -5,6 +5,7 @@ CREATE DATABASE "reserva";
 \c "reserva";
 -- Cargamos los datos en tablas
 -- Tabla de usuario
+SET TIME ZONE 'America/Caracas';
 
 CREATE TABLE IF NOT EXISTS item(
     id BIGSERIAL PRIMARY KEY, -- A pata

@@ -222,10 +222,8 @@ class ReservacService {
     async updateTrim(id, start, finish) {
         let query;
         let dates = await this.getActualTrim();
-        let venstart = new Date(dates.rows[0].start).toLocaleString("en-US", {timeZone: "America/Caracas"});
-        let strt = new Date(venstart).toISOString()
-        let venfinish = new Date(dates.rows[0].finish).toLocaleString("en-US", {timeZone: "America/Caracas"});
-        let fnsh = new Date(venfinish).toISOString()
+        let strt = dates.rows[0].start.toISOString();
+        let fnsh = dates.rows[0].finish.toISOString();
         if ((!start) && (finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
