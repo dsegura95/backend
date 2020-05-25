@@ -168,7 +168,18 @@ class ReservacService {
     async updateSala(id, name, description, is_active) {
         let query;
         let change = 0;
-
+        if (is_active == "false") {
+            let howManyAsig = await this.getReservationByRoom(id);
+            if (howManyAsig.rowCount == 0) {
+                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+                change = await pool.query(query);
+                change = 1;
+            }
+            else {
+                change = -1;
+                return change
+            }
+        }
         if (name) {
             query = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
             await pool.query(query);
@@ -184,21 +195,10 @@ class ReservacService {
             await pool.query(query);
             change = 1;
         }
-        if (is_active == "false") {
-            let howManyAsig = await this.getReservationByRoom(id);
-            if (howManyAsig.rowCount == 0) {
-                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
-                change = await pool.query(query);
-                change = 1;
-            }
-            else {
-                change = -1;
-            }
-        }
         return change;
     }
 
-    // 
+    // Borrar una sala por ID
     async deleteSala(id) {
         let query = `DELETE FROM room WHERE id = '${id}'`;
         const deleteItem = await pool.query(query);
