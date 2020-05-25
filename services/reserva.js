@@ -223,8 +223,8 @@ class ReservacService {
         let query;
 
         let dates = await this.getActualTrim();
-        let strt = dates.rows[0].start.toISOString().substring(0, 10);
-        let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
+        let strt = dates.rows[0].start.toISOString();
+        let fnsh = dates.rows[0].finish.toISOString();
         if ((!start) && (finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
