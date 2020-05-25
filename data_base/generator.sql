@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS item(
 -- Si Abr-Jul termina en Junio, Jul o Sep sig trim sera Sep-Dic
 CREATE TABLE IF NOT EXISTS trimester(
     id VARCHAR(12) PRIMARY KEY,
-    start DATE,
-    finish DATE,
+    start timestamptz,
+    finish timestamptz,
     CONSTRAINT correctDate CHECK (start < finish)
 );
 
