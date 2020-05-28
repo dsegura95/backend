@@ -333,7 +333,7 @@ class ReservacService {
     async checkIfExists(roomId, solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS r JOIN (SELECT * FROM asignation JOIN
             asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${roomId}')
-            AS result ON result.day = r.day AND result.hour = r.hour WHERE r.reservation_request_id = ${solicitudId}`;
+            AS result ON result.day = r.day AND result.hour = r.hour AND result.week = r.week WHERE r.reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || [];
     }
