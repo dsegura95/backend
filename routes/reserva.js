@@ -498,7 +498,6 @@ function reservACapi(app) {
                 if (!material) {
                     material = "No hay requerimientos"
                 }
-                console.log(material)
                 const id = await reservacService.createReservationRequest(requester, subject, room, material, quantity)
                 if (semanas == "todas") {
                     for (let index = 1; index < 13; index++) {

@@ -300,37 +300,30 @@ class ReservacService {
     async getScheduleFromRequest(solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
                      horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
+        let groupByWeek = `SELECT week FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+                     horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId} GROUP BY week`;
         const request = await pool.query(query);
+        const requestWeek = await pool.query(groupByWeek);
         const content = request.rows;
+        const weeks = requestWeek.rows;
         const response = {
             typeWeek: "-1",
             shedule: content
         };
-        if (content.length == 1) {
-            response.typeWeek = content[0].week.toString();
+        // Semana especifica
+        if (weeks.length == 1) {
+            response.typeWeek = weeks[0].week.toString();
         }
-        else if (content.length > 1) {
-            const first = content[0];
-            const second = content[1];
-            if (first.hour == second.hour) {
-                if (first.week % 2 == 0) {
-                    if (second.week % 2 == 0) {
-                        response.typeWeek = "pares";
-                    }
-                    else{
-                        response.typeWeek = "todas";
-                    }
-                }
-                else{
-                    if (second.week % 2 != 0) {
-                        response.typeWeek = "impares";
-                    }
-                    else{
-                        response.typeWeek = "todas";
-                    }
-                }
-            }else{
-                response.typeWeek = content[0].week.toString();
+        // Verificacion de que tipo de semana corresponde
+        else {
+            const first = weeks[0].week;
+            const second = weeks[1].week;
+            if (first % 2 == 0 && second % 2 == 0) {
+              response.typeWeek = "pares";
+            } else if (first % 2 == 1 && second % 2 == 1) {
+              response.typeWeek = "impares";
+            } else {
+              response.typeWeek = "todas";
             }
         }
         return response;
