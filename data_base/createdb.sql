@@ -1,12 +1,12 @@
-DROP DATABASE IF EXISTS "reserva";
--- Creamos la BD
-CREATE DATABASE "reserva";
+-- Creamos la BD (Actualmente no es necesario porque la BD reserva la crea docker en el dockerfile)
+-- CREATE DATABASE "reserva";
 -- Nos conectamos a la BD
 \c "reserva";
--- Cargamos los datos en tablas
--- Tabla de usuario
+
 SET TIME ZONE 'America/Caracas';
 
+-- Cargamos los datos en tablas
+-- Tabla de usuario
 CREATE TABLE IF NOT EXISTS item(
     id BIGSERIAL PRIMARY KEY, -- A pata
     name VARCHAR(64) NOT NULL,

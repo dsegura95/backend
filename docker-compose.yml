@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+    postgresdb:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: reservadb
+        volumes:
+            - ./data_base:/var/lib/postgres/data
+        ports:
+            - '5999:5432'
