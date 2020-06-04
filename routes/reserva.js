@@ -50,7 +50,7 @@ function reservACapi(app) {
                 }
                 res.json('el trimestre termino bicho')
             } else {
-                res.json('el trimestre no ha terminado bicho')
+                res.json('El trimestre no ha terminado bicho')
             }
         } catch (err) {
             next(err);

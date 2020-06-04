@@ -12,7 +12,7 @@ services:
         volumes:
             - ./data_base:/var/lib/postgres/data
         ports:
-            - '5432:5432'
+            - '${port}:5432'
 
     backend:
         build:
