@@ -1,14 +1,14 @@
 {
-  "name": "reservAC-api",
+  "name": "reservac-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend del sistema de reserva del mac",
   "main": "index.js",
   "scripts": {
     "dev": "DEBUG=app:* nodemon index",
     "start": "NODE_ENV=production node index"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jesus Kauze, Jose Barrera, David Segura",
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^9.0.0",

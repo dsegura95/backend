@@ -5,12 +5,12 @@ const Auth = require('../authentication/auth.js')
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
 
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    password: '1234',
-    database: 'reserva',
-    port: '5432'
-})
+    host,
+    user,
+    password,
+    database,
+    port
+} = process.env)
 
 // *********************Se importan metodos de autenticacion ********************
 
