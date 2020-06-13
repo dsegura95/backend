@@ -388,12 +388,45 @@ class ReservacService {
     }
 
     // Funcion para insertar horario en una semana especifica (utilizar con loop todas, pares, impares, especifica)
-    async insertarhorario(semana, horarios,id) {
+    async insertarhorario(semana, horarios,id) { // Horario es el req.body completo, los horarios empiezan en el req.body[1]
         for (let index = 1; index < horarios.length; index++) {
             const horario = horarios[index];
             const { dia, hora } = horario
             await this.createReservationRequestSchedule(dia, hora, semana, id)
         }
+    }
+    
+    async deleteHourScheduleAsignation(asignationId, hour, day, week) {
+        let query = `DELETE FROM asig_schedule WHERE asignation_id = ${asignationId} AND day = '${day}' AND hour = ${hour}
+        AND week = ${week}`
+        const result = await pool.query(query)
+        return result.rowCount
+    }
+
+    // Funcion para eliminar horario (hora) en una semana especifica (utilizar con loop todas, pares, impares, especifica)
+    async deleteScheduleFromAdmin(semana, horarios, room) {
+        // Guardo los asignations que existen que existen en esa <room> para obtener los subjects y compararlos con los que se quieren eliminar
+        let asigInRoom = await this.getReservationByRoom(room)
+        asigInRoom = asigInRoom.rows
+        for (let index = 1; index < horarios.length; index++) {
+            // Obtego el dia, hora, materia, del body (cada elemento req.body[x] con x > 0 representa una hora en Z dia )
+            const horario = horarios[index];
+            const { dia, hora, subject } = horario
+            // Itero sobre las asignaciones que hay en la sala para hallar cual es la que se quiere modificar
+            for (let index2 = 0; index2 < asigInRoom.length; index2++) {
+                const asignationDetails = asigInRoom[index2]
+                const {subject_id, id} = asignationDetails //Obtengo el subject e id, para mapearlo con el id de la asignation a modificar
+                if (subject == subject_id) {
+                    if ( await this.deleteHourScheduleAsignation(id, hora, dia, semana) == 1) {
+                        break
+                    } else {
+                        throw 'Ocurrio un error, se intento borrar un horario que no existe'
+                    }
+                }
+
+            }
+        }
+        return
     }
 
     async createReservationRequestSchedule(day, hour, week, reservationId) {

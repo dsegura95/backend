@@ -460,8 +460,8 @@ insert into reservation_request_schedule(reservation_request_id, day, hour, week
 insert into reservation_request_schedule(reservation_request_id, day, hour, week) values(16,'Jueves', 11, 11);
 /*Rellenamos asignation*/
 
-insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ENE-MAR2020', '2020-02-06');
-insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'PS1111', 'ENE-MAR2020', '2020-02-07');
+insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'CI2692', 'ABR-JUL2020', '2020-02-06');
+insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-019', 'PS1111', 'ABR-JUL2020', '2020-02-07');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-020', 'CI2693', 'ENE-MAR2020', '2020-02-08');
 insert into asignation(room_id,subject_id,trimester_id,date) values('MYS-219', 'CO3321', 'ENE-MAR2020', '2020-01-02');
 

@@ -392,7 +392,7 @@ function reservACapi(app) {
     router.post("/crear/reserva", async function (req, res, next) {
         const { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
         try {
-            if (!req.body[1]) {
+            if (!req.body[1]) { // Verifica que el horario en el body no este vacio
                 res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
             } else {
                 // creamos la solicitud de reserva, tomamos el id, verificamos el tipo de semana y crean los horarios de esa solicitud
@@ -430,6 +430,53 @@ function reservACapi(app) {
             }
         } catch (err) {
             next(err)
+        }
+    });
+
+    // Este endpoint es para probar el servicio de deleteScheduleAsignation (se puede borrar)
+    router.delete("/eliminar/horario/reserva/prueba", async function (req, res, next) {
+        try {
+            const { id_asignation, hour, day, week } = req.body;
+            if (await reservacService.deleteHourScheduleAsignation(id_asignation, hour, day, week) == 1) {
+                res.send('Funciono')
+            } else {
+                res.send('NO funciona')
+            }
+        } catch (error) {
+            next(error);
+        }
+    })
+
+     // Elimina schedule por hora de las asignation (reservaciones ya hechas)
+     router.delete("/eliminar/reserva", async function (req, res) {
+        const { room, semanas } = req.body[0]; //datos de la solicitud
+        try {
+            if (!req.body[1]) { // Verifica que el horario en el body no este vacio (Aqui estan las horas a eliminar)
+                res.status(403).json({error: "Debe llenar una asignatura a eliminar"})
+            } else {
+                // Verifico el tipo de eliminacion segun tipo semanal (eliminar en todas las pares, impares, todas, spec)
+                if (semanas == "todas") {
+                    for (let semana = 1; semana < 13; semana++) {
+                        await reservacService.deleteScheduleFromAdmin(semana,req.body,room);
+                    }
+                } else if (semanas == "pares") {
+                    for (let semana = 2; semana < 13; semana += 2) {
+                        await reservacService.deleteScheduleFromAdmin(semana,req.body, room);
+                    }
+                } else if (semanas == "impares") {
+                    for (let semana = 1; semana < 13; semana += 2) {
+                        await reservacService.deleteScheduleFromAdmin(semana,req.body, room);
+                    }
+                } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
+                    await reservacService.deleteScheduleFromAdmin(semanas,req.body, room);
+                } else {
+                    res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
+                }
+                res.status(200).json({message: `Se elimino exitosamente los horarios seleccionados`});
+            }
+        } catch (err) {
+            res.status(403).json({error: err})
+            // next(err)
         }
     });
 
