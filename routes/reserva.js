@@ -434,7 +434,7 @@ function reservACapi(app) {
     });
 
     // Este endpoint es para probar el servicio de deleteScheduleAsignation (se puede borrar)
-    router.delete("/eliminar/horario/reserva/prueba", async function (req, res, next) {
+    router.post("/eliminar/horario/reserva/prueba", async function (req, res, next) {
         try {
             const { id_asignation, hour, day, week } = req.body;
             if (await reservacService.deleteHourScheduleAsignation(id_asignation, hour, day, week) == 1) {
@@ -448,7 +448,7 @@ function reservACapi(app) {
     })
 
      // Elimina schedule por hora de las asignation (reservaciones ya hechas)
-     router.delete("/eliminar/reserva", async function (req, res) {
+     router.post("/eliminar/reserva", async function (req, res) {
         const { room, semanas } = req.body[0]; //datos de la solicitud
         try {
             if (!req.body[1]) { // Verifica que el horario en el body no este vacio (Aqui estan las horas a eliminar)
