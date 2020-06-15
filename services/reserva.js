@@ -395,7 +395,7 @@ class ReservacService {
             await this.createReservationRequestSchedule(dia, hora, semana, id)
         }
     }
-    
+
     async deleteHourScheduleAsignation(asignationId, hour, day, week) {
         let query = `DELETE FROM asig_schedule WHERE asignation_id = ${asignationId} AND day = '${day}' AND hour = ${hour}
         AND week = ${week}`
@@ -420,7 +420,8 @@ class ReservacService {
                     if ( await this.deleteHourScheduleAsignation(id, hora, dia, semana) == 1) {
                         break
                     } else {
-                        throw 'Ocurrio un error, se intento borrar un horario que no existe'
+                        // console.log('no se pudo borrar un horario que no existe:', hora, dia, semana )
+                        continue
                     }
                 }
 
