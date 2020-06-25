@@ -3,7 +3,7 @@ const Auth = require('../authentication/auth.js')
 
 
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
-
+// Obtiene todos estos valores del .env
 const pool = new Pool({
     host,
     user,

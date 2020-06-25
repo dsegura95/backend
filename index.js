@@ -52,3 +52,5 @@ app.listen(config.port, function () {
     ? console.log(`Listening in DEVELOPMENT http://localhost:${config.port}`)
     : console.log(`Listening http://localhost:${config.port}`)
 });
+
+module.exports = app
