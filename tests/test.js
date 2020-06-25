@@ -22,7 +22,7 @@ describe('Subjects', () => {
                     // need type array
                     expect(res.body).be.a('array');
                     // need length 21
-                    expect(res.body.length).be.eql(21);
+                    expect(res.body.length).be.eql(22);
                     done();
                 });
         });
