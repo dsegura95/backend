@@ -2,7 +2,6 @@
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let app = require('../index');
-// let should = chai.should();
 var expect = chai.expect;
 
 
