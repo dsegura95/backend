@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 // Subjects
 describe('Subjects', () => {
     /*
-     * Test 1the /GET subjects
+     * Test the /GET subjects
      */
     describe('GET /api/subjects', () => {
         it('it should GET all the subjects', (done) => {
