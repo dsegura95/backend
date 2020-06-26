@@ -11,5 +11,5 @@ Npm 6.13.4
 BD:
 ---------
 
-Postgressql
+Postgresql
 
