@@ -1,0 +1,7 @@
+# data_base/
+DockerfileDb
+DockerfileBackend
+docker-compose.yml
+node_modules/
+.gitignore
+README.md

@@ -3,14 +3,14 @@ const Auth = require('../authentication/auth.js')
 
 
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
-
+// Obtiene todos estos valores del .env
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    password: '1234',
-    database: 'reserva',
-    port: '5432'
-})
+    host,
+    user,
+    password,
+    database,
+    port
+} = process.env)
 
 // *********************Se importan metodos de autenticacion ********************
 
@@ -168,7 +168,18 @@ class ReservacService {
     async updateSala(id, name, description, is_active) {
         let query;
         let change = 0;
-
+        if (is_active == "false") {
+            let howManyAsig = await this.getReservationByRoom(id);
+            if (howManyAsig.rowCount == 0) {
+                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+                change = await pool.query(query);
+                change = 1;
+            }
+            else {
+                change = -1;
+                return change
+            }
+        }
         if (name) {
             query = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
             await pool.query(query);
@@ -184,21 +195,10 @@ class ReservacService {
             await pool.query(query);
             change = 1;
         }
-        if (is_active == "false") {
-            let howManyAsig = await this.getReservationByRoom(id);
-            if (howManyAsig.rowCount == 0) {
-                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
-                change = await pool.query(query);
-                change = 1;
-            }
-            else {
-                change = -1;
-            }
-        }
         return change;
     }
 
-    // 
+    // Borrar una sala por ID
     async deleteSala(id) {
         let query = `DELETE FROM room WHERE id = '${id}'`;
         const deleteItem = await pool.query(query);
@@ -221,10 +221,9 @@ class ReservacService {
 
     async updateTrim(id, start, finish) {
         let query;
-
         let dates = await this.getActualTrim();
-        let strt = dates.rows[0].start.toISOString().substring(0, 10);
-        let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
+        let strt = dates.rows[0].start.toISOString();
+        let fnsh = dates.rows[0].finish.toISOString();
         if ((!start) && (finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
@@ -301,37 +300,30 @@ class ReservacService {
     async getScheduleFromRequest(solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
                      horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
+        let groupByWeek = `SELECT week FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+                     horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId} GROUP BY week`;
         const request = await pool.query(query);
+        const requestWeek = await pool.query(groupByWeek);
         const content = request.rows;
+        const weeks = requestWeek.rows;
         const response = {
             typeWeek: "-1",
             shedule: content
         };
-        if (content.length == 1) {
-            response.typeWeek = content[0].week.toString();
+        // Semana especifica
+        if (weeks.length == 1) {
+            response.typeWeek = weeks[0].week.toString();
         }
-        else if (content.length > 1) {
-            const first = content[0];
-            const second = content[1];
-            if (first.hour == second.hour) {
-                if (first.week % 2 == 0) {
-                    if (second.week % 2 == 0) {
-                        response.typeWeek = "pares";
-                    }
-                    else{
-                        response.typeWeek = "todas";
-                    }
-                }
-                else{
-                    if (second.week % 2 != 0) {
-                        response.typeWeek = "impares";
-                    }
-                    else{
-                        response.typeWeek = "todas";
-                    }
-                }
-            }else{
-                response.typeWeek = content[0].week.toString();
+        // Verificacion de que tipo de semana corresponde
+        else {
+            const first = weeks[0].week;
+            const second = weeks[1].week;
+            if (first % 2 == 0 && second % 2 == 0) {
+              response.typeWeek = "pares";
+            } else if (first % 2 == 1 && second % 2 == 1) {
+              response.typeWeek = "impares";
+            } else {
+              response.typeWeek = "todas";
             }
         }
         return response;
@@ -341,7 +333,7 @@ class ReservacService {
     async checkIfExists(roomId, solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS r JOIN (SELECT * FROM asignation JOIN
             asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${roomId}')
-            AS result ON result.day = r.day AND result.hour = r.hour WHERE r.reservation_request_id = ${solicitudId}`;
+            AS result ON result.day = r.day AND result.hour = r.hour AND result.week = r.week WHERE r.reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || [];
     }

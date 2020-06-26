@@ -1,11 +1,12 @@
-DROP DATABASE IF EXISTS "reserva";
--- Creamos la BD
-CREATE DATABASE "reserva";
+-- Creamos la BD (Actualmente no es necesario porque la BD reserva la crea docker en el dockerfile)
+-- CREATE DATABASE "reserva";
 -- Nos conectamos a la BD
 \c "reserva";
+
+SET TIME ZONE 'America/Caracas';
+
 -- Cargamos los datos en tablas
 -- Tabla de usuario
-
 CREATE TABLE IF NOT EXISTS item(
     id BIGSERIAL PRIMARY KEY, -- A pata
     name VARCHAR(64) NOT NULL,
@@ -17,8 +18,8 @@ CREATE TABLE IF NOT EXISTS item(
 -- Si Abr-Jul termina en Junio, Jul o Sep sig trim sera Sep-Dic
 CREATE TABLE IF NOT EXISTS trimester(
     id VARCHAR(12) PRIMARY KEY,
-    start DATE,
-    finish DATE,
+    start timestamptz,
+    finish timestamptz,
     CONSTRAINT correctDate CHECK (start < finish)
 );
 

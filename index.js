@@ -24,18 +24,15 @@ app.use(express.static(dir));
 
 // Body Parser middlewares
 
-app.use(express.json());
-
+// app.use(express.json());
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
-// app.use(express.json({limit: '10mb'}));
-// app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, PATCH, OPTIONS, PUT, DELETE');
     next();
 });
 
@@ -55,3 +52,5 @@ app.listen(config.port, function () {
     ? console.log(`Listening in DEVELOPMENT http://localhost:${config.port}`)
     : console.log(`Listening http://localhost:${config.port}`)
 });
+
+module.exports = app
