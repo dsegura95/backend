@@ -1,11 +1,12 @@
 pipeline {
     agent any
     environment {
-        // password = ya esta dado como credecial al momento de ejecutar el stage test
+        // user= en credenciales de jenkins
+        // password = en credenciales de jenkins
         host='localhost'
-        // user= ya esta dado como credecial al momento de ejecutar el stage test
         database = 'reserva'
         port = 5432
+        registry = 'backend_cont_test'
     }
 
     stages {
@@ -14,28 +15,41 @@ pipeline {
                 git 'https://github.com/jkauze/backend'
             }
         }
-        stage('Install Deps') {
+        stage('Building') {
             steps {
-                sh 'npm install'
+                sh 'echo Backend no amerita compilacion' //Este paso no es necesario para el backend
             }
         }
-        stage('Test Result') {
+        stage('Tests Result') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'user_pass_postgres', passwordVariable: 'password', usernameVariable: 'user')]) {
-                    sh 'npm run test'
+                script {
+                    def dockerfile = 'DockerfileBackend'
+                    def dockerImage = docker.build("${registry}:${env.BUILD_ID}", "-f ${dockerfile} .")
+                    // Connect to docker cont and run tests
+                    try {
+                        withCredentials([usernamePassword(credentialsId: 'user_pass_postgres', passwordVariable: 'password', usernameVariable: 'user')]) {
+                            dockerImage.inside("--network host") {
+                                sh 'npm run test'
+                            }
+                        }
+                    } finally {
+                        // Removing the docker image
+                        sh "docker rmi $registry:$BUILD_NUMBER"
+                    }
                 }
+
             }
         }
         stage('deploy') {
             steps {
-                sh 'echo deploy!!!'
+                sh 'echo ChangeServer'
             }
         }
     }
     post {
         always {
             script {
-                if (currentBuild.currentResult == 'FAILURE') { // Other values: SUCCESS, UNESTABLE
+                if (currentBuild.currentResult == 'FAILURE') { 
                     // Send an email only if the build status has changed from green/unstable to red
                     emailext subject: ' $DEFAULT_SUBJECT',
                         body: '$DEFAULT_CONTENT',
