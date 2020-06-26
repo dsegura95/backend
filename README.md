@@ -36,9 +36,6 @@ $ curl -v localhost:3000/api/items
 Desarrollando con docker:
 ---------
 
-<<<<<<< HEAD
-Postgresql
-=======
 - Para ver logs de la app en conjunto:
 ```
 $ docker-compose logs -f
@@ -67,5 +64,4 @@ $ docker-compose up -d --build
 - Para operar directamente con la BD (Meter querys, etc, en usando postgres) conectarse al servidor con los datos proporcionados por el .env
 
 *Probablemente este pasando algo por alto, pero estare modificando y agregando informacion a la vez. Cualquier cosa creen un issue - JK*
->>>>>>> master
 
