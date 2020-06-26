@@ -1,5 +1,9 @@
 # backend
-Backend del sistema de reserva de laboratorios F (Dockerizado)
+Backend del sistema de reserva de laboratorios F (+ Docker + Jenkins CI/CD + Unit Test)
+
+CI/CD del proyecto:
+---------
+![CI/CD](https://www.qatouch.com/wp-content/uploads/2018/12/CI-with-Jenkins-Git.png)
 
 Versiones:
 ---------
