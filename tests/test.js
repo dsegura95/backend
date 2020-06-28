@@ -53,6 +53,7 @@ describe('Items', () => {
                 });
         });
     });
+
     describe('GET /api/items/1', () => {
         it('it should get specific item: Mouse', (done) => {
             chai.request(app)
@@ -73,8 +74,9 @@ describe('Items', () => {
                 });
         });
     });
+
     describe('POST /api/item', () => {
-        it('it should create new item', (done) => {
+        it('it should create new item ItemPrueba', (done) => {
             let item = {
                 name: "ItemPrueba",
                 description: "descriptionPrueba"
@@ -83,14 +85,29 @@ describe('Items', () => {
                 .post('/api/item')
                 .send(item)
                 .end((err, res) => {
-                    // status: 200
+                    // status: 201
                     expect(res).to.have.status(201)
                     // type: object
                     expect(res.body).be.a('object');
+                    // message: Item <name> creado
                     expect(res.body.message).to.have.equal('Item ' + item.name + ' creado')
-                    // Values => id: 1, name: Mouse, description: null
-                    // expect(res.body).to.have.property('message');
-                    // expect(element.description).to.have.equal(null);
+                    done();
+                });
+        });
+    });
+
+    describe('DELETE /api/items/12', () => {
+        it('it should create new item ', (done) => {
+            let id = 12
+            chai.request(app)
+                .delete('/api/items/' + id)
+                .end((err, res) => {
+                    // status: 200
+                    expect(res).to.have.status(200)
+                    // type: object
+                    expect(res.body).be.a('object');
+                    // message: Item Id: <id> Eliminado correctamente
+                    expect(res.body.message).to.have.equal('Item Id: ' + id + ' Eliminado correctamente')
                     done();
                 });
         });

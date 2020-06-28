@@ -144,10 +144,9 @@ function reservACapi(app) {
     //  *** Eliminar un item: http://localhost:3000/api/items/<itemId> ***
     router.delete("/items/:itemId", async function (req, res, next) {
         const id = req.params.itemId;
-        await reservacService.deleteItem(id);
         try {
-
-            res.status(200).send(`Item Id: ${id} Eliminado correctamente`);
+            await reservacService.deleteItem(id);
+            res.status(200).json({message : `Item Id: ${id} Eliminado correctamente`});
         } catch (err) {
             next(err);
         };
