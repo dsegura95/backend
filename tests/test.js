@@ -96,8 +96,30 @@ describe('Items', () => {
         });
     });
 
+    describe('PUT /api/items/12', () => {
+        it('it should update last item: ItemPrueba to ItemPrueba2', (done) => {
+            let id = 12
+            let itemUpdate = {
+                name: "ItemPrueba2",
+                description: "descriptionPrueba2"
+            }
+            chai.request(app)
+                .put('/api/items/' + id)
+                .send(itemUpdate)
+                .end((err, res) => {
+                    // status: 200
+                    expect(res).to.have.status(200)
+                    // type: object
+                    expect(res.body).be.a('object');
+                    // message: Item <name> actualizado
+                    expect(res.body.message).to.have.equal(`Item ${id} actualizado`)
+                    done();
+                });
+        });
+    });
+
     describe('DELETE /api/items/12', () => {
-        it('it should create new item ', (done) => {
+        it('it should delete last item created: ItemPrueba ', (done) => {
             let id = 12
             chai.request(app)
                 .delete('/api/items/' + id)
