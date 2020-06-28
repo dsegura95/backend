@@ -73,4 +73,26 @@ describe('Items', () => {
                 });
         });
     });
+    describe('POST /api/item', () => {
+        it('it should create new item', (done) => {
+            let item = {
+                name: "ItemPrueba",
+                description: "descriptionPrueba"
+            }
+            chai.request(app)
+                .post('/api/item')
+                .send(item)
+                .end((err, res) => {
+                    // status: 200
+                    expect(res).to.have.status(201)
+                    // type: object
+                    expect(res.body).be.a('object');
+                    expect(res.body.message).to.have.equal('Item ' + item.name + ' creado')
+                    // Values => id: 1, name: Mouse, description: null
+                    // expect(res.body).to.have.property('message');
+                    // expect(element.description).to.have.equal(null);
+                    done();
+                });
+        });
+    });
 });
