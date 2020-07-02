@@ -1,64 +1,71 @@
 const express = require('express');
+
+/* Images modules */
 const fs = require('fs');
 const path = require("path");
+
+/* Route controllers */
 const ReservacService = require('../services/reserva');
+const ItemController = require('./controllers/items')
+
+/* Validations */
 const boom = require('@hapi/boom');
 //const Auth= require('../authentication/auth.js');
+
 
 function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService;
-   // const auth = new Auth;
-
-    app.use("/api/", router);
-    //////////////////////////////////////////////////////////////////
+    const itemController = new ItemController;
     const moment = require('moment');
+   // const auth = new Auth;
+    app.use("/api/", router);
 
-    router.get("/actualizarTrimestre", async function (req, res, next) {
+    //////////////////////////////////////////////////////////////////
 
-        const temp = await reservacService.getActualTrim();
-        const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
-
-        try {
-            if (!(moment().isAfter(moment(lasTrim).add(1, 'day')))) {
-                const lasTrimMonth = moment(lasTrim).month();
-                const lasTrimYear = moment(lasTrim).year();
-
-                if ((2 <= lasTrimMonth) && (lasTrimMonth <= 4)) {
-                    await reservacService.createTrim('ABR-JUL' + lasTrimYear,
-                        moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
-                        moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
-                    )
-                }
-                else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
-                    await reservacService.createTrim('SEP-DIC' + lasTrimYear,
-                        moment(lasTrim).add(2, 'week').add(3, 'day'),
-                        moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                    )
-                }
-                else if ((10 <= lasTrimMonth)) {
-                    await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
-                        moment(lasTrim).add(1, 'week').add(3, 'day'),
-                        moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
-                    )
-                }
-                else {
-                    await reservacService.createTrim('ENE-MAR' + lasTrimYear,
-                        (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
-                        (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
-                    )
-                }
-                res.json('el trimestre termino bicho')
-            } else {
-                res.json('El trimestre no ha terminado bicho')
-            }
-        } catch (err) {
-            next(err);
-        }
-
-    });
 
     //  **************************** TRIMESTRE ********************************
+
+        router.get("/actualizarTrimestre", async function (req, res, next) {
+            const temp = await reservacService.getActualTrim();
+            const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
+            try {
+                if (!(moment().isAfter(moment(lasTrim).add(1, 'day')))) {
+                    const lasTrimMonth = moment(lasTrim).month();
+                    const lasTrimYear = moment(lasTrim).year();
+
+                    if ((2 <= lasTrimMonth) && (lasTrimMonth <= 4)) {
+                        await reservacService.createTrim('ABR-JUL' + lasTrimYear,
+                            moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
+                            moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
+                        )
+                    }
+                    else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
+                        await reservacService.createTrim('SEP-DIC' + lasTrimYear,
+                            moment(lasTrim).add(2, 'week').add(3, 'day'),
+                            moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
+                        )
+                    }
+                    else if ((10 <= lasTrimMonth)) {
+                        await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
+                            moment(lasTrim).add(1, 'week').add(3, 'day'),
+                            moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
+                        )
+                    }
+                    else {
+                        await reservacService.createTrim('ENE-MAR' + lasTrimYear,
+                            (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
+                            (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
+                        )
+                    }
+                    res.json('el trimestre termino bicho')
+                } else {
+                    res.json('El trimestre no ha terminado bicho')
+                }
+            } catch (err) {
+                next(err);
+            }
+        });
 
     router.get("/trimestre/ultimo", async function (req, res, next) {
         try {
@@ -90,67 +97,22 @@ function reservACapi(app) {
 
     ////////////////////////////////////////////////////////////////
 
-    //  ************************ CRUD BASICO DE MODELO SOBRE ITEM *******************
+    //  ************************ CRUD ITEM *******************
 
-    //  *** Mostrar todos los items   http://localhost:3000/api/items ***
-    router.get("/items", async function (req, res, next) {
-        try {
-            
-            const items = await reservacService.getItems()
-            res.status(200).send(items.rows);
+    /* Mostrar todos los items en el sistema */
+    router.get("/items", itemController.allItems);
 
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Mostrar un item por su ID */
+    router.get("/items/:itemId", itemController.specificItem);
 
-    //  *** Mostrar un item por su ID   http://localhost:3000/api/items/<itemID> ***
-    router.get("/items/:itemId", async function (req, res, next) {
-        try {
-            const id = req.params.itemId;
-           
-            const item = await reservacService.getItem(id);
-            res.status(200).send(item.rows)
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Crear un item */
+    router.post("/item", itemController.createItem);
 
-    //  *** Crear un item:   http://localhost:3000/api/item ***
-    router.post("/item", async function (req, res, next) {
-        const name = req.body.name;
-        const description = req.body.description;
-        try {
-            await reservacService.createItem(name, description);
-            res.status(201).json({message : `Item ${name} creado`});
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Actualizar un item */
+    router.put("/items/:itemId", itemController.updateItem);
 
-    //  *** Actualizar un item: http://localhost:3000/api/items/<itemID> ***
-    router.put("/items/:itemId", async function (req, res, next) {
-        const name = req.body.name;
-        const id = req.params.itemId;
-        const description = req.body.description;
-        try {
-            await reservacService.updateItem(id, name, description);
-            res.status(200).json({message: `Item ${id} actualizado`});
-        } catch (err) {
-            next(err);
-        };
-    });
-
-    //  *** Eliminar un item: http://localhost:3000/api/items/<itemId> ***
-    router.delete("/items/:itemId", async function (req, res, next) {
-        const id = req.params.itemId;
-        try {
-            await reservacService.deleteItem(id);
-            res.status(200).json({message : `Item Id: ${id} Eliminado correctamente`});
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Eliminar un item */
+    router.delete("/items/:itemId", itemController.deleteItem);
 
     //  *******************************************************************
     //  ************************ API REST ENDPOINTS ***********************
