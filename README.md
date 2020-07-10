@@ -11,7 +11,7 @@ Versiones:
 Docker image: NodeJs 12.18.0 - Npm 6.14.4
 
 Docker image: postgres 13
----------
+
 
 Requisitos para ejecutar:
 ---------
@@ -36,6 +36,16 @@ esto levantara 2 servicios: la db (db_reserva_cont) y el backend (backend_reserv
 $ curl -v localhost:3000/api/items
 ```
 - Empezar a codear sobre el proyecto
+
+Ejecucion de pruebas unitarias:
+---------
+
+Recuerda cumplir los requisitos (tener el puerto de la bd libre). y no tener en ejecucion la aplicacion (asegurate con: $ docker-compose down). Posteriormente correr el script npm:
+```
+$ npm run dtest
+```
+
+(el script, levanta la imagen de la BD, en background. Ejecuta la imagen del backend con el comando de pruebas y por ultimo finaliza todo lo levantado con docker-compose down)
 
 Desarrollando con docker:
 ---------
