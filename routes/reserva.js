@@ -123,16 +123,8 @@ function reservACapi(app) {
     /* Mostrar todas las salas existentes */
     router.get("/salas", salasController.allRooms);
 
-    //  *** Mostrar datos de una Sala http://localhost:3000/api/salas/<salaId=MYS-022> ***
-    router.get("/salas/:salaId", async function (req, res, next) {
-        const { salaId } = req.params;
-        try {
-            const sala = await reservacService.getSala(salaId);
-            res.status(200).send(sala.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Mostrar datos de una Sala */
+    router.get("/salas/:salaId", salasController.specificRoom);
 
     //  **************************** ITEMS DE SALA ********************************
 
@@ -199,18 +191,10 @@ function reservACapi(app) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-    //  *** Obtener todas las salas que son administradas por un laboratorio ***
-    router.get("/salas/admin/:userId", async function (req, res, next) {
-        const userId = req.params.userId;
-        try {
-            const adminSalas = await reservacService.getAdminSalas(userId);
-            res.status(200).send(adminSalas.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todas las salas que son administradas por un laboratorio */
+    router.get("/salas/admin/:userId", salasController.adminRooms);
 
-    // Obtener la imagen de una sala
+    /* Obtener la imagen de una sala */
     router.get("/salas/:salaId/picture", async function (req, res, next) {
         const salaId = req.params.salaId;
         try {

@@ -6,6 +6,7 @@ const reservacService = new ReservacService
     status code 200 = means everything its ok
     status code 201 = means the object/item was created succesfull
     status code 400 = means bad request from the input
+    status code 404 = means bad request url
 */
 
 /*
