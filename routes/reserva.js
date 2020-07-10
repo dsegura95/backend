@@ -7,6 +7,7 @@ const path = require("path");
 /* Route controllers */
 const ReservacService = require('../services/reserva');
 const ItemController = require('./controllers/items')
+const SalasController = require('./controllers/salas')
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -17,6 +18,7 @@ function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService;
     const itemController = new ItemController;
+    const salasController = new SalasController;
     const moment = require('moment');
    // const auth = new Auth;
     app.use("/api/", router);
@@ -118,15 +120,8 @@ function reservACapi(app) {
     //  ************************ API REST ENDPOINTS ***********************
     //  **************************** SALAS ********************************
 
-    //  *** Mostrar todas las salas http://localhost:3000/api/salas ***
-    router.get("/salas", async function (req, res, next) {
-        try {
-            const salas = await reservacService.getSalas()
-            res.status(200).send(salas.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Mostrar todas las salas existentes */
+    router.get("/salas", salasController.allRooms);
 
     //  *** Mostrar datos de una Sala http://localhost:3000/api/salas/<salaId=MYS-022> ***
     router.get("/salas/:salaId", async function (req, res, next) {
