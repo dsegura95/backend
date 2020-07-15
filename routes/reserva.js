@@ -2,8 +2,9 @@ const express = require('express');
 
 /* Route controllers */
 const ReservacService = require('../services/reserva');
-const ItemController = require('../controllers/items.controller')
-const SalaController = require('../controllers/salas.controller')
+const ItemController = require('../controllers/items.controller');
+const SalaController = require('../controllers/salas.controller');
+const TrimesterController = require('../controllers/trimester.controller');
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -11,86 +12,33 @@ const boom = require('@hapi/boom');
 
 
 function reservACapi(app) {
+
     const router = express.Router();
     const reservacService = new ReservacService;
     const itemController = new ItemController;
     const salasController = new SalaController;
+    const trimesterController = new TrimesterController;
     const moment = require('moment');
     // const auth = new Auth;
 
+    // Prefix Route
     app.use("/api/", router);
 
 
-    //  **************************** TRIMESTRE ********************************
+/*
+    ***************************************************************
+    ************************* TRIMESTER ROUTES **********************
+    *******************************************************************
+*/
 
-        router.get("/actualizarTrimestre", async function (req, res, next) {
-            const temp = await reservacService.getActualTrim();
-            const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
-            try {
-                if (!(moment().isAfter(moment(lasTrim).add(1, 'day')))) {
-                    const lasTrimMonth = moment(lasTrim).month();
-                    const lasTrimYear = moment(lasTrim).year();
+    /* DAEMON autoUpdate Trimester (use by script updateTrimester) */
+    router.get("/actualizarTrimestre", trimesterController.autoUpdateTrim);
 
-                    if ((2 <= lasTrimMonth) && (lasTrimMonth <= 4)) {
-                        await reservacService.createTrim('ABR-JUL' + lasTrimYear,
-                            moment(lasTrim).add(2, 'week').add(3, 'day').toISOString().substring(0, 10),
-                            moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month').toISOString().substring(0, 10),
-                        )
-                    }
-                    else if ((5 <= lasTrimMonth) && (lasTrimMonth <= 9)) {
-                        await reservacService.createTrim('SEP-DIC' + lasTrimYear,
-                            moment(lasTrim).add(2, 'week').add(3, 'day'),
-                            moment(lasTrim).add(2, 'week').add(3, 'day').add(3, 'month'),
-                        )
-                    }
-                    else if ((10 <= lasTrimMonth)) {
-                        await reservacService.createTrim('ENE-MAR' + moment(lasTrim).add(1, 'year').year(),
-                            moment(lasTrim).add(1, 'week').add(3, 'day'),
-                            moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month'),
-                        )
-                    }
-                    else {
-                        await reservacService.createTrim('ENE-MAR' + lasTrimYear,
-                            (moment(lasTrim).add(1, 'week').add(3, 'day')).toISOString().substring(0, 10),
-                            (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
-                        )
-                    }
-                    res.json('el trimestre termino bicho')
-                } else {
-                    res.json('El trimestre no ha terminado bicho')
-                }
-            } catch (err) {
-                next(err);
-            }
-        });
+    /* GET actual trimester */
+    router.get("/trimestre/ultimo", trimesterController.getLastTrimester);
 
-    router.get("/trimestre/ultimo", async function (req, res, next) {
-        try {
-            const trimestreUltimo = await reservacService.getActualTrim()
-            res.status(200).send(trimestreUltimo.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    router.put("/trimestre/:Id", async function (req, res, next) {
-        const { start, finish } = req.body;
-        if (!start && !finish) {
-            res.json(boom.badRequest('invalid query').output.payload);
-        }
-        const idParam = req.params.Id;
-        try {
-            const response = await reservacService.updateTrim(idParam, start, finish);
-            if (!response){
-                res.status(403).json({message: 'Fecha Invalida'});
-            }
-            else{
-                res.status(200).json({message: 'Trimestre actualizado'});
-            }
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* PUT update actual trimester  */
+    router.put("/trimestre/:Id", trimesterController.updateTrimester);
 
 /*
     ***************************************************************

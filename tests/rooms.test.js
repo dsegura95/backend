@@ -223,6 +223,9 @@ describe('Items in room', () => {
         });
     });
 
+    /*
+     * Test the /DELETE
+     */
     describe('DELETE /api/salas/MYS-019/8', () => {
         it('it should delete last item created: Mesas x 24 ', (done) => {
             chai.request(app)
