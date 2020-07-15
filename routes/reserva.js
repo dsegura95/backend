@@ -2,8 +2,8 @@ const express = require('express');
 
 /* Route controllers */
 const ReservacService = require('../services/reserva');
-const ItemController = require('../controllers/items')
-const SalaController = require('../controllers/salas')
+const ItemController = require('../controllers/items.controller')
+const SalaController = require('../controllers/salas.controller')
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -98,19 +98,19 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    /* Mostrar todos los items en el sistema */
+    /* [TESTED] Mostrar todos los items en el sistema */
     router.get("/items", itemController.allItems);
 
-    /* Mostrar un item por su ID */
+    /* [TESTED] Mostrar un item por su ID */
     router.get("/items/:itemId", itemController.specificItem);
 
-    /* Crear un item */
+    /* [TESTED] Crear un item */
     router.post("/item", itemController.createItem);
 
-    /* Actualizar un item */
+    /* [TESTED] Actualizar un item */
     router.put("/items/:itemId", itemController.updateItem);
 
-    /* Eliminar un item */
+    /* [TESTED] Eliminar un item */
     router.delete("/items/:itemId", itemController.deleteItem);
 
 /*
@@ -119,37 +119,37 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    /* Mostrar todas las salas existentes */
+    /* [TESTED] Mostrar todas las salas existentes */
     router.get("/salas", salasController.allRooms);
 
-    /* Mostrar datos de una Sala */
+    /* [TESTED] Mostrar datos de una Sala */
     router.get("/salas/:salaId", salasController.specificRoom);
 
-    /* Mostrar los items que posee una sala */
+    /* [TESTED] Mostrar los items que posee una sala */
     router.get("/salas/:salaId/items", salasController.getRoomItems);
 
-    /* Mostrar todos los items menos los de que ya posee una sala */
+    /* [TESTED] Mostrar todos los items menos los de que ya posee una sala */
     router.get("/not/items/:roomId", salasController.itemsNoOwned);
 
-    /* Obtener todas las salas que son administradas por un laboratorio */
+    /* [TESTED] Obtener todas las salas que son administradas por un laboratorio */
     router.get("/salas/admin/:userId", salasController.adminRooms);
 
-    /* Obtener la imagen de una sala */
+    /* [TESTED] Obtener la imagen de una sala */
     router.get("/salas/:salaId/picture", salasController.getImageRoom);
 
-    /* Eliminar un item de una sala en el trimestre actual */
+    /* [TESTED] Eliminar un item de una sala en el trimestre actual */
     router.delete("/salas/:salaId/:itemId", salasController.deleteRoomItem);
 
-    /* Actualizar la cantidad de un item de una sala en el trimestre actual */
+    /* [TESTED] Actualizar la cantidad de un item de una sala en el trimestre actual */
     router.put("/salas/:salaId/:itemId", salasController.updateRoomItems);
 
-    /* Actualizar descripcion nombre y status de una sala */
+    /* [TESTED] Actualizar descripcion nombre y status de una sala */
     router.put("/salas/:salaId", salasController.updateRoom);
 
-    /* Crear una nueva sala */
+    /* [TESTED] Crear una nueva sala */
     router.post("/salas/crear", salasController.createRoom);
 
-    /* Agregar un item a la sala para el trimestre actual */
+    /* [TESTED] Agregar un item a la sala para el trimestre actual */
     router.post("/salas/:salaId/:itemId", salasController.addRoomItem);
 
     /* Subir una nueva imagen */

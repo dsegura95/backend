@@ -226,7 +226,7 @@ class SalaController {
         }
         try {
             await reservacService.createSalaItem(room_id, item_id, quantity);
-            res.status(200).json({message : `${quantity} items asignados a Sala ${room_id}`});
+            res.status(201).json({message : `${quantity} items asignados a Sala ${room_id}`});
         } catch (err) {
             res.status(500).json({ Error: `Hubo un error con los datos dados al momento de actualizar` });
             next(err);
