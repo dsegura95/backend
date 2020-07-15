@@ -5,6 +5,7 @@ const ReservacService = require('../services/reserva');
 const ItemController = require('../controllers/items.controller');
 const SalaController = require('../controllers/salas.controller');
 const TrimesterController = require('../controllers/trimester.controller');
+const ReservationController = require('../controllers/reservations.controller');
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -18,6 +19,7 @@ function reservACapi(app) {
     const itemController = new ItemController;
     const salasController = new SalaController;
     const trimesterController = new TrimesterController;
+    const reservationController = new ReservationController;
     const moment = require('moment');
     // const auth = new Auth;
 
@@ -103,119 +105,23 @@ function reservACapi(app) {
     /* Subir una nueva imagen */
     router.post("/salas/:salaId/picture/new", salasController.uploadRoomImage);
 
-    //  **************************** RESERVAS ********************************
+/*
+    ***************************************************************
+    ********************** RESERVATIONS ROUTES **********************
+    *******************************************************************
+*/
 
-    //  *** Mostrar las horas reservadas de todas las semanas para una sala en el trim actual ***
-    router.get("/reservas/:salaId/semana/todas", async function (req, res, next) {
-        const salaId = req.params.salaId;
-        try {
-            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasTodas(salaId);
-            res.status(200).send(salaHorasOcupadas.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+   /*  Obtener los horarios reservados para el tipo de semanas: week = { 'todas', 'pares', 'impares', [1...12]} */
+   router.get("/reservas/:roomId/semana/:week", reservationController.HoursReservedByTypeWeek);
 
-    //  *** Mostrar las horas reservadas de las semanas pares para una sala en el trim actual ***
-    router.get("/reservas/:salaId/semana/pares", async function (req, res, next) {
-        const salaId = req.params.salaId;
-        try {
-            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasPares(salaId);
-            res.status(200).send(salaHorasOcupadas.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todas las reservas de una sala */
+    router.get("/reservas/:roomId", reservationController.asignationsFromRoom);
 
-    //  *** Mostrar las horas reservadas de las semanas impares para una sala en el trim actual ***
-    router.get("/reservas/:salaId/semana/impares", async function (req, res, next) {
-        const salaId = req.params.salaId;
-        try {
-            const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasImpares(salaId);
-            res.status(200).send(salaHorasOcupadas.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /*  Obtener el horario de una reserva */
+    router.get("/reservas/:reservaID/horario", reservationController.asignationSchedule);
 
-    //  Obtener todas las reservas de una sala
-    router.get("/reservas/:roomId", async function (req, res, next) {
-        const room = req.params.roomId;
-        try {
-            const reservationsRoom = await reservacService.getReservationByRoom(room);
-            res.json(reservationsRoom.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Obtener todas las reservas de una semana y su horario
-    router.get("/reservas/:roomId/semana/:week", async function (req, res, next) {
-        const week = req.params.week;
-        const room = req.params.roomId;
-        try {
-            const reservationsOnWeek = await reservacService.getReservationFromWeek(room, week);
-            res.json(reservationsOnWeek.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Obtener el horario de una reserva
-    router.get("/reservas/:reservaID/horario", async function (req, res, next) {
-        const id = req.params.reservaID;
-        try {
-            const asinationSchedule = await reservacService.getScheduleFromAsignation(id);
-            res.json(asinationSchedule.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    // Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva)
-    router.post("/crear/reserva", async function (req, res, next) {
-        const { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
-        try {
-            if (!req.body[1]) {
-                res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
-            } else {
-                // creamos la solicitud de reserva, tomamos el id, verificamos el tipo de semana y crean los horarios de esa solicitud
-                const idCreatedRequest = await reservacService.createReservationAsAdmin(requester, subject, room, material, quantity)
-                if (semanas == "todas") {
-                    for (let index = 1; index < 13; index++) {
-                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
-                    }
-                } else if (semanas == "pares") {
-                    for (let index = 2; index < 13; index += 2) {
-                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
-                    }
-                } else if (semanas == "impares") {
-                    for (let index = 1; index < 13; index += 2) {
-                        await reservacService.insertarhorario(index,req.body, idCreatedRequest);
-                    }
-                } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
-                    await reservacService.insertarhorario(semanas,req.body, idCreatedRequest);
-                } else {
-                    res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
-                }
-                // Se verifica que los datos del front son correctos, y se crea la reserva a partir de la solicitud
-                const solicitud = await reservacService.getScheduleFromRequestForPut(idCreatedRequest);
-                const result = solicitud.rows[0];
-                const checkSchedule = await reservacService.checkIfExists(room, idCreatedRequest);
-                if (checkSchedule.rowCount > 0) {
-                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud (Comunicate con los administradores del ldac)`});
-                    return
-                } else {
-                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), idCreatedRequest);
-                    await reservacService.updateRequest(idCreatedRequest, 'Aprobado', 'A');
-                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
-                    return
-                }
-            }
-        } catch (err) {
-            next(err)
-        }
-    });
+    /* Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
+    router.post("/crear/reserva", reservationController.createNewReservation);
 
 
     //  **************************** SOLICITUDES DE RESERVA ********************************

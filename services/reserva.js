@@ -539,8 +539,10 @@ class ReservacService {
 
     async getSalaHorasOcupadasTodas(salaId) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
+        console.log(salaId,trimestre.rows[0].id)
         let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' GROUP BY subject_id, day, hour`;
         const request = await pool.query(query);
+        // console.log(request.rows)
         return request || [];
     }
     async getSalaHorasOcupadasPares(salaId) {
