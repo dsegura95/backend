@@ -1,7 +1,4 @@
--- Creamos la BD (Actualmente no es necesario porque la BD reserva la crea docker en el dockerfile)
--- CREATE DATABASE "reserva";
--- Nos conectamos a la BD
-\c "reserva";
+-- La bd la crea el docker-compose en su file de configuracion, luego crea toda estas tablas
 
 SET TIME ZONE 'America/Caracas';
 
