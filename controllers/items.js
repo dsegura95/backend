@@ -1,4 +1,4 @@
-const ReservacService = require('../../services/reserva');
+const ReservacService = require('../services/reserva');
 const reservacService = new ReservacService
 
 /*

@@ -1,13 +1,9 @@
 const express = require('express');
 
-/* Images modules */
-const fs = require('fs');
-const path = require("path");
-
 /* Route controllers */
 const ReservacService = require('../services/reserva');
-const ItemController = require('./controllers/items')
-const SalasController = require('./controllers/salas')
+const ItemController = require('../controllers/items')
+const SalaController = require('../controllers/salas')
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -18,12 +14,11 @@ function reservACapi(app) {
     const router = express.Router();
     const reservacService = new ReservacService;
     const itemController = new ItemController;
-    const salasController = new SalasController;
+    const salasController = new SalaController;
     const moment = require('moment');
-   // const auth = new Auth;
-    app.use("/api/", router);
+    // const auth = new Auth;
 
-    //////////////////////////////////////////////////////////////////
+    app.use("/api/", router);
 
 
     //  **************************** TRIMESTRE ********************************
@@ -97,9 +92,11 @@ function reservACapi(app) {
         };
     });
 
-    ////////////////////////////////////////////////////////////////
-
-    //  ************************ CRUD ITEM *******************
+/*
+    ***************************************************************
+    *************************** ITEMS ROUTES ************************
+    *******************************************************************
+*/
 
     /* Mostrar todos los items en el sistema */
     router.get("/items", itemController.allItems);
@@ -116,9 +113,11 @@ function reservACapi(app) {
     /* Eliminar un item */
     router.delete("/items/:itemId", itemController.deleteItem);
 
-    //  *******************************************************************
-    //  ************************ API REST ENDPOINTS ***********************
-    //  **************************** SALAS ********************************
+/*
+    ***************************************************************
+    *************************** ROOMS ROUTES ************************
+    *******************************************************************
+*/
 
     /* Mostrar todas las salas existentes */
     router.get("/salas", salasController.allRooms);
@@ -126,138 +125,35 @@ function reservACapi(app) {
     /* Mostrar datos de una Sala */
     router.get("/salas/:salaId", salasController.specificRoom);
 
-    //  **************************** ITEMS DE SALA ********************************
+    /* Mostrar los items que posee una sala */
+    router.get("/salas/:salaId/items", salasController.getRoomItems);
 
-    //  *** Mostrar items de una Sala http://localhost:3000/api/salas/<salaId>/items ***
-    router.get("/salas/:salaId/items", async function (req, res, next) {
-        const salaId = req.params.salaId;
-        try {
-            const salaItems = await reservacService.getSalaItems(salaId);
-            res.status(200).send(salaItems.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  Mostrar todos los items menos los de que ya posee una sala
-    router.get("/not/items/:roomId", async function (req, res, next) {
-        const roomId = req.params.roomId
-        try {
-            const itemsNoOwned = await reservacService.getItemsNoOwned(roomId)
-            res.status(200).send(itemsNoOwned.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-    //  *** Eliminar un item de una sala en el trimestre actual ***
-    router.delete("/salas/:salaId/:itemId", async function (req, res, next) {
-        const id = req.params.itemId;
-        const salaId = req.params.salaId;
-        try {
-            await reservacService.deleteSalaItem(id, salaId);
-            const salaItems = await reservacService.getSalaItems(salaId);
-            res.status(200).send(salaItems.rows);
-        } catch (err) {
-            next(err);
-        };
-    });
-
-    //  *** Actualizar la cantidad de un item de una sala en el trimestre actual ***
-    router.put("/salas/:salaId/:itemId", async function (req, res, next) {
-        const { quantity } = req.body;
-        const room_id = req.params.salaId;
-        const item_id = req.params.itemId;
-        try {
-            await reservacService.updateSalaItem(room_id, item_id, quantity);
-            res.status(200).json({message: `Item ${item_id} actualizado en Sala ${room_id}`});
-        } catch (err) {
-            next(err);
-        };
-    });
-
-    //  *** Asignar un item a la sala para el trimestre actual ***
-    router.post("/salas/:salaId/:itemId", async function (req, res, next) {
-        const { quantity } = req.body;
-        const room_id = req.params.salaId;
-        const item_id = req.params.itemId;
-        try {
-            await reservacService.createSalaItem(room_id, item_id, quantity);
-            res.status(200).json({message : `${quantity} Item ${item_id} Asignado a Sala ${room_id}`});
-        } catch (err) {
-            next(err);
-        };
-    });
-
-///////////////////////////////////////////////////////////////////////////////////////////
+    /* Mostrar todos los items menos los de que ya posee una sala */
+    router.get("/not/items/:roomId", salasController.itemsNoOwned);
 
     /* Obtener todas las salas que son administradas por un laboratorio */
     router.get("/salas/admin/:userId", salasController.adminRooms);
 
     /* Obtener la imagen de una sala */
-    router.get("/salas/:salaId/picture", async function (req, res, next) {
-        const salaId = req.params.salaId;
-        try {
-            res.status(200).sendFile(path.join((__dirname) + `/../media/${salaId}.jpg`),
-                function (err) {
-                    if (err) {
-                        res.status(200).sendFile(path.join((__dirname) + `/../media/defaultImage.jpg`));
-                    }
-                }
-            );
-        } catch (err) {
-            next(err);
-        }
-    });
+    router.get("/salas/:salaId/picture", salasController.getImageRoom);
 
-    router.post("/salas/:salaId/picture/new", async function (req, res, next) {
-        try {
-            const salaId = req.params.salaId;
-            const { picture } = req.body;
-            let base64String = picture; // Not a real image
-            // Remove header
-            let base64Image = base64String.split(';base64,').pop();
-            fs.writeFile(path.join((__dirname) + `/../media/${salaId}.jpg`), base64Image, {encoding: 'base64'}, function() {
-                res.status(201).json({ message: `Imagen de ${salaId} Actualizada`});
-            });
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Eliminar un item de una sala en el trimestre actual */
+    router.delete("/salas/:salaId/:itemId", salasController.deleteRoomItem);
 
-    //  *** Actualizar descripcion nombre y status de una sala ***
-    router.put("/salas/:salaId", async function (req, res, next) {
-        const { name, description, is_active } = req.body;
-        const id = req.params.salaId;
-        try {
-            let change = await reservacService.updateSala(id, name, description, is_active);
-            if (change == 1){
-                res.status(200).json({ message: 'Sala Actualizada'});
-            }
-            else if (change == 0) {
-                res.status(403).json({ error: 'Update Invalido'});
-            }
-            else if (change == -1){
-                res.status(403).json({ error: 'Hay reservas asignadas a esta sala'});
-            }
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Actualizar la cantidad de un item de una sala en el trimestre actual */
+    router.put("/salas/:salaId/:itemId", salasController.updateRoomItems);
 
-    // Crear Sala
-    router.post("/salas/crear", async function (req, res, next) {
+    /* Actualizar descripcion nombre y status de una sala */
+    router.put("/salas/:salaId", salasController.updateRoom);
 
-        
-        const {id ,name,owner_id,manager_id, is_active , description, first_used} = req.body;
+    /* Crear una nueva sala */
+    router.post("/salas/crear", salasController.createRoom);
 
-        try {
-            await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
-            res.status(201).json({ message: `Sala ${id} Creada`});
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Agregar un item a la sala para el trimestre actual */
+    router.post("/salas/:salaId/:itemId", salasController.addRoomItem);
+
+    /* Subir una nueva imagen */
+    router.post("/salas/:salaId/picture/new", salasController.uploadRoomImage);
 
     //  **************************** RESERVAS ********************************
 
