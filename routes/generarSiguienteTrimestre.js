@@ -60,7 +60,7 @@ async function generarSiguienteTrimestre(){
 
 async function mantenerItemDeSalaDeTrimestreAnterior(pastTrim){
     try {
-        const Salas = await reservacService.getSalasId();
+        const Salas = await reservacService.getSalasActivas();
         const idSalas = Salas.rows;
         for (let elem of idSalas) {
             const itemsSala = await reservacService.getSalaItemsByTrim(elem.id,pastTrim.rows[0].id);

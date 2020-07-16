@@ -22,7 +22,6 @@ class ReservationController {
         try {
             if (typeWeek == 'todas') {
                 const salaHorasOcupadas = await reservacService.getSalaHorasOcupadasTodas(salaId);
-                console.log(salaHorasOcupadas.rows)
                 res.status(200).send(salaHorasOcupadas.rows);
             }
             else if (typeWeek == 'pares') {

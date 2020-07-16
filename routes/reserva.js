@@ -6,6 +6,7 @@ const ItemController = require('../controllers/items.controller');
 const SalaController = require('../controllers/salas.controller');
 const TrimesterController = require('../controllers/trimester.controller');
 const ReservationController = require('../controllers/reservations.controller');
+const ReservationRequestController = require('../controllers/reservationRequest.controller')
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -20,6 +21,7 @@ function reservACapi(app) {
     const salasController = new SalaController;
     const trimesterController = new TrimesterController;
     const reservationController = new ReservationController;
+    const reservationReqController = new ReservationRequestController;
     const moment = require('moment');
     // const auth = new Auth;
 
@@ -130,137 +132,26 @@ function reservACapi(app) {
     // Obtener todos los horarios reservados para una sala todas las semanas
 
 
-    //  Obtener informacion de una solicitud y su horario
-    router.get("/solicitudes/:solicitudId", async function (req, res, next) {
-        const solicitudId = req.params.solicitudId;
-        try {
-            // const schedule = await reservacService.getScheduleFromRequest(solicitudId);
-            const requestFromUser = await reservacService.getRequest(solicitudId);
-            res.status(200).send(requestFromUser.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /*  Obtener informacion de una solicitud y su horario */
+    router.get("/solicitudes/:solicitudId", reservationReqController.getReservationReq);
 
-    // Obtener horario de una solicitud de reserva
-    router.get("/solicitudes/:solicitudId/horario", async function (req, res, next) {
-        const solicitudId = req.params.solicitudId;
-        try {
-            const schedule = await reservacService.getScheduleFromRequest(solicitudId);
-            res.json(schedule);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener horario de una solicitud de reserva */
+    router.get("/solicitudes/:solicitudId/horario", reservationReqController.getReservationReqSchedule);
 
-    //  Obtener todas las solicitudes hechas por un usuario
-    router.get("/solicitudes/usuario/:userId", async function (req, res, next) {
-        const userId = req.params.userId;
-        try {
-            const requestFromUser = await reservacService.getRequestUser(userId);
-            res.status(200).send(requestFromUser.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /*  Obtener todas las solicitudes hechas por un usuario */
+    router.get("/solicitudes/usuario/:userId", reservationReqController.userReservationsReqs);
 
-    // Obtener todas las solicitudes correspondientes a un laboratorio.
-    router.get("/solicitudes/admin/:labId", async function (req, res, next) {
-        const labId = req.params.labId;
-        try {
-            const requestFromUser = await reservacService.getRequests(labId);
-            res.status(200).send(requestFromUser.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todas las solicitudes correspondientes a un laboratorio. */
+    router.get("/solicitudes/admin/:labId", reservationReqController.adminReservationsRequest);
 
     // Crear una solicitud reserva
-    router.post("/crear/solicitudes/reserva", async function (req, res, next) {
-        let { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
-        try {
-            if (!req.body[1]) {
-                res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})
-            } else {
-                if (isNaN(quantity) || quantity < 0) {
-                    res.status(403).json({error: "La cantidad de estudiantes debe ser un numero positivo"})
-                }
-                if (!material) {
-                    material = "No hay requerimientos"
-                }
-                const id = await reservacService.createReservationRequest(requester, subject, room, material, quantity)
-                if (semanas == "todas") {
-                    for (let index = 1; index < 13; index++) {
-                        await reservacService.insertarhorario(index,req.body, id);
-                    }
-                } else if (semanas == "pares") {
-                    for (let index = 2; index < 13; index += 2) {
-                        await reservacService.insertarhorario(index,req.body, id);
-                    }
-                } else if (semanas == "impares") {
-                    for (let index = 1; index < 13; index += 2) {
-                        await reservacService.insertarhorario(index,req.body, id);
-                    }
-                } else if (Number.isInteger(semanas) && semanas > 0 && semanas < 13) {
-                    await reservacService.insertarhorario(semanas,req.body, id);
-                } else {
-                    res.status(403).json({error: "No se esta especificando un tipo de semana correctamente"})
-                }
-                res.status(201).json({message: "Se creo correctamente la solicitud"})
-            }
-        } catch (err) {
-            next(err)
-        }
-    });
+    router.post("/crear/solicitudes/reserva", reservationReqController.createReservationRequest);
 
-    // Actualizar una solicitud por id = <request_id> .
-    router.put("/solicitudes/reserva/:requestId", async function (req, res, next) {
-        const requestId = req.params.requestId;
-        let { reason, status } = req.body;
-        try {
-            const solicitud = await reservacService.getScheduleFromRequestForPut(requestId);
-            if (solicitud.rowCount == 0) {
-                res.status(403).json({error: `La reserva no posee ningun horario`});
-                return
-            }
-            const result = solicitud.rows[0];
-            let room = solicitud.rows[0].room_id;
-            const checkSchedule = await reservacService.checkIfExists(room, requestId);
-            if (status == 'A') {
-                // Existe un horario ya asignado en ese horario que se solicita
-                if (checkSchedule.rowCount > 0) {
-                    res.status(403).json({error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`});
-                    return
-                } else {
-                    await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), requestId);
-                    await reservacService.updateRequest(requestId, 'Aprobado', 'A');
-                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
-                    return
-                }
-            } else {
-                if (!reason) {
-                    reason = 'Solicitud Rechazada';
-                    return
-                }
-                await reservacService.updateRequest(requestId, reason, 'R');
-                res.status(200).json({message: 'Solicitud Actualizada'});
-                return
-            }
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Actualizar una solicitud por id = <request_id> . */
+    router.put("/solicitudes/reserva/:requestId", reservationReqController.manageReservationReq);
 
-    // Eliminar solicitud de reserva de una sala
-    router.delete("/eliminar/solicitud/reserva/:idResquest", async function (req, res, next) {
-        const requestId = req.params.idResquest;
-        await reservacService.deleteRequest(requestId);
-        try {
-            res.status(200).json({message: 'Solicitud eliminada satisfactoriamente'});
-        } catch (err) {
-            next(err);
-        };
-    });
+    /* Eliminar solicitud de reserva de una sala */
+    router.delete("/eliminar/solicitud/reserva/:idResquest", reservationReqController.deleteReservationReq);
 
     //  ****************************  SOLICITUDES ROOM REQUEST ********************************
 

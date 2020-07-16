@@ -73,7 +73,7 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
 
-    async getSalasId() {
+    async getSalasActivas() {
         let query = 'SELECT id FROM room WHERE is_active = true';
         const items = await pool.query(query);
         return items || [];
@@ -416,9 +416,9 @@ class ReservacService {
         // Elimina primero el horario asignado a esa solicitud y luego la solicitud de reserva como tal
         let queryDeleteSchedule = `DELETE FROM reservation_request_schedule WHERE reservation_request_id = ${id}`;
         let queryDeleteRequest = `DELETE FROM reservation_request WHERE id = ${id}`;
-        const deletedRequestSchedule = await pool.query(queryDeleteSchedule);
+        await pool.query(queryDeleteSchedule);
         const deletedRequest = await pool.query(queryDeleteRequest);
-        return deletedRequest, deletedRequestSchedule;
+        return deletedRequest;
     }
 
     //  ********************* SERVICIOS DE ROOM REQUEST  *********************
