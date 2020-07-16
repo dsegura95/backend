@@ -8,7 +8,7 @@ const TrimesterController = require('../controllers/trimester.controller');
 const ReservationController = require('../controllers/reservations.controller');
 const ReservationRequestController = require('../controllers/reservationRequest.controller')
 const RoomRequestController = require('../controllers/roomRequest.controller')
-
+const SubjectsController = require('../controllers/subjects.controller')
 /* Validations */
 const boom = require('@hapi/boom');
 //const Auth= require('../authentication/auth.js');
@@ -23,7 +23,8 @@ function reservACapi(app) {
     const trimesterController = new TrimesterController;
     const reservationController = new ReservationController;
     const reservationReqController = new ReservationRequestController;
-    const roomReqController = new RoomRequestController
+    const roomReqController = new RoomRequestController;
+    const subjectController = new SubjectsController;
     // const auth = new Auth;
 
     // Prefix Route
@@ -148,10 +149,10 @@ function reservACapi(app) {
     /* Obtener todas las solicitudes correspondientes a un laboratorio. */
     router.get("/solicitudes/admin/:labId", reservationReqController.adminReservationsRequest);
 
-    // Crear una solicitud reserva
+    /* Crear una solicitud reserva */
     router.post("/crear/solicitudes/reserva", reservationReqController.createReservationRequest);
 
-    /* Actualizar una solicitud por id = <request_id> . */
+    /* Actualizar (Aceptar/rechazar) una solicitud */
     router.put("/solicitudes/reserva/:requestId", reservationReqController.manageReservationReq);
 
     /* Eliminar solicitud de reserva de una sala */
@@ -234,21 +235,20 @@ function reservACapi(app) {
         }
     });
 
-    //  **************************** MATERIAS ********************************
+/*
+    ***************************************************************
+    ************************ SUBJECTS ROUTES ************************
+    *******************************************************************
+*/
 
-    // Obtener todas las materias en el sistema
-    router.get("/subjects", async function (req, res, next) {
-        try {
-            const subjects = await reservacService.getSubjects();
-            res.status(200).send(subjects.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todas las materias en el sistema */
+    router.get("/subjects", subjectController.getSubjects);
 
-
-
-    //  *****************************Registro y autenticacion de Usuarios************
+/*
+    ***************************************************************
+    ************************ USERS AUTH ROUTES **********************
+    *******************************************************************
+*/
 
     router.post("/signup", async function (req,res,next){
         try{
