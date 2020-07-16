@@ -106,7 +106,7 @@ class ReservationRequestController {
                     return
                 }
                 await reservacService.updateRequest(requestId, reason, 'R');
-                res.status(200).json({message: 'Solicitud Actualizada'});
+                res.status(200).json({message: 'Solicitud rechazada correctamente'});
                 return
             }
         } catch (err) {

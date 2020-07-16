@@ -7,6 +7,7 @@ const SalaController = require('../controllers/salas.controller');
 const TrimesterController = require('../controllers/trimester.controller');
 const ReservationController = require('../controllers/reservations.controller');
 const ReservationRequestController = require('../controllers/reservationRequest.controller')
+const RoomRequestController = require('../controllers/roomRequest.controller')
 
 /* Validations */
 const boom = require('@hapi/boom');
@@ -22,7 +23,7 @@ function reservACapi(app) {
     const trimesterController = new TrimesterController;
     const reservationController = new ReservationController;
     const reservationReqController = new ReservationRequestController;
-    const moment = require('moment');
+    const roomReqController = new RoomRequestController
     // const auth = new Auth;
 
     // Prefix Route
@@ -126,8 +127,11 @@ function reservACapi(app) {
     router.post("/crear/reserva", reservationController.createNewReservation);
 
 
-    //  **************************** SOLICITUDES DE RESERVA ********************************
-
+/*
+    ***************************************************************
+    ****************** RESERVATIONS REQUEST ROUTES ******************
+    *******************************************************************
+*/
 
     // Obtener todos los horarios reservados para una sala todas las semanas
 
@@ -153,83 +157,29 @@ function reservACapi(app) {
     /* Eliminar solicitud de reserva de una sala */
     router.delete("/eliminar/solicitud/reserva/:idResquest", reservationReqController.deleteReservationReq);
 
-    //  ****************************  SOLICITUDES ROOM REQUEST ********************************
+/*
+    ***************************************************************
+    ********************** ROOM REQUEST ROUTES **********************
+    *******************************************************************
+*/
+    // [CAMBIAR ESTA RUTA MIERDERA, QUE CARAJO EL /CREAR/? CARLOS - ACTUALIZAR CON FRONT]
+    /* Obtener solicitudes de sala por parte de un usuario en especifico */
+    router.get("/sala/solicitudes/crear/:userId", roomReqController.getRoomReqFromAdminLab);
 
-    //Obtener solicitudes de sala por parte de un usuario en especifico
+    /* Obtener todas las room_request */
+    router.get("/labf/solicitudes", roomReqController.getAllRoomRequest);
 
-    router.get("/sala/solicitudes/crear/:userId", async function(req,res,next){
-        const userId= req.params.userId;
-      
-        try{
+    /* Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir) */
+    router.put("/sala/solicitudes/:roomRequestId", roomReqController.manageRoomRequest);
 
-            const result= await reservacService.getRoomRequestFromUser(userId);
-            res.status(200).send(result.rows);
-        }
-        catch(err){
-            next(err);
-        }
+    /* Crear una solicitud de sala */
+    router.post("/sala/solicitudes/crear/:userId", roomReqController.createRoomRequest);
 
-    });
-
-
-    // Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir)
-    router.put("/sala/solicitudes/:roomRequestId", async function (req, res, next) {
-        const id = req.params.roomRequestId;
-        const status = req.body.status;
-        const result = await reservacService.updateRoomRequest(id, status);
-        let date = moment().format('YYYY-MM-DD');
-        if (!result) {
-
-            res.status(403).json({error : `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`});
-
-        } else {
-            try {
-                if (status == 'A') {
-                    try {
-                        await reservacService.createSalaFromRequest(id, date);
-                    }
-                    catch (err) {
-                        next(err);
-                    }
-                }
-                res.status(200).json({error : `Solicitud de agregar sala Atendida`});
-            }
-            catch (err) {
-                next(err);
-            };
-        }
-    });
-
-    // Crear una solicitud de sala
-    router.post("/sala/solicitudes/crear/:userId", async function (req, res, next) {
-        const userId = req.params.userId;
-        const room_id = req.body.room_id;
-        let date = moment().format('YYYY-MM-DD');
-        const result = await reservacService.createRoomRequest(room_id,userId, date);
-        if(result==null){
-            res.status(403).json({error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`});
-        }
-        else{
-            try {            
-                res.status(201).json({message :  `Solicitud de sala ${room_id} creada exitosamente`});
-            } catch (err) {
-                next(err);
-            }
-        }
-    });
-
-    // Obtener todas las room_request
-    router.get("/labf/solicitudes", async function (req, res, next) {
-        try {
-            const requests = await reservacService.getRoomRequest();
-            res.status(200).send(requests.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
-
-
-    //  **************************** USUARIOS ********************************
+/*
+    ***************************************************************
+    ************************ USERS ROUTES****************************
+    *******************************************************************
+*/
 
     // Obtener un usuario de la base de datos.
     router.get("/usuario/:userId", async function (req, res, next) {
