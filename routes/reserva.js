@@ -8,9 +8,9 @@ const TrimesterController = require('../controllers/trimester.controller');
 const ReservationController = require('../controllers/reservations.controller');
 const ReservationRequestController = require('../controllers/reservationRequest.controller')
 const RoomRequestController = require('../controllers/roomRequest.controller')
-const SubjectsController = require('../controllers/subjects.controller')
-/* Validations */
-const boom = require('@hapi/boom');
+const SubjectsController = require('../controllers/subjects.controller');
+const UserController = require('../controllers/users.controller');
+
 //const Auth= require('../authentication/auth.js');
 
 
@@ -25,6 +25,7 @@ function reservACapi(app) {
     const reservationReqController = new ReservationRequestController;
     const roomReqController = new RoomRequestController;
     const subjectController = new SubjectsController;
+    const userController = new UserController;
     // const auth = new Auth;
 
     // Prefix Route
@@ -178,62 +179,21 @@ function reservACapi(app) {
 
 /*
     ***************************************************************
-    ************************ USERS ROUTES****************************
+    ************************ USERS ROUTES ****************************
     *******************************************************************
 */
 
-    // Obtener un usuario de la base de datos.
-    router.get("/usuario/:userId", async function (req, res, next) {
-        const userId = req.params.userId;
-        try {
-            const requestFromUser = await reservacService.getUser(userId);
-            if (requestFromUser.rows.length) {
-                res.status(200).send(requestFromUser.rows);
-            } else {
-                res.json(boom.notFound('missing').output.payload);
-            }
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener un usuario de la base de datos. */
+    router.get("/usuario/:userId", userController.getUser );
 
-    //  Obtener todos los usuarios
-    router.get("/usuarios", async function (req, res, next) {
-        try {
-            const requestFromUser = await reservacService.getUsers();
-            if (requestFromUser.rows.length) {
-                res.status(200).send(requestFromUser.rows);
-            } else {
-                res.json(boom.notFound('missing').output.payload);
-            }
-        } catch (err) {
-            next(err);
-        }
-    });
+    /*  Obtener todos los usuarios */
+    router.get("/usuarios", userController.getUsers);
 
-    // Obtener todos los usuarios que son laboratorio docente
-    router.get("/usuarios/admin", async function (req, res, next) {
-        try {
-            const adminUsers = await reservacService.getAdminUsers();
-            if (adminUsers.rows.length) {
-                res.status(200).send(adminUsers.rows);
-            } else {
-                res.json(boom.notFound('missing').output.payload);
-            }
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todos los usuarios que son laboratorio docente */
+    router.get("/usuarios/admin", userController.getAdmins);
 
-    // Obtener todos los usuarios que son profesor o estudiante
-    router.get("/usuarios/profesor", async function (req, res, next) {
-        try {
-            const profesor = await reservacService.getProfesor();
-            res.status(200).send(profesor.rows);
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener todos los usuarios que son profesor o estudiante */
+    router.get("/usuarios/profesor", userController.getStandardUsers);
 
 /*
     ***************************************************************
