@@ -1,4 +1,4 @@
-const { config } = require('../config');
+const { config } = require('../config/config.js');
 const boom = require('@hapi/boom');
 
 function withErrorStack(error, stack){

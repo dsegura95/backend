@@ -1,16 +1,19 @@
 const { Pool } = require('pg')
 const Auth = require('../authentication/auth.js')
+const { config } = require('../config/config.js');
+
+
 
 
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
-// Obtiene todos estos valores del .env
+// Obtiene todos estos valores del ./config/index.js
 // PD: para el refactor del codigo seria bueno que anada condicionales aqui para correr con BD de QA y BD de PROD, para los tests de QA con jenkins
 const pool = new Pool({
-    host: process.env.host,
-    user: process.env.user,
-    password: process.env.password,
-    database: process.env.database,
-    port: process.env.port
+    host: config.host,
+    user: config.user,
+    password: config.password,
+    database: config.database,
+    port: config.portdb
 })
 
 // *********************Se importan metodos de autenticacion ********************

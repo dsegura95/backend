@@ -1,7 +1,7 @@
 const express = require('express');
 
 const app = express();
-const { config } = require('./config/index.js');
+const { config } = require('./config/config.js');
 const reservACapi = require('./routes/reserva.js');
 
 const {
@@ -21,8 +21,6 @@ setIntervalAsync(generator, 12000);
 var path = require('path');
 var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
-
-// Body Parser middlewares
 
 // app.use(express.json());
 app.use(express.json({limit: '10mb', extended: true}))

@@ -15,7 +15,6 @@ const reservacService = new ReservacService
 */
 class SubjectsController {
 
-    // GET all subjects in the DB
     async getSubjects(req, res, next) {
         try {
             const subjects = await reservacService.getSubjects();
