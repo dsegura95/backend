@@ -50,6 +50,11 @@ $ npm run dtest
 Desarrollando con docker:
 ---------
 
+- Para instalar modules:
+```
+$ docker-compose exec backend npm install <nombrePaquete>
+```
+
 - Para ver logs de la app en conjunto:
 ```
 $ docker-compose logs -f
