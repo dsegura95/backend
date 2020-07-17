@@ -15,7 +15,9 @@ const MetricsController = require('../controllers/metric.controller');
 
 function reservACapi(app) {
 
-    const router = express.Router();
+    // Prefix Route
+    
+    const router = express.Router(); 
     const itemController = new ItemController;
     const salasController = new SalaController;
     const trimesterController = new TrimesterController;
@@ -26,9 +28,9 @@ function reservACapi(app) {
     const userController = new UserController;
     const metricController = new MetricsController;
     // const auth = new Auth;
-
-    // Prefix Route
+    
     app.use("/api/", router);
+
 
 
 /*

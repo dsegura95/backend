@@ -1,7 +1,7 @@
 const express = require('express');
 
 const app = express();
-const { config } = require('./config/config.js');
+const { config } = require('./config/index.js');
 const reservACapi = require('./routes/reserva.js');
 
 const {
@@ -44,6 +44,7 @@ app.use(notFoundHandler);
 app.use(logErrors);
 app.use(wrapErrors);
 app.use(errorHandler);
+
 
 app.listen(config.port, function () {
     (config.dev === 'development')

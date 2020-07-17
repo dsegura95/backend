@@ -23,7 +23,7 @@ pipeline {
         stage('Tests Result') {
             steps {
                 script {
-                    def dockerfile = 'DockerfileBackend'
+                    def dockerfile = './docker/DockerfileBackend'
                     def dockerImage = docker.build("${registry}:${env.BUILD_ID}", "-f ${dockerfile} .")
                     // Connect to docker cont and run tests
                     try {
@@ -49,7 +49,7 @@ pipeline {
     post {
         always {
             script {
-                if (currentBuild.currentResult == 'FAILURE') { 
+                if (currentBuild.currentResult == 'FAILURE') {
                     // Send an email only if the build status has changed from green/unstable to red
                     emailext subject: ' $DEFAULT_SUBJECT',
                         body: '$DEFAULT_CONTENT',

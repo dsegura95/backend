@@ -1,6 +1,6 @@
 const { Pool } = require('pg')
 const Auth = require('../authentication/auth.js')
-const { config } = require('../config/config.js');
+const { config } = require('../config/index.js');
 
 
 
