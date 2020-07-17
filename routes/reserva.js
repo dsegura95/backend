@@ -1,7 +1,6 @@
 const express = require('express');
 
 /* Route controllers */
-const ReservacService = require('../services/reserva');
 const ItemController = require('../controllers/items.controller');
 const SalaController = require('../controllers/salas.controller');
 const TrimesterController = require('../controllers/trimester.controller');
@@ -10,14 +9,13 @@ const ReservationRequestController = require('../controllers/reservationRequest.
 const RoomRequestController = require('../controllers/roomRequest.controller')
 const SubjectsController = require('../controllers/subjects.controller');
 const UserController = require('../controllers/users.controller');
-
+const MetricsController = require('../controllers/metric.controller');
 //const Auth= require('../authentication/auth.js');
 
 
 function reservACapi(app) {
 
     const router = express.Router();
-    const reservacService = new ReservacService;
     const itemController = new ItemController;
     const salasController = new SalaController;
     const trimesterController = new TrimesterController;
@@ -26,6 +24,7 @@ function reservACapi(app) {
     const roomReqController = new RoomRequestController;
     const subjectController = new SubjectsController;
     const userController = new UserController;
+    const metricController = new MetricsController;
     // const auth = new Auth;
 
     // Prefix Route
@@ -195,6 +194,12 @@ function reservACapi(app) {
     /* Obtener todos los usuarios que son profesor o estudiante */
     router.get("/usuarios/profesor", userController.getStandardUsers);
 
+    /* Registrar un nuevo usuario */
+    router.post("/signup", userController.signUp);
+
+    /* Inicio de sesion */
+    router.post("/signin", userController.signIn);
+
 /*
     ***************************************************************
     ************************ SUBJECTS ROUTES ************************
@@ -206,108 +211,18 @@ function reservACapi(app) {
 
 /*
     ***************************************************************
-    ************************ USERS AUTH ROUTES **********************
+    ************************ METRICS ROUTES *************************
     *******************************************************************
 */
 
-    router.post("/signup", async function (req,res,next){
-        try{
-            const {usbId, name, email, type, chief,clave} = req.body;
-            const registro= await reservacService.registerUser(usbId,name,email,type,chief,clave);
-            
-            res.json ({auth: true, token : registro});           
+    /* Obtener el numero de estudiantes que ha usado la sala hasta la actualidad */
+    router.get("/metrics/usodesala/:RoomId", metricController.roomUsage);
 
-        }catch(err){
+    /* Obtener el numero de reservas que ha tenido la sala desde una fecha de inicio hasta una fecha final */
+    router.get("/metrics/totalreservas", metricController.getReservationsQuantity);
 
-            next(err);
-        }
-    });
-
-    router.post("/signin", async function (req,res,next){
-        try{
-
-            const {usbId, clave} = req.body;
-            const login= await reservacService.loginUser(usbId, clave);
-            if (login==0){
-                res.status(404).send("Usuario no registrado en la base de datos");
-            }else if(login==1){
-                res.status(403).send("Clave incorrecta");
-            }
-            else{
-            res.json({auth: true, token: login});
-            }       
-
-        }catch(err){
-            next(err);
-        }
-    });
-    //  *****************************Metricas************************************
-    router.get("/metrics/usoDeSala/:RoomId", async function (req, res, next) {
-
-        const room_id=req.params.RoomId;
-        const fechaInicio= req.body.fechaInicio;
-        if(fechaInicio==undefined){
-            res.status(403).json({error: `No se ha introducido ninguna fecha`})
-            return
-        }
-        try {
-            const result = await reservacService.usoDesdeFecha(room_id, fechaInicio);
-            if (result!=null){
-                res.status(200).send(`La sala ha sido utilizada por ${result} estudiantes desde la fecha ${fechaInicio} hasta la fecha actual`);
-            }
-            else{
-                res.status(200).send(`La sala no ha sido utilizada por ningun estudiante desde la fecha ${fechaInicio} hasta la fecha actual`);
-            }
-        } catch (err) {
-            next(err);
-        }
-    });
-    router.get("/metrics/totalReservas", async function (req, res, next) {               
-        const modo= req.body.modo;
-        let result;
-        try {
-            result= await reservacService.numeroDeReservas(modo);
-        }
-        catch(err){
-            next(err);
-        }
-        if(modo=='A'){
-            res.status(200).send(`Existen un total de ${result} reservas aprobadas en el sistema`);
-        }
-        else if(modo=='P'){
-            res.status(200).send(`Existen un total de ${result} reservas en espera en el sistema`);
-        }
-        else if(modo=='R'){
-            res.status(200).send(`Existen un total de ${result} reservas rechazadas en el sistema`);
-        }
-        else if(modo=='T'){
-            res.status(200).send(`Existen un total de ${result} reservas en el sistema`);
-        }
-        else{
-            res.status(403).json({error : `El filtro seleccionado no es valido`});
-        }
-    });
-    router.get("/metrics/variacionItems/:RoomId", async function (req, res, next) {
-
-        const room_id=req.params.RoomId;
-        const trimestreInicio= req.body.trimestreInicio;
-        const trimestreFinal= req.body.trimestreFinal;
-        if(trimestreInicio==undefined || trimestreFinal==undefined){
-            res.status(403).json({error: `No se ha introducido el trimestre inicio o trimestre final`})
-            return
-        }
-        try {
-            const result = await reservacService.variacionItems(room_id, trimestreInicio, trimestreFinal);
-            if (result==0){
-                res.status(404).json({error : `El trimestre de inicio o trimestre final introducidos no existen en el sistema o son iguales`});
-            }
-            else{
-               res.status(200).send(result.rows)
-            }
-        } catch (err) {
-            next(err);
-        }
-    });
+    /* Obtener la variaciones de los items desde un trimestre a otro especificado */
+    router.get("/metrics/variacionitems/:RoomId", metricController.getItemsVarations);
 
 }
 module.exports = reservACapi;
