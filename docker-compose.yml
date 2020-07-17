@@ -2,7 +2,7 @@ version: "3.8"
 services:
     postgresdb:
         build:
-            context: .
+            context: ./docker
             dockerfile: DockerfileDb
         image: reservadb
         container_name: db_reserva_cont
@@ -16,7 +16,7 @@ services:
 
     backend:
         build:
-            context: .
+            context: ./docker
             dockerfile: DockerfileBackend
         image: reservabackend
         container_name: backend_reserva_cont
@@ -29,4 +29,4 @@ services:
         volumes:
             - .:/app
             - /app/node_modules
-        command: ./wait-for-it.sh postgresdb:5432 -- npm run dev
+        command: ./scripts/wait-for-it.sh postgresdb:5432 -- npm run dev
