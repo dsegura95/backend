@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production node index",
     "test": "mocha tests/ --exit",
     "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down"
+
   },
   "keywords": [],
   "author": "Jesus Kauze, Jose Barrera, David Segura",
@@ -32,6 +33,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
+    "mocha": "^8.0.1",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1"
   },
