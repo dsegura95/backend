@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+    postgresdb:
+        build:
+            context: ./docker
+            dockerfile: DockerfileDb
+        image: reservadb
+        container_name: db_reserva_cont
+        environment:
+            POSTGRES_DB: ${DATABASE:-reserva}
+            POSTGRES_PASSWORD: ${PASSWORD:-1234}
+        volumes:
+            - ./data_base:/var/lib/postgres/data
+        ports:
+            - '${PORTDB:-5432}:5432'
+
+    backend:
+        build:
+            context: ./docker
+            dockerfile: DockerfileBackend
+        image: reservabackend
+        container_name: backend_reserva_cont
+        environment:
+            - HOST=postgresdb
+        depends_on:
+            - postgresdb
+        ports:
+            - '${PORT:-3000}:${PORT:-3000}'
+        volumes:
+            - .:/app
+            - /app/node_modules
+        command: ./scripts/wait-for-it.sh postgresdb:5432 -- npm run dev

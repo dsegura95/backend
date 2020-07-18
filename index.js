@@ -16,26 +16,21 @@ const generator = require('./routes/generarSiguienteTrimestre.js');
 const { setIntervalAsync } = require('set-interval-async/dynamic');
 
 // Check if Trimester has ended
-setIntervalAsync(generator, 12000);
+setIntervalAsync(generator, 350000);
 
 var path = require('path');
 var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
 
-// Body Parser middlewares
-
-app.use(express.json());
-
+// app.use(express.json());
 app.use(express.json({limit: '10mb', extended: true}))
 app.use(express.urlencoded({limit: '10mb', extended: true}))
-// app.use(express.json({limit: '10mb'}));
-// app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Allow', 'GET, POST, PATCH, OPTIONS, PUT, DELETE');
     next();
 });
 
@@ -49,6 +44,7 @@ app.use(notFoundHandler);
 app.use(logErrors);
 app.use(wrapErrors);
 app.use(errorHandler);
+
 
 app.listen(config.port, function () {
     (config.dev === 'development')
