@@ -61,7 +61,7 @@ describe('Rooms', () => {
                     // need type array
                     expect(res.body).be.a('array');
                     // need length (3)
-                    expect(res.body.length).be.eql(3);
+                    expect(res.body.length).be.equal(3);
                     done();
                 });
         });
