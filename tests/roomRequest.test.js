@@ -72,5 +72,28 @@ describe('Room Requests', () => {
         });
     });
 
+    /*
+     * Test the /POST
+     */
+    describe('POST /api/sala/solicitudes/crear/ldac', () => {
+        it('it should create a new room request', (done) => {
+            let roomRequest = {
+                room_id: 'MYS-123',
+            }
+            chai.request(app)
+                .post('/api/sala/solicitudes/crear/ldac')
+                .send(roomRequest)
+                .end((err, res) => {
+                    // status: 201
+                    expect(res).to.have.status(201)
+                    // type: object message
+                    expect(res.body).be.a('object');
+                    // message: <quantity> items asignados a Sala <room_id>
+                    expect(res.body.Message).to.have.equal( `Solicitud de sala ${roomRequest.room_id} creada exitosamente`)
+                    done();
+                });
+        });
+    });
+
 
 })
