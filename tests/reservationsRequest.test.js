@@ -93,14 +93,14 @@ describe('Reservations requests', () => {
      * Test the /POST
      */
     describe('POST /api/crear/solicitudes/reserva', () => {
-        it('it should create new room: TES-001', (done) => {
+        it('it should create new reservation request', (done) => {
             let request = [{
                 "requester": "ldac",
                 "subject": "PS1115",
                 "room": "MYS-019",
                 "quantity": 30,
                 "material": "Debian 10 y GCC",
-                "semanas": "todas"
+                "semanas": "impares"
             },{
                 "dia": "miercoles",
                 "hora": 1
@@ -123,13 +123,13 @@ describe('Reservations requests', () => {
     /*
      * Test the /PUT
      */
-    describe('PUT /api/solicitudes/reserva/17', () => {
+    describe('PUT /api/solicitudes/reserva/16', () => {
         it('it should aproved the last request', (done) => {
             let aprovedReq = {
                 status: "A"
             }
             chai.request(app)
-                .put('/api/solicitudes/reserva/17')
+                .put('/api/solicitudes/reserva/16')
                 .send(aprovedReq)
                 .end((err, res) => {
                     // status: 200

@@ -107,7 +107,7 @@ class ReservationController {
                 } else {
                     await reservacService.createReservation(room, result.subject_id, result.trimester_id, result.send_time.toISOString().substring(0, 10), idCreatedRequest);
                     await reservacService.updateRequest(idCreatedRequest, 'Aprobado', 'A');
-                    res.status(200).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
+                    res.status(201).json({message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`});
                     return
                 }
             }

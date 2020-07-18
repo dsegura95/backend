@@ -16,7 +16,7 @@ const generator = require('./routes/generarSiguienteTrimestre.js');
 const { setIntervalAsync } = require('set-interval-async/dynamic');
 
 // Check if Trimester has ended
-setIntervalAsync(generator, 35000);
+setIntervalAsync(generator, 350000);
 
 var path = require('path');
 var dir = path.join(__dirname, 'public');
