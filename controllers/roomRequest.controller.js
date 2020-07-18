@@ -26,7 +26,7 @@ class RoomRequestController {
             res.status(200).send(result.rows);
         }
         catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
 
@@ -60,9 +60,9 @@ class RoomRequestController {
                         next(err);
                     }
                 }
-                res.status(200).json({ Message: `Solicitud de agregar sala Atendida` });
+                res.status(200).json({ message: `Solicitud de agregar sala Atendida` });
             } catch (err) {
-                res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+                res.status(500).json({ error: 'Ocurrio un error en el servidor' });
                 next(err);
             };
         }
@@ -75,15 +75,15 @@ class RoomRequestController {
         let date = moment().format('YYYY-MM-DD');
         const result = await reservacService.createRoomRequest(room_id, userId, date);
         if (result == null) {
-            res.status(403).json({ Error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala` });
+            res.status(403).json({ error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala` });
         } else if (room_id.length > 7) {
-            res.status(403).json({ Error: `El nombre a solicitar es incorrecto` });
+            res.status(403).json({ error: `El nombre a solicitar es incorrecto` });
         }
         else {
             try {
-                res.status(201).json({ Message: `Solicitud de sala ${room_id} creada exitosamente` });
+                res.status(201).json({ message: `Solicitud de sala ${room_id} creada exitosamente` });
             } catch (err) {
-                res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+                res.status(500).json({ error: 'Ocurrio un error en el servidor' });
                 next(err);
             }
         }

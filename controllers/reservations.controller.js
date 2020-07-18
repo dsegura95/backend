@@ -37,10 +37,10 @@ class ReservationController {
                 res.status(200).json(reservationsOnWeek.rows);
             }
             else {
-                res.status(400).json({Error: 'Especifique una semana valida'})
+                res.status(400).json({error: 'Especifique una semana valida'})
             }
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -52,7 +52,7 @@ class ReservationController {
             const reservationsRoom = await reservacService.getReservationByRoom(room);
             res.json(reservationsRoom.rows);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -64,7 +64,7 @@ class ReservationController {
             const asinationSchedule = await reservacService.getScheduleFromAsignation(id);
             res.json(asinationSchedule.rows);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -112,7 +112,7 @@ class ReservationController {
                 }
             }
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err)
         }
     }

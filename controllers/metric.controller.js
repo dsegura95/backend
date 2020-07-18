@@ -32,7 +32,7 @@ class MetricsController {
                 res.status(200).send(`La sala no ha sido utilizada por ningun estudiante desde la fecha ${fechaInicio} hasta la fecha actual`);
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -45,7 +45,7 @@ class MetricsController {
             result= await reservacService.numeroDeReservas(modo);
         }
         catch(err){
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
         if(modo=='A'){
@@ -84,7 +84,7 @@ class MetricsController {
                res.status(200).send(result.rows)
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }

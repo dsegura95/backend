@@ -2,6 +2,14 @@ const moment = require('moment');
 const ReservacService = require('../services/reserva');
 const reservacService = new ReservacService
 
+// Daemon to Auto Update Trimesters
+    // Explanation: Obtiene el trimestre actual obtiene su fecha de culminacion y la compara con la fecha actual
+    // Dependiendo de la fecha en la que se cumple que la fecha actual > fecha de culmunacion, elige la nueva fecha
+    // del proximo trimestre. los rangos creo que son:
+    // - Si termina entre FEB-ABRIL, crea ABR-JUL
+    // - Si termina entre JUN-AGOSTO, crea SEP-DEC
+    // - Si termina entre SEP-ENE, crea ENE-MAR
+
 async function generarSiguienteTrimestre(){
     const temp = await reservacService.getActualTrim();
     const lasTrim = (temp.rows[0].finish).toISOString();

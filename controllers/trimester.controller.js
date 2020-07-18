@@ -24,18 +24,12 @@ class TrimesterController {
         /GET
     */
 
-    // Daemon to AutoUpdate Trimesters
-    // Explanation: Obtiene el trimestre actual obtiene su fecha de culminacion y la compara con la fecha actual
-    // Dependiendo de la fecha en la que se cumple que la fecha actual > fecha de culmunacion, elige la nueva fecha
-    // del proximo trimestre. los rangos creo que son:
-    // - Si termina entre FEB-ABRIL, crea ABR-JUL
-    // - Si termina entre JUN-AGOSTO, crea SEP-DEC
-    // - Si termina entre SEP-ENE, crea ENE-MAR
+    //  This endpoint is only to test and show where is the next trimester
     async autoUpdateTrim(req, res, next) {
         const temp = await reservacService.getActualTrim();
         const lasTrim = (temp.rows[0].finish).toISOString().substring(0, 10);
         try {
-            if (!(moment().isAfter(moment(lasTrim).add(1, 'day')))) {
+            if ((moment().isAfter(moment(lasTrim).add(1, 'day')))) {
                 const lasTrimMonth = moment(lasTrim).month();
                 const lasTrimYear = moment(lasTrim).year();
 
@@ -63,12 +57,12 @@ class TrimesterController {
                         (moment(lasTrim).add(1, 'week').add(3, 'day').add(3, 'month')).toISOString().substring(0, 10),
                     )
                 }
-                res.json('el trimestre termino bicho')
+                res.status(200).json({message: 'El trimestre termino bicho'})
             } else {
-                res.json('El trimestre no ha terminado bicho')
+                res.status(200).json({message: 'El trimestre no ha terminado bicho'})
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -78,7 +72,7 @@ class TrimesterController {
             const trimestreUltimo = await reservacService.getActualTrim()
             res.status(200).send(trimestreUltimo.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }

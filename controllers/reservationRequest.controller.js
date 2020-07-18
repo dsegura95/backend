@@ -35,7 +35,7 @@ class ReservationRequestController {
             const requestFromUser = await reservacService.getRequest(solicitudId);
             res.status(200).send(requestFromUser.rows);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -47,7 +47,7 @@ class ReservationRequestController {
             const schedule = await reservacService.getScheduleFromRequest(solicitudId);
             res.json(schedule);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -59,7 +59,7 @@ class ReservationRequestController {
             const requestFromUser = await reservacService.getRequestUser(userId);
             res.status(200).send(requestFromUser.rows);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -71,7 +71,7 @@ class ReservationRequestController {
             const requestFromUser = await reservacService.getRequests(labId);
             res.status(200).send(requestFromUser.rows);
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         }
     }
@@ -110,7 +110,7 @@ class ReservationRequestController {
                 return
             }
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         };
     }
@@ -123,10 +123,10 @@ class ReservationRequestController {
             if (deletedReservationReq.rowCount == 1) {
                 res.status(200).json({message: 'Solicitud eliminada satisfactoriamente'});
             } else {
-                res.status(400).json({Error: 'No existe ninguna solicitud a eliminar'});
+                res.status(400).json({error: 'No existe ninguna solicitud a eliminar'});
             }
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err);
         };
     }
@@ -140,7 +140,7 @@ class ReservationRequestController {
         let { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
         try {
             if (!roomExist(room)) {
-                res.status(400).json({Error: 'la sala en donde se solicita la reserva no existe '});
+                res.status(400).json({error: 'la sala en donde se solicita la reserva no existe '});
             }
             if (!req.body[1]) {
                 res.status(403).json({error: "Debe llenar un horario a solicitar reserva"})

@@ -31,7 +31,7 @@ class UserController {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -46,7 +46,7 @@ class UserController {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -61,7 +61,7 @@ class UserController {
                 res.json(boom.notFound('missing').output.payload);
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -72,7 +72,7 @@ class UserController {
             const profesor = await reservacService.getProfesor();
             res.status(200).send(profesor.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -88,7 +88,7 @@ class UserController {
             const registro = await reservacService.registerUser(usbId, name, email, type, chief, clave);
             res.json({ auth: true, token: registro });
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -108,7 +108,7 @@ class UserController {
             }
 
         }catch(err){
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }

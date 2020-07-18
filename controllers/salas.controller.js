@@ -49,7 +49,7 @@ class SalaController {
             const salas = await reservacService.getSalas()
             res.status(200).send(salas.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -65,7 +65,7 @@ class SalaController {
                 res.status(404).json({ message: `No existe la sala ${salaId}` })
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -77,7 +77,7 @@ class SalaController {
             const adminSalas = await reservacService.getAdminSalas(userId);
             res.status(200).send(adminSalas.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -95,7 +95,7 @@ class SalaController {
                 }
             );
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -112,7 +112,7 @@ class SalaController {
                 res.status(201).json({ message: `Imagen de ${salaId} Actualizada` });
             });
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error al tratar de cargar la imagen` });
+            res.status(500).json({ error: `Hubo un error al tratar de cargar la imagen` });
             next(err);
         };
     }
@@ -133,7 +133,7 @@ class SalaController {
                 res.status(403).json({ error: 'Hay reservas asignadas a esta sala' });
             }
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error al momento de actualizar la sala` });
+            res.status(500).json({ error: `Hubo un error al momento de actualizar la sala` });
             next(err);
         };
     }
@@ -145,7 +145,7 @@ class SalaController {
             await reservacService.createSala(id, name, owner_id, manager_id, is_active, description, first_used);
             res.status(201).json({ message: `Sala ${id} Creada` });
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error al momento de crear la sala` });
+            res.status(500).json({ error: `Hubo un error al momento de crear la sala` });
             next(err);
         };
     }
@@ -157,7 +157,7 @@ class SalaController {
             const salaItems = await reservacService.getSalaItems(salaId);
             res.status(200).send(salaItems.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -169,7 +169,7 @@ class SalaController {
             const itemsNoOwned = await reservacService.getItemsNoOwned(roomId)
             res.status(200).send(itemsNoOwned.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error en el servidor` });
+            res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }
     }
@@ -179,7 +179,7 @@ class SalaController {
         const id = req.params.itemId;
         const salaId = req.params.salaId;
         if (!await itemExists(id)) {
-            res.status(400).json({ Error: 'El item no existe'})
+            res.status(400).json({ error: 'El item no existe'})
         }
         try {
             await reservacService.deleteSalaItem(id, salaId);
@@ -187,7 +187,7 @@ class SalaController {
             // David pidio que retornara los items que actualizados
             res.status(200).send(salaItems.rows);
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error al momento de eliminar el item` });
+            res.status(500).json({ error: `Hubo un error al momento de eliminar el item` });
             next(err);
         };
     }
@@ -198,7 +198,7 @@ class SalaController {
         const room_id = req.params.salaId;
         const item_id = req.params.itemId;
         if (!await itemExists(item_id)) {
-            res.status(400).json({ Error: 'El item no existe'})
+            res.status(400).json({ error: 'El item no existe'})
         }
         if (!validQuantity(quantity)) {
             res.status(400).json({message: `No se aceptan valores negativos o invalidos en la cantidad`});
@@ -207,7 +207,7 @@ class SalaController {
             await reservacService.updateSalaItem(room_id, item_id, quantity);
             res.status(200).json({message: `Item actualizado en Sala ${room_id}`});
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error con los datos dados al momento de actualizar` });
+            res.status(500).json({ error: `Hubo un error con los datos dados al momento de actualizar` });
             next(err);
         };
     }
@@ -219,7 +219,7 @@ class SalaController {
         const item_id = req.params.itemId;
         // Como los items ya existe, se verifica si el que se va a agregar existe
         if (!await itemExists(item_id)) {
-            res.status(400).json({ Error: 'El item no existe'})
+            res.status(400).json({ error: 'El item no existe'})
         }
         if (!validQuantity(quantity)) {
             res.status(400).json({message: `No se aceptan valores negativos o invalidos en la cantidad`});
@@ -228,7 +228,7 @@ class SalaController {
             await reservacService.createSalaItem(room_id, item_id, quantity);
             res.status(201).json({message : `${quantity} items asignados a Sala ${room_id}`});
         } catch (err) {
-            res.status(500).json({ Error: `Hubo un error con los datos dados al momento de actualizar` });
+            res.status(500).json({ error: `Hubo un error con los datos dados al momento de actualizar` });
             next(err);
         };
     }
