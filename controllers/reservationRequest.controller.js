@@ -172,7 +172,7 @@ class ReservationRequestController {
                 res.status(201).json({message: "Se creo correctamente la solicitud"})
             }
         } catch (err) {
-            res.status(500).json({ Error: 'Ocurrio un error en el servidor' });
+            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
             next(err)
         }
     }
