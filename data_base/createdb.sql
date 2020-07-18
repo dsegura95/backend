@@ -1,12 +1,9 @@
-DROP DATABASE IF EXISTS "reserva";
--- Creamos la BD
-CREATE DATABASE "reserva";
--- Nos conectamos a la BD
-\c "reserva";
--- Cargamos los datos en tablas
--- Tabla de usuario
+-- La bd la crea el docker-compose en su file de configuracion, luego crea toda estas tablas
+
 SET TIME ZONE 'America/Caracas';
 
+-- Cargamos los datos en tablas
+-- Tabla de usuario
 CREATE TABLE IF NOT EXISTS item(
     id BIGSERIAL PRIMARY KEY, -- A pata
     name VARCHAR(64) NOT NULL,

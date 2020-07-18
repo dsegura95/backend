@@ -1,14 +1,17 @@
 {
-  "name": "reservAC-api",
+  "name": "reservac-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend del sistema de reserva del mac",
   "main": "index.js",
   "scripts": {
     "dev": "DEBUG=app:* nodemon index",
-    "start": "NODE_ENV=production node index"
+    "start": "NODE_ENV=production node index",
+    "test": "mocha tests/ --exit",
+    "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down"
+
   },
   "keywords": [],
-  "author": "",
+  "author": "Jesus Kauze, Jose Barrera, David Segura",
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^9.0.0",
@@ -17,16 +20,20 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^8.0.1",
     "moment": "^2.24.0",
     "pg": "^7.18.2",
     "set-interval-async": "1.0.30"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^4.3.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
+    "mocha": "^8.0.1",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1"
   },

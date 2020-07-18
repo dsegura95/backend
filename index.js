@@ -16,13 +16,11 @@ const generator = require('./routes/generarSiguienteTrimestre.js');
 const { setIntervalAsync } = require('set-interval-async/dynamic');
 
 // Check if Trimester has ended
-setIntervalAsync(generator, 12000);
+setIntervalAsync(generator, 350000);
 
 var path = require('path');
 var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
-
-// Body Parser middlewares
 
 // app.use(express.json());
 app.use(express.json({limit: '10mb', extended: true}))
@@ -47,8 +45,11 @@ app.use(logErrors);
 app.use(wrapErrors);
 app.use(errorHandler);
 
+
 app.listen(config.port, function () {
     (config.dev === 'development')
     ? console.log(`Listening in DEVELOPMENT http://localhost:${config.port}`)
     : console.log(`Listening http://localhost:${config.port}`)
 });
+
+module.exports = app

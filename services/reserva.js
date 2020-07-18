@@ -1,15 +1,19 @@
 const { Pool } = require('pg')
 const Auth = require('../authentication/auth.js')
+const { config } = require('../config/index.js');
+
+
 
 
 //  ************************ ACCESO A BD POSTGRESQL  ***********************
-
+// Obtiene todos estos valores del ./config/index.js
+// PD: para el refactor del codigo seria bueno que anada condicionales aqui para correr con BD de QA y BD de PROD, para los tests de QA con jenkins
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    password: '1234',
-    database: 'reserva',
-    port: '5432'
+    host: config.host,
+    user: config.user,
+    password: config.password,
+    database: config.database,
+    port: config.portdb
 })
 
 // *********************Se importan metodos de autenticacion ********************
@@ -45,7 +49,7 @@ class ReservacService {
             return idsItems;
         }
     }
-    
+
     async getItem(id) {
         let query = `SELECT * FROM item WHERE id = ${id}`;
         const item = await pool.query(query);
@@ -72,7 +76,7 @@ class ReservacService {
 
     //  ************************ SERVICIOS DE LAS SALA  ***********************
 
-    async getSalasId() {
+    async getSalasActivas() {
         let query = 'SELECT id FROM room WHERE is_active = true';
         const items = await pool.query(query);
         return items || [];
@@ -168,18 +172,7 @@ class ReservacService {
     async updateSala(id, name, description, is_active) {
         let query;
         let change = 0;
-        if (is_active == "false") {
-            let howManyAsig = await this.getReservationByRoom(id);
-            if (howManyAsig.rowCount == 0) {
-                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
-                change = await pool.query(query);
-                change = 1;
-            }
-            else {
-                change = -1;
-                return change
-            }
-        }
+
         if (name) {
             query = `UPDATE room SET name = '${name}' WHERE id = '${id}'`;
             await pool.query(query);
@@ -195,10 +188,21 @@ class ReservacService {
             await pool.query(query);
             change = 1;
         }
+        if (is_active == "false") {
+            let howManyAsig = await this.getReservationByRoom(id);
+            if (howManyAsig.rowCount == 0) {
+                query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
+                change = await pool.query(query);
+                change = 1;
+            }
+            else {
+                change = -1;
+            }
+        }
         return change;
     }
 
-    // Borrar una sala por ID
+    //
     async deleteSala(id) {
         let query = `DELETE FROM room WHERE id = '${id}'`;
         const deleteItem = await pool.query(query);
@@ -221,9 +225,10 @@ class ReservacService {
 
     async updateTrim(id, start, finish) {
         let query;
+
         let dates = await this.getActualTrim();
-        let strt = dates.rows[0].start.toISOString();
-        let fnsh = dates.rows[0].finish.toISOString();
+        let strt = dates.rows[0].start.toISOString().substring(0, 10);
+        let fnsh = dates.rows[0].finish.toISOString().substring(0, 10);
         if ((!start) && (finish > strt)) {
             query = `UPDATE trimester SET finish = '${finish}' WHERE id = '${id}'`;
         }
@@ -291,39 +296,46 @@ class ReservacService {
     // }
 
     async getScheduleFromRequestForPut(solicitudId) {
-        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON
                      horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || []
     }
 
     async getScheduleFromRequest(solicitudId) {
-        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
+        let query = `SELECT * FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON
                      horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId}`;
-        let groupByWeek = `SELECT week FROM reservation_request_schedule AS horario JOIN reservation_request AS solicitud ON 
-                     horario.reservation_request_id = solicitud.id WHERE reservation_request_id = ${solicitudId} GROUP BY week`;
         const request = await pool.query(query);
-        const requestWeek = await pool.query(groupByWeek);
         const content = request.rows;
-        const weeks = requestWeek.rows;
         const response = {
             typeWeek: "-1",
             shedule: content
         };
-        // Semana especifica
-        if (weeks.length == 1) {
-            response.typeWeek = weeks[0].week.toString();
+        if (content.length == 1) {
+            response.typeWeek = content[0].week.toString();
         }
-        // Verificacion de que tipo de semana corresponde
-        else {
-            const first = weeks[0].week;
-            const second = weeks[1].week;
-            if (first % 2 == 0 && second % 2 == 0) {
-              response.typeWeek = "pares";
-            } else if (first % 2 == 1 && second % 2 == 1) {
-              response.typeWeek = "impares";
-            } else {
-              response.typeWeek = "todas";
+        else if (content.length > 1) {
+            const first = content[0];
+            const second = content[1];
+            if (first.hour == second.hour) {
+                if (first.week % 2 == 0) {
+                    if (second.week % 2 == 0) {
+                        response.typeWeek = "pares";
+                    }
+                    else{
+                        response.typeWeek = "todas";
+                    }
+                }
+                else{
+                    if (second.week % 2 != 0) {
+                        response.typeWeek = "impares";
+                    }
+                    else{
+                        response.typeWeek = "todas";
+                    }
+                }
+            }else{
+                response.typeWeek = content[0].week.toString();
             }
         }
         return response;
@@ -333,7 +345,7 @@ class ReservacService {
     async checkIfExists(roomId, solicitudId) {
         let query = `SELECT * FROM reservation_request_schedule AS r JOIN (SELECT * FROM asignation JOIN
             asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${roomId}')
-            AS result ON result.day = r.day AND result.hour = r.hour AND result.week = r.week WHERE r.reservation_request_id = ${solicitudId}`;
+            AS result ON result.day = r.day AND result.hour = r.hour WHERE r.reservation_request_id = ${solicitudId}`;
         const request = await pool.query(query);
         return request || [];
     }
@@ -441,9 +453,9 @@ class ReservacService {
         // Elimina primero el horario asignado a esa solicitud y luego la solicitud de reserva como tal
         let queryDeleteSchedule = `DELETE FROM reservation_request_schedule WHERE reservation_request_id = ${id}`;
         let queryDeleteRequest = `DELETE FROM reservation_request WHERE id = ${id}`;
-        const deletedRequestSchedule = await pool.query(queryDeleteSchedule);
+        await pool.query(queryDeleteSchedule);
         const deletedRequest = await pool.query(queryDeleteRequest);
-        return deletedRequest, deletedRequestSchedule;
+        return deletedRequest;
     }
 
     //  ********************* SERVICIOS DE ROOM REQUEST  *********************
@@ -564,8 +576,10 @@ class ReservacService {
 
     async getSalaHorasOcupadasTodas(salaId) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
+        console.log(salaId,trimestre.rows[0].id)
         let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' GROUP BY subject_id, day, hour`;
         const request = await pool.query(query);
+        // console.log(request.rows)
         return request || [];
     }
     async getSalaHorasOcupadasPares(salaId) {
@@ -585,7 +599,7 @@ class ReservacService {
     async usoDesdeFecha(room_id, fechaInicio){
 
         let query = `SELECT sum(quantity) from reservation_request WHERE status='A' and send_time> '${fechaInicio}' and room_id='${room_id}'`;
-        const request= await pool.query(query);        
+        const request= await pool.query(query);
         return request.rows[0].sum;
     }
     async numeroDeReservas(modo){
@@ -594,15 +608,15 @@ class ReservacService {
             query = `SELECT count(id) from reservation_request`;
         }
         else{
-            query = `SELECT count(id) from reservation_request WHERE status='${modo}'`;           
+            query = `SELECT count(id) from reservation_request WHERE status='${modo}'`;
         }
-        const request = await pool.query(query);            
-        return request.rows[0].count;        
+        const request = await pool.query(query);
+        return request.rows[0].count;
     }
     async variacionItems(room_id, trimestreInicio, trimestreFinal){
         let query = `SELECT id, start from trimester where trimester.id='${trimestreInicio}' or trimester.id='${trimestreFinal}'`;
         let result = await pool.query(query);
-        if(result.rowCount<=1){            
+        if(result.rowCount<=1){
             return 0;
         }
         query = `SELECT trimester_id, room_id, item_id, name, description, quantity from room_item JOIN item on item.id=item_id JOIN trimester on trimester.id=trimester_id 
