@@ -2,7 +2,7 @@ version: "3.8"
 services:
     postgresdb:
         build:
-            context: ./docker
+            context: .
             dockerfile: DockerfileDb
         image: reservadb
         container_name: db_reserva_cont
@@ -16,7 +16,7 @@ services:
 
     backend:
         build:
-            context: ./docker
+            context: .
             dockerfile: DockerfileBackend
         image: reservabackend
         container_name: backend_reserva_cont

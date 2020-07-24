@@ -7,7 +7,7 @@
     "dev": "DEBUG=app:* nodemon index",
     "start": "NODE_ENV=production node index",
     "test": "mocha tests/ --exit",
-    "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down"
+    "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down --volumes"
 
   },
   "keywords": [],

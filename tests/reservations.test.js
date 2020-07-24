@@ -23,7 +23,7 @@ describe('Reservations', () => {
                     // need type array
                     expect(res.body).be.a('array');
                     // need length (4)
-                    expect(res.body.length).be.above(3);
+                    expect(res.body.length).be.above(1);
                     done();
                 });
         });
@@ -39,7 +39,7 @@ describe('Reservations', () => {
                     // need type array
                     expect(res.body).be.a('array');
                     // need length (4)
-                    expect(res.body.length).be.above(3);
+                    expect(res.body.length).be.above(1);
                     done();
                 });
         });
@@ -71,7 +71,7 @@ describe('Reservations', () => {
                     // need type array
                     expect(res.body).be.a('array');
                     // need length (2)
-                    expect(res.body.length).be.eql(2);
+                    expect(res.body.length).be.equal(2);
                     done();
                 });
         });

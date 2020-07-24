@@ -51,6 +51,7 @@ class itemController {
 
     // GET all items
     async allItems(req, res, next) {
+        console.log(req.userId, req.userType)
         try {
             const items = await reservacService.getItems()
             if (items.rowCount > 0) {

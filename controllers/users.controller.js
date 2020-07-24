@@ -94,20 +94,20 @@ class UserController {
     }
 
     // POST loggin user
-    async  signIn(req,res,next){
-        try{
-            const {usbId, clave} = req.body;
-            const login= await reservacService.loginUser(usbId, clave);
-            if (login==0){
+    async signIn(req, res, next) {
+        try {
+            const { usbId, clave } = req.body;
+            const login = await reservacService.loginUser(usbId, clave);
+            if (login == 0) {
                 res.status(404).send("Usuario no registrado en la base de datos");
-            }else if(login==1){
+            } else if (login == 1) {
                 res.status(403).send("Clave incorrecta");
             }
-            else{
-            res.json({auth: true, token: login});
+            else {
+                res.json({ auth: true, token: login });
             }
 
-        }catch(err){
+        } catch (err) {
             res.status(500).json({ error: `Hubo un error en el servidor` });
             next(err);
         }

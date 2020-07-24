@@ -10,14 +10,14 @@ const RoomRequestController = require('../controllers/roomRequest.controller')
 const SubjectsController = require('../controllers/subjects.controller');
 const UserController = require('../controllers/users.controller');
 const MetricsController = require('../controllers/metric.controller');
-//const Auth= require('../authentication/auth.js');
+// const Auth= require('../authentication/auth.js');
 
 
 function reservACapi(app) {
 
     // Prefix Route
-    
-    const router = express.Router(); 
+
+    const router = express.Router();
     const itemController = new ItemController;
     const salasController = new SalaController;
     const trimesterController = new TrimesterController;
@@ -28,7 +28,8 @@ function reservACapi(app) {
     const userController = new UserController;
     const metricController = new MetricsController;
     // const auth = new Auth;
-    
+    // const verifyUser = auth.verifyToken
+
     app.use("/api/", router);
 
 
@@ -39,13 +40,13 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    /* DAEMON autoUpdate Trimester (use by script updateTrimester) */
+    /* DAEMON autoUpdate Trimester (used by script updateTrimester) */
     router.get("/actualizarTrimestre", trimesterController.autoUpdateTrim);
 
-    /* GET actual trimester */
+    /* [TESTED] GET actual trimester */
     router.get("/trimestre/ultimo", trimesterController.getLastTrimester);
 
-    /* PUT update actual trimester  */
+    /* [TESTED] PUT update actual trimester  */
     router.put("/trimestre/:Id", trimesterController.updateTrimester);
 
 /*
@@ -117,16 +118,16 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-   /*  Obtener los horarios reservados para el tipo de semanas: week = { 'todas', 'pares', 'impares', [1...12]} */
+   /* [TESTED] Obtener los horarios reservados para el tipo de semanas: week = { 'todas', 'pares', 'impares', [1...12]} */
    router.get("/reservas/:roomId/semana/:week", reservationController.HoursReservedByTypeWeek);
 
-    /* Obtener todas las reservas de una sala */
+    /* [TESTED] Obtener todas las reservas de una sala */
     router.get("/reservas/:roomId", reservationController.asignationsFromRoom);
 
-    /*  Obtener el horario de una reserva */
+    /* [TESTED] Obtener el horario de una reserva */
     router.get("/reservas/:reservaID/horario", reservationController.asignationSchedule);
 
-    /* Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
+    /* [TESTED] Crear una reserva (se crea por debajo la solicitud y se acepta automaticamente para ser una reserva) */
     router.post("/crear/reserva", reservationController.createNewReservation);
 
 
@@ -136,28 +137,25 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    // Obtener todos los horarios reservados para una sala todas las semanas
-
-
-    /*  Obtener informacion de una solicitud y su horario */
+    /* [TESTED] Obtener informacion de una solicitud y su horario */
     router.get("/solicitudes/:solicitudId", reservationReqController.getReservationReq);
 
-    /* Obtener horario de una solicitud de reserva */
+    /* [TESTED] Obtener horario de una solicitud de reserva */
     router.get("/solicitudes/:solicitudId/horario", reservationReqController.getReservationReqSchedule);
 
-    /*  Obtener todas las solicitudes hechas por un usuario */
+    /* [TESTED] Obtener todas las solicitudes hechas por un usuario */
     router.get("/solicitudes/usuario/:userId", reservationReqController.userReservationsReqs);
 
-    /* Obtener todas las solicitudes correspondientes a un laboratorio. */
+    /* [TESTED] Obtener todas las solicitudes correspondientes a un laboratorio. */
     router.get("/solicitudes/admin/:labId", reservationReqController.adminReservationsRequest);
 
-    /* Crear una solicitud reserva */
+    /* [TESTED] Crear una solicitud reserva */
     router.post("/crear/solicitudes/reserva", reservationReqController.createReservationRequest);
 
-    /* Actualizar (Aceptar/rechazar) una solicitud */
+    /* [TESTED] Actualizar (Aceptar/rechazar) una solicitud */
     router.put("/solicitudes/reserva/:requestId", reservationReqController.manageReservationReq);
 
-    /* Eliminar solicitud de reserva de una sala */
+    /* [TESTED] Eliminar solicitud de reserva de una sala */
     router.delete("/eliminar/solicitud/reserva/:idResquest", reservationReqController.deleteReservationReq);
 
 /*
@@ -169,13 +167,13 @@ function reservACapi(app) {
     /* Obtener solicitudes de sala por parte de un usuario en especifico */
     router.get("/sala/solicitudes/crear/:userId", roomReqController.getRoomReqFromAdminLab);
 
-    /* Obtener todas las room_request */
+    /* [TESTED] Obtener todas las room_request */
     router.get("/labf/solicitudes", roomReqController.getAllRoomRequest);
 
-    /* Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir) */
+    /* [TESTED] Actualizar status de una solicitud de creacion de sala (crear en caso de aceptar y no existir) */
     router.put("/sala/solicitudes/:roomRequestId", roomReqController.manageRoomRequest);
 
-    /* Crear una solicitud de sala */
+    /* [TESTED] Crear una solicitud de sala */
     router.post("/sala/solicitudes/crear/:userId", roomReqController.createRoomRequest);
 
 /*
@@ -184,16 +182,16 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    /* Obtener un usuario de la base de datos. */
+    /* [TESTED] Obtener un usuario de la base de datos. */
     router.get("/usuario/:userId", userController.getUser );
 
-    /*  Obtener todos los usuarios */
+    /* [TESTED] Obtener todos los usuarios */
     router.get("/usuarios", userController.getUsers);
 
-    /* Obtener todos los usuarios que son laboratorio docente */
+    /* [TESTED] Obtener todos los usuarios que son laboratorio docente */
     router.get("/usuarios/admin", userController.getAdmins);
 
-    /* Obtener todos los usuarios que son profesor o estudiante */
+    /* [TESTED] Obtener todos los usuarios que son profesor o estudiante */
     router.get("/usuarios/profesor", userController.getStandardUsers);
 
     /* Registrar un nuevo usuario */
@@ -208,7 +206,7 @@ function reservACapi(app) {
     *******************************************************************
 */
 
-    /* Obtener todas las materias en el sistema */
+    /* [TESTED] Obtener todas las materias en el sistema */
     router.get("/subjects", subjectController.getSubjects);
 
 /*

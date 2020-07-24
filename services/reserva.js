@@ -36,7 +36,7 @@ class ReservacService {
         let arrayOfItems = []
         const idsItems = await this.getSalaItems(roomId);
         // Obtenemos todos los items perteneciente a la sala y guardamos sus ids en un arreglo
-        if (idsItems.rowCount > 0 ) {
+        if (idsItems.rowCount > 0) {
             for (let index = 0; index < idsItems.rowCount; index++) {
                 const element = idsItems.rows[index];
                 arrayOfItems.push(element.id)
@@ -322,19 +322,19 @@ class ReservacService {
                     if (second.week % 2 == 0) {
                         response.typeWeek = "pares";
                     }
-                    else{
+                    else {
                         response.typeWeek = "todas";
                     }
                 }
-                else{
+                else {
                     if (second.week % 2 != 0) {
                         response.typeWeek = "impares";
                     }
-                    else{
+                    else {
                         response.typeWeek = "todas";
                     }
                 }
-            }else{
+            } else {
                 response.typeWeek = content[0].week.toString();
             }
         }
@@ -386,7 +386,7 @@ class ReservacService {
                     ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'En espera', '${material}', ${quantity}, 'P') RETURNING id`;
         const createdRequest = await pool.query(query);
         const id = createdRequest.rows[0].id
-        return createdRequest,id;
+        return createdRequest, id;
     }
 
     async createReservationAsAdmin(requester, subject, room, material, quantity) {
@@ -396,11 +396,11 @@ class ReservacService {
                     ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'Solicitud Aceptada', '${material}', ${quantity}, 'A') RETURNING id`;
         const createdRequest = await pool.query(query);
         const id = createdRequest.rows[0].id
-        return createdRequest,id;
+        return createdRequest, id;
     }
 
     // Funcion para insertar horario en una semana especifica (utilizar con loop todas, pares, impares, especifica)
-    async insertarhorario(semana, horarios,id) { // Horario es el req.body completo, los horarios empiezan en el req.body[1]
+    async insertarhorario(semana, horarios, id) { // Horario es el req.body completo, los horarios empiezan en el req.body[1]
         for (let index = 1; index < horarios.length; index++) {
             const horario = horarios[index];
             const { dia, hora } = horario
@@ -427,9 +427,9 @@ class ReservacService {
             // Itero sobre las asignaciones que hay en la sala para hallar cual es la que se quiere modificar
             for (let index2 = 0; index2 < asigInRoom.length; index2++) {
                 const asignationDetails = asigInRoom[index2]
-                const {subject_id, id} = asignationDetails //Obtengo el subject e id, para mapearlo con el id de la asignation a modificar
+                const { subject_id, id } = asignationDetails //Obtengo el subject e id, para mapearlo con el id de la asignation a modificar
                 if (subject == subject_id) {
-                    if ( await this.deleteHourScheduleAsignation(id, hora, dia, semana) == 1) {
+                    if (await this.deleteHourScheduleAsignation(id, hora, dia, semana) == 1) {
                         break
                     } else {
                         // console.log('no se pudo borrar un horario que no existe:', hora, dia, semana )
@@ -530,7 +530,7 @@ class ReservacService {
         const claveEncrypt = await auth.encryptPassword(clave);
 
         let query = `INSERT into usuario (id,name, email, type, is_active,chief, clave)
-        values('${usbId}','${name}','${email}','${type}','t', '${chief}', '${claveEncrypt}')`;
+        values('${usbId}', '${name}', '${email}', ${type}, 'true', '${chief}', '${claveEncrypt}')`;
 
         await pool.query(query);
 
@@ -538,9 +538,11 @@ class ReservacService {
 
         return token;
     }
+
     async loginUser(usbId, clave) {
         let query = `SELECT id, clave, type from usuario where id='${usbId}'`;
         const login = await pool.query(query);
+        const user = login.rows[0];
         if (login.rows < 1) {
             return 0;
         }
@@ -549,7 +551,7 @@ class ReservacService {
             return 1;
         }
         else {
-            const token = await auth.createToken(login.rows[0].id, login.rows[0].type);
+            const token = await auth.createToken(user.id, user.type);
             return token;
         }
 
@@ -576,7 +578,7 @@ class ReservacService {
 
     async getSalaHorasOcupadasTodas(salaId) {
         const trimestre = await this.getActualTrim();      //Se obtiene el trimestre actual
-        console.log(salaId,trimestre.rows[0].id)
+        console.log(salaId, trimestre.rows[0].id)
         let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' GROUP BY subject_id, day, hour`;
         const request = await pool.query(query);
         // console.log(request.rows)
@@ -596,33 +598,33 @@ class ReservacService {
     }
 
     //***************** Metricas ***************************************
-    async usoDesdeFecha(room_id, fechaInicio){
+    async usoDesdeFecha(room_id, fechaInicio) {
 
         let query = `SELECT sum(quantity) from reservation_request WHERE status='A' and send_time> '${fechaInicio}' and room_id='${room_id}'`;
-        const request= await pool.query(query);
+        const request = await pool.query(query);
         return request.rows[0].sum;
     }
-    async numeroDeReservas(modo){
+    async numeroDeReservas(modo) {
         let query;
-        if(modo=='T'){
+        if (modo == 'T') {
             query = `SELECT count(id) from reservation_request`;
         }
-        else{
+        else {
             query = `SELECT count(id) from reservation_request WHERE status='${modo}'`;
         }
         const request = await pool.query(query);
         return request.rows[0].count;
     }
-    async variacionItems(room_id, trimestreInicio, trimestreFinal){
+    async variacionItems(room_id, trimestreInicio, trimestreFinal) {
         let query = `SELECT id, start from trimester where trimester.id='${trimestreInicio}' or trimester.id='${trimestreFinal}'`;
         let result = await pool.query(query);
-        if(result.rowCount<=1){
+        if (result.rowCount <= 1) {
             return 0;
         }
         query = `SELECT trimester_id, room_id, item_id, name, description, quantity from room_item JOIN item on item.id=item_id JOIN trimester on trimester.id=trimester_id 
         WHERE start BETWEEN (SELECT start from trimester WHERE trimester.id='${trimestreInicio}')
         and (SELECT start from trimester WHERE trimester.id='${trimestreFinal}') and room_id='${room_id}' ORDER BY item_id, start`;
-        result= await pool.query(query);
+        result = await pool.query(query);
         return result || [];
     }
 }

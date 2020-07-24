@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS subject(
 CREATE TABLE IF NOT EXISTS usuario(
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
+    clave VARCHAR(200),
     email VARCHAR(64) NOT NULL,
     type SMALLINT NOT NULL,
     is_active BOOLEAN NOT NULL, --En caso de que un lab se disuelva o salga del sistema
