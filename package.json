@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "backend del sistema de reserva del mac",
   "main": "index.js",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/PS1115-Skala/backend"
+  },
   "scripts": {
     "dev": "DEBUG=app:* nodemon index",
     "start": "NODE_ENV=production node index",
@@ -10,8 +14,8 @@
     "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down --volumes"
 
   },
-  "keywords": [],
-  "author": "Jesus Kauze, Jose Barrera, David Segura",
+  "keywords": ["backend", "api", "reservations", "js", "ldac"],
+  "author": "Jesus Kauze, Jose Barrera, Carlos Gonzales",
   "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^9.0.0",

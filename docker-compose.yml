@@ -1,23 +1,20 @@
 version: "3.8"
 services:
     postgresdb:
-        build:
-            context: .
-            dockerfile: DockerfileDb
-        image: reservadb
+        image: postgres:13
         container_name: db_reserva_cont
         environment:
             POSTGRES_DB: ${DATABASE:-reserva}
             POSTGRES_PASSWORD: ${PASSWORD:-1234}
         volumes:
+            - ./data_base/init_db/createdb.sql:/docker-entrypoint-initdb.d/createdb.sql
+            - ./data_base/init_db/fillerdb.sql:/docker-entrypoint-initdb.d/fillerdb.sql
             - ./data_base:/var/lib/postgres/data
         ports:
             - '${PORTDB:-5432}:5432'
 
     backend:
-        build:
-            context: .
-            dockerfile: DockerfileBackend
+        build: .
         image: reservabackend
         container_name: backend_reserva_cont
         environment:

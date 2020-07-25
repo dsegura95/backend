@@ -1,5 +1,0 @@
-FROM postgres:13
-
-COPY ./data_base/createdb.sql ./data_base/fillerdb.sql /docker-entrypoint-initdb.d/
-
-EXPOSE 5432
