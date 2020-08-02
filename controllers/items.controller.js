@@ -51,7 +51,7 @@ class itemController {
 
     // GET all items
     async allItems(req, res, next) {
-        console.log(req.userId, req.userType)
+        // console.log(req.userId, req.userType) Testing jwt
         try {
             const items = await reservacService.getItems()
             if (items.rowCount > 0) {

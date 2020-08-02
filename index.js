@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 const { config } = require('./config/index.js');
-const reservACapi = require('./routes/reserva.js');
+const reservACapi = require('./routes/main.routes.js');
 
 const {
     logErrors,
@@ -12,7 +12,9 @@ const {
 
 const notFoundHandler = require('./middleware/notFoundHandler');
 
-const generator = require('./routes/generarSiguienteTrimestre.js');
+
+// Cronjob trimester
+const generator = require('./scripts/generarSiguienteTrimestre.js');
 const { setIntervalAsync } = require('set-interval-async/dynamic');
 
 // Check if Trimester has ended
@@ -34,7 +36,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// routes
+// Router
 reservACapi(app);
 
 // Catch 404
