@@ -13,6 +13,8 @@ const subjectRoutes = require('./subjects.routes');
 const metricRoutes = require('./metrics.routes');
 
 function reservACapi(app) {
+    console.log('que paso')
+
 
     // Prefix Route
     const router = express.Router();

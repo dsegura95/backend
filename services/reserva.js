@@ -16,19 +16,17 @@ const pool = new Pool({
     port: config.portdb
 })
 
-pool.connect(err => {
-    if (err) {
-      console.error('ERROR: Database Connection', err.stack)
-    } else {
-      console.log('OK: Database connected')
-    }
-})
+// pool.connect(err => {
+//     if (err) {
+//       console.error('ERROR: Database Connection', err.stack)
+//     } else {
+//       console.log('OK: Database connected')
+//     }
+// })
 
 // *********************Se importan metodos de autenticacion ********************
 
 const auth = new Auth;
-
-//const ACTUAL_TRIM = pool.query('SELECT id FROM trimester ORDER BY id DESC LIMIT 1');
 
 class ReservacService {
 
