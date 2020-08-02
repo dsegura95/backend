@@ -16,6 +16,14 @@ const pool = new Pool({
     port: config.portdb
 })
 
+pool.connect(err => {
+    if (err) {
+      console.error('ERROR: Database Connection', err.stack)
+    } else {
+      console.log('OK: Database connected')
+    }
+})
+
 // *********************Se importan metodos de autenticacion ********************
 
 const auth = new Auth;
