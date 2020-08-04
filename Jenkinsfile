@@ -23,7 +23,7 @@ pipeline {
         stage('Tests Result') {
             steps {
                 script {
-                    def dockerfile = './docker/DockerfileBackend'
+                    def dockerfile = './Dockerfile'
                     def dockerImage = docker.build("${registry}:${env.BUILD_ID}", "-f ${dockerfile} .")
                     // Connect to docker cont and run tests
                     try {

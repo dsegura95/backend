@@ -1,29 +1,29 @@
-version: "3.8"
+version: '3.8'
 services:
-    postgresdb:
-        image: postgres:13
-        container_name: db_reserva_cont
-        environment:
-            POSTGRES_DB: ${DATABASE:-reserva}
-            POSTGRES_PASSWORD: ${PASSWORD:-1234}
-        volumes:
-            - ./data_base/init_db/createdb.sql:/docker-entrypoint-initdb.d/createdb.sql
-            - ./data_base/init_db/fillerdb.sql:/docker-entrypoint-initdb.d/fillerdb.sql
-            - ./data_base:/var/lib/postgres/data
-        ports:
-            - '${PORTDB:-5432}:5432'
+  postgresdb:
+    image: postgres:13
+    container_name: db_reserva_cont
+    environment:
+      POSTGRES_DB: ${DATABASE:-reserva}
+      POSTGRES_PASSWORD: ${PASSWORD:-1234}
+    volumes:
+      - ./src/data_base/init_db/createdb.sql:/docker-entrypoint-initdb.d/createdb.sql
+      - ./src/data_base/init_db/fillerdb.sql:/docker-entrypoint-initdb.d/fillerdb.sql
+      - ./src/data_base:/var/lib/postgres/data
+    ports:
+      - '${PORTDB:-5432}:5432'
 
-    backend:
-        build: .
-        image: reservabackend
-        container_name: backend_reserva_cont
-        environment:
-            - HOST=postgresdb
-        depends_on:
-            - postgresdb
-        ports:
-            - '${PORT:-3000}:${PORT:-3000}'
-        volumes:
-            - .:/app
-            - /app/node_modules
-        command: ./scripts/wait-for-it.sh postgresdb:5432 -- npm run dev
+  backend:
+    build: .
+    image: reservabackend
+    container_name: backend_reserva_cont
+    environment:
+      - HOST=postgresdb
+    depends_on:
+      - postgresdb
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ./src/scripts/wait-for-it.sh postgresdb:5432 -- npm run dev

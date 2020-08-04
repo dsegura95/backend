@@ -4,17 +4,22 @@
   "description": "backend del sistema de reserva del mac",
   "main": "index.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/PS1115-Skala/backend"
+    "type": "git",
+    "url": "https://github.com/PS1115-Skala/backend"
   },
   "scripts": {
-    "dev": "DEBUG=app:* nodemon index",
-    "start": "NODE_ENV=production node index",
-    "test": "mocha tests/ --exit",
+    "dev": "DEBUG=app:* nodemon src/index",
+    "start": "NODE_ENV=production node src/index",
+    "test": "mocha src/tests/ --exit",
     "dtest": "docker-compose up -d postgresdb && docker-compose run --rm backend npm run test ; docker-compose down --volumes"
-
   },
-  "keywords": ["backend", "api", "reservations", "js", "ldac"],
+  "keywords": [
+    "backend",
+    "api",
+    "reservations",
+    "js",
+    "ldac"
+  ],
   "author": "Jesus Kauze, Jose Barrera, Carlos Gonzales",
   "license": "ISC",
   "dependencies": {
@@ -27,7 +32,8 @@
     "mocha": "^8.0.1",
     "moment": "^2.24.0",
     "pg": "^7.18.2",
-    "set-interval-async": "1.0.30"
+    "set-interval-async": "1.0.30",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",

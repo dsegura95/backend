@@ -1,5 +1,4 @@
 const express = require('express');
-// const Auth= require('../authentication/auth.js');
 
 /* Routes */
 const trimesterRoutes = require('./trimester.routes');
@@ -13,90 +12,80 @@ const subjectRoutes = require('./subjects.routes');
 const metricRoutes = require('./metrics.routes');
 
 function reservACapi(app) {
-    console.log('que paso')
+  // Prefix Route
+  const router = express.Router();
+  app.use('/api/', router);
 
-
-    // Prefix Route
-    const router = express.Router();
-    app.use("/api/", router);
-
-    // Authentication JWT
-    // const auth = new Auth;
-    // const verifyUser = auth.verifyToken
-
-
-
-/*
+  /*
     ***************************************************************
                             TRIMESTER ROUTES
     *******************************************************************
 */
 
-    router.use(trimesterRoutes);
-/*
+  router.use(trimesterRoutes);
+  /*
     ***************************************************************
                             ITEMS ROUTES
     *******************************************************************
 */
 
-    router.use(itemRoutes);
+  router.use(itemRoutes);
 
-/*
+  /*
     ***************************************************************
                             ROOMS ROUTES
     *******************************************************************
 */
 
-    router.use(roomRoutes);
+  router.use(roomRoutes);
 
-/*
+  /*
     ***************************************************************
                             RESERVATIONS ROUTES
     *******************************************************************
 */
 
-   router.use(reservationRoutes)
+  router.use(reservationRoutes);
 
-/*
+  /*
     ***************************************************************
                             RESERVATIONS REQUEST ROUTES
     *******************************************************************
 */
 
-    router.use(reservationRequestRoutes);
+  router.use(reservationRequestRoutes);
 
-/*
+  /*
     ***************************************************************
                             ROOM REQUEST ROUTES
     *******************************************************************
 */
 
-    router.use(roomRequestRoutes);
+  router.use(roomRequestRoutes);
 
-/*
+  /*
     ***************************************************************
                             USERS ROUTES
     *******************************************************************
 */
 
-    router.use(userRoutes);
+  router.use(userRoutes);
 
-/*
+  /*
     ***************************************************************
                             SUBJECTS ROUTES
     *******************************************************************
 */
 
-    router.use(subjectRoutes);
+  router.use(subjectRoutes);
 
-/*
+  /*
     ***************************************************************
                             METRICS ROUTES
     *******************************************************************
 */
 
-    router.use(metricRoutes);
-
+  router.use(metricRoutes);
 }
 
 module.exports = reservACapi;
