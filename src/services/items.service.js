@@ -1,8 +1,8 @@
 const pool = require('../data_base/pgConnect');
+const ReservacService = require('./reserva');
+const reservacService = new ReservacService();
 
 class ItemsService {
-  //  ************************ SERVICIOS MODELO DE ITEM  ***********************
-
   async getItems() {
     let query = 'SELECT * FROM item';
     const items = await pool.query(query);
@@ -11,7 +11,7 @@ class ItemsService {
 
   async getItemsNoOwned(roomId) {
     let arrayOfItems = [];
-    const idsItems = await this.getSalaItems(roomId);
+    const idsItems = await reservacService.getSalaItems(roomId);
     // Obtenemos todos los items perteneciente a la sala y guardamos sus ids en un arreglo
     if (idsItems.rowCount > 0) {
       for (let index = 0; index < idsItems.rowCount; index++) {
