@@ -1,6 +1,6 @@
 const pool = require('../data_base/pgConnect');
-const ReservacService = require('./reserva');
-const reservacService = new ReservacService();
+const TrimestersService = require('./trimesters.service');
+const trimestersService = new TrimestersService();
 
 class RoomsService {
   async getSalasActivas() {
@@ -28,28 +28,28 @@ class RoomsService {
   }
 
   async getSalaItems(id) {
-    let actualTrimId = await reservacService.getActualTrim();
+    let actualTrimId = await trimestersService.getActualTrim();
     let sql = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
     const itemsSala = await pool.query(sql);
     return itemsSala || [];
   }
 
   async deleteSalaItem(id, salaId) {
-    let actualTrimId = await reservacService.getActualTrim();
+    let actualTrimId = await trimestersService.getActualTrim();
     let query = `DELETE FROM room_item AS r WHERE r.room_id = '${salaId}' AND r.item_id = ${id} AND r.trimester_id = '${actualTrimId.rows[0].id}'`;
     await pool.query(query);
     return;
   }
 
   async updateSalaItem(room_id, item_id, quantity) {
-    let trimester_id = await reservacService.getActualTrim();
+    let trimester_id = await trimestersService.getActualTrim();
     let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id.rows[0].id}' AND item_id = '${item_id}'`;
     const updateItem = await pool.query(query);
     return updateItem;
   }
 
   async createSalaItem(room_id, item_id, quantity) {
-    let trimester_id = await reservacService.getActualTrim();
+    let trimester_id = await trimestersService.getActualTrim();
     let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id.rows[0].id}','${item_id}','${quantity}')`;
     const createItemId = await pool.query(query);
     return createItemId;
@@ -115,7 +115,7 @@ class RoomsService {
       change = 1;
     }
     if (is_active == 'false') {
-      let howManyAsig = await reservacService.getReservationByRoom(id);
+      let howManyAsig = await trimestersService.getReservationByRoom(id);
       if (howManyAsig.rowCount == 0) {
         query = `UPDATE room SET is_active = '${is_active}' WHERE id = '${id}'`;
         change = await pool.query(query);
