@@ -1,5 +1,5 @@
-const ReservacService = require('../services/reserva');
-const reservacService = new ReservacService
+const SubjectsService = require('../services/subjects.service');
+const subjectsService = new SubjectsService();
 
 /*
     Rules To Api Rest
@@ -14,15 +14,14 @@ const reservacService = new ReservacService
     Controller
 */
 class SubjectsController {
-
-    async getSubjects(req, res, next) {
-        try {
-            const subjects = await reservacService.getSubjects();
-            res.status(200).send(subjects.rows);
-        } catch (err) {
-            next(err);
-        }
+  async getSubjects(req, res, next) {
+    try {
+      const subjects = await subjectsService.getSubjects();
+      res.status(200).send(subjects.rows);
+    } catch (err) {
+      next(err);
     }
- }
+  }
+}
 
-module.exports = SubjectsController
+module.exports = SubjectsController;
