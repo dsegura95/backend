@@ -1,4 +1,4 @@
-const TrimestersService = require('../services/reserva');
+const TrimestersService = require('../services/trimesters.service');
 const trimestersService = new TrimestersService();
 
 // Time/Date Module
