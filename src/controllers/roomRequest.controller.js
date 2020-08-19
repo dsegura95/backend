@@ -1,5 +1,5 @@
-const ReservacService = require('../services/reserva');
-const reservacService = new ReservacService
+const RoomRequestService = require('../services/reserva');
+const roomRequestService = new RoomRequestService();
 
 // Time/Date module
 const moment = require('moment');
@@ -17,78 +17,88 @@ const moment = require('moment');
     Controller
 */
 class RoomRequestController {
+  // GET all room requests made by an adminLab
+  async getRoomReqFromAdminLab(req, res, next) {
+    const userId = req.params.userId;
+    try {
+      const result = await roomRequestService.getRoomRequestFromUser(userId);
+      res.status(200).send(result.rows);
+    } catch (err) {
+      res.status(500).json({ error: 'Ocurrio un error en el servidor' });
+      next(err);
+    }
+  }
 
-    // GET all room requests made by an adminLab
-    async getRoomReqFromAdminLab(req, res, next) {
-        const userId = req.params.userId;
-        try {
-            const result = await reservacService.getRoomRequestFromUser(userId);
-            res.status(200).send(result.rows);
-        }
-        catch (err) {
-            res.status(500).json({ error: 'Ocurrio un error en el servidor' });
+  // GET all room request to LABF
+  async getAllRoomRequest(req, res, next) {
+    try {
+      const requests = await roomRequestService.getRoomRequest();
+      res.status(200).send(requests.rows);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  // PUT accept or reject a room request (ONLY LABF)
+  async manageRoomRequest(req, res, next) {
+    const id = req.params.roomRequestId;
+    const status = req.body.status;
+    const result = await roomRequestService.updateRoomRequest(id, status);
+    let date = moment().format('YYYY-MM-DD');
+    if (!result) {
+      res
+        .status(403)
+        .json({
+          error: `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`
+        });
+    } else {
+      try {
+        if (status == 'A') {
+          try {
+            await roomRequestService.createSalaFromRequest(id, date);
+          } catch (err) {
             next(err);
+          }
         }
-
+        res.status(200).json({ message: `Solicitud de agregar sala Atendida` });
+      } catch (err) {
+        res.status(500).json({ error: 'Ocurrio un error en el servidor' });
+        next(err);
+      }
     }
+  }
 
-    // GET all room request to LABF
-    async getAllRoomRequest(req, res, next) {
-        try {
-            const requests = await reservacService.getRoomRequest();
-            res.status(200).send(requests.rows);
-        } catch (err) {
-            next(err);
-        }
+  // POST create a room request (ONLY ADMIN_LABS)
+  async createRoomRequest(req, res, next) {
+    const userId = req.params.userId;
+    const room_id = req.body.room_id;
+    let date = moment().format('YYYY-MM-DD');
+    const result = await roomRequestService.createRoomRequest(
+      room_id,
+      userId,
+      date
+    );
+    if (result == null) {
+      res
+        .status(403)
+        .json({
+          error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`
+        });
+    } else if (room_id.length > 7) {
+      res.status(403).json({ error: `El nombre a solicitar es incorrecto` });
+    } else {
+      try {
+        res
+          .status(201)
+          .json({
+            message: `Solicitud de sala ${room_id} creada exitosamente`
+          });
+      } catch (err) {
+        res.status(500).json({ error: 'Ocurrio un error en el servidor' });
+        next(err);
+      }
     }
-
-    // PUT accept or reject a room request (ONLY LABF)
-    async manageRoomRequest(req, res, next) {
-        const id = req.params.roomRequestId;
-        const status = req.body.status;
-        const result = await reservacService.updateRoomRequest(id, status);
-        let date = moment().format('YYYY-MM-DD');
-        if (!result) {
-            res.status(403).json({ error: `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa` });
-        } else {
-            try {
-                if (status == 'A') {
-                    try {
-                        await reservacService.createSalaFromRequest(id, date);
-                    }
-                    catch (err) {
-                        next(err);
-                    }
-                }
-                res.status(200).json({ message: `Solicitud de agregar sala Atendida` });
-            } catch (err) {
-                res.status(500).json({ error: 'Ocurrio un error en el servidor' });
-                next(err);
-            };
-        }
-    }
-
-    // POST create a room request (ONLY ADMIN_LABS)
-    async createRoomRequest(req, res, next) {
-        const userId = req.params.userId;
-        const room_id = req.body.room_id;
-        let date = moment().format('YYYY-MM-DD');
-        const result = await reservacService.createRoomRequest(room_id, userId, date);
-        if (result == null) {
-            res.status(403).json({ error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala` });
-        } else if (room_id.length > 7) {
-            res.status(403).json({ error: `El nombre a solicitar es incorrecto` });
-        }
-        else {
-            try {
-                res.status(201).json({ message: `Solicitud de sala ${room_id} creada exitosamente` });
-            } catch (err) {
-                res.status(500).json({ error: 'Ocurrio un error en el servidor' });
-                next(err);
-            }
-        }
-    }
-
+  }
 }
 
-module.exports = RoomRequestController
+module.exports = RoomRequestController;
