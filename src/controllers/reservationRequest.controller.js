@@ -1,4 +1,6 @@
 const ReservationRequestService = require('../services/reservationRequest.service');
+const RoomsService = require('../services/rooms.service');
+const roomsService = new RoomsService();
 const reservationRequestService = new ReservationRequestService();
 
 /*
@@ -14,7 +16,7 @@ const reservationRequestService = new ReservationRequestService();
     Auxiliar Functions
 */
 async function roomExist(roomId) {
-  const room = await reservationRequestService.getSala(roomId);
+  const room = await roomsService.getSala(roomId);
   if (room.rowCount == 1) {
     return true;
   } else {
@@ -104,11 +106,9 @@ class ReservationRequestController {
       if (status == 'A') {
         // Existe un horario ya asignado en ese horario que se solicita
         if (checkSchedule.rowCount > 0) {
-          res
-            .status(403)
-            .json({
-              error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`
-            });
+          res.status(403).json({
+            error: `Ya existe una reserva en la sala ${room} con ese horario, Elimine la(s) Reservas en ese horario antes de aceptar esta solicitud`
+          });
           return;
         } else {
           await reservationRequestService.createReservation(
@@ -123,11 +123,9 @@ class ReservationRequestController {
             'Aprobado',
             'A'
           );
-          res
-            .status(200)
-            .json({
-              message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`
-            });
+          res.status(200).json({
+            message: `Se creo exitosamente la reserva para la materia ${result.subject_id} en la sala ${room}`
+          });
           return;
         }
       } else {
@@ -176,11 +174,9 @@ class ReservationRequestController {
     let { requester, subject, room, quantity, material, semanas } = req.body[0]; //datos de la solicitud
     try {
       if (!roomExist(room)) {
-        res
-          .status(400)
-          .json({
-            error: 'la sala en donde se solicita la reserva no existe '
-          });
+        res.status(400).json({
+          error: 'la sala en donde se solicita la reserva no existe '
+        });
       }
       if (!req.body[1]) {
         res
@@ -188,11 +184,9 @@ class ReservationRequestController {
           .json({ error: 'Debe llenar un horario a solicitar reserva' });
       } else {
         if (isNaN(quantity) || quantity < 0) {
-          res
-            .status(403)
-            .json({
-              error: 'La cantidad de estudiantes debe ser un numero positivo'
-            });
+          res.status(403).json({
+            error: 'La cantidad de estudiantes debe ser un numero positivo'
+          });
         }
         if (!material) {
           material = 'No hay requerimientos';
@@ -235,11 +229,9 @@ class ReservationRequestController {
             id
           );
         } else {
-          res
-            .status(403)
-            .json({
-              error: 'No se esta especificando un tipo de semana correctamente'
-            });
+          res.status(403).json({
+            error: 'No se esta especificando un tipo de semana correctamente'
+          });
         }
         res.status(201).json({ message: 'Se creo correctamente la solicitud' });
       }

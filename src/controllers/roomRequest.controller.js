@@ -1,4 +1,4 @@
-const RoomRequestService = require('../services/reserva');
+const RoomRequestService = require('../services/roomRequest.service');
 const roomRequestService = new RoomRequestService();
 
 // Time/Date module
@@ -46,11 +46,9 @@ class RoomRequestController {
     const result = await roomRequestService.updateRoomRequest(id, status);
     let date = moment().format('YYYY-MM-DD');
     if (!result) {
-      res
-        .status(403)
-        .json({
-          error: `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`
-        });
+      res.status(403).json({
+        error: `La sala ya ha sido asignada previamente a un laboratorio y se encuentra activa`
+      });
     } else {
       try {
         if (status == 'A') {
@@ -79,20 +77,16 @@ class RoomRequestController {
       date
     );
     if (result == null) {
-      res
-        .status(403)
-        .json({
-          error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`
-        });
+      res.status(403).json({
+        error: `El usuario no esta autorizado a reservar salas o no se ha introducido el id de la sala`
+      });
     } else if (room_id.length > 7) {
       res.status(403).json({ error: `El nombre a solicitar es incorrecto` });
     } else {
       try {
-        res
-          .status(201)
-          .json({
-            message: `Solicitud de sala ${room_id} creada exitosamente`
-          });
+        res.status(201).json({
+          message: `Solicitud de sala ${room_id} creada exitosamente`
+        });
       } catch (err) {
         res.status(500).json({ error: 'Ocurrio un error en el servidor' });
         next(err);
