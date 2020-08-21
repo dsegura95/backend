@@ -62,8 +62,9 @@ class ReservationRequestService {
 
   async getRequestUser(userId) {
     const trimestre = await trimestersService.getActualTrim();
-    let query = `SELECT * FROM reservation_request WHERE requester_id = '${userId}' AND trimester_id = '${trimestre.rows[0].id}'`;
-    const requestsUsers = await pool.query(query);
+    const values = [userId, trimestre.rows[0].id];
+    let query = `SELECT * FROM reservation_request WHERE requester_id = $1 AND trimester_id = $2`;
+    const requestsUsers = await pool.query(query, values);
     return requestsUsers || [];
   }
 
@@ -97,8 +98,9 @@ class ReservationRequestService {
     const request_schedule = await this.getScheduleFromRequestForPut(requestId);
     for (let index = 0; index < request_schedule.rowCount; index++) {
       const element = request_schedule.rows[index];
-      let query1 = `INSERT INTO asig_schedule (asignation_id, week, day, hour) VALUES (${id},${element.week},'${element.day}',${element.hour})`;
-      await pool.query(query1);
+      let values = [id, element.week, element.day, element.hour];
+      let query1 = `INSERT INTO asig_schedule (asignation_id, week, day, hour) VALUES ($1,$2,$3,$4)`;
+      await pool.query(query1, values);
     }
     return createAsignation;
   }
@@ -106,9 +108,17 @@ class ReservationRequestService {
   async createReservationRequest(requester, subject, room, material, quantity) {
     const temp = await trimestersService.getActualTrim();
     const trimestreActual = temp.rows[0].id;
+    const values = [
+      requester,
+      room,
+      subject,
+      trimestreActual,
+      material,
+      quantity
+    ];
     let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
-                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'En espera', '${material}', ${quantity}, 'P') RETURNING id`;
-    const createdRequest = await pool.query(query);
+                    ($1, $2, $3, $4, 'En espera', $5, $6, 'P') RETURNING id`;
+    const createdRequest = await pool.query(query, values);
     const id = createdRequest.rows[0].id;
     return createdRequest, id;
   }
@@ -116,9 +126,17 @@ class ReservationRequestService {
   async createReservationAsAdmin(requester, subject, room, material, quantity) {
     const temp = await trimestersService.getActualTrim();
     const trimestreActual = temp.rows[0].id;
+    const values = [
+      requester,
+      room,
+      subject,
+      trimestreActual,
+      material,
+      quantity
+    ];
     let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
-                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'Solicitud Aceptada', '${material}', ${quantity}, 'A') RETURNING id`;
-    const createdRequest = await pool.query(query);
+                    ($1, $2, $3, $4, 'Solicitud Aceptada', $5, $6, 'A') RETURNING id`;
+    const createdRequest = await pool.query(query, values);
     const id = createdRequest.rows[0].id;
     return createdRequest, id;
   }
