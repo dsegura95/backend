@@ -11,17 +11,26 @@ class ReservationsServices {
 
   async getReservationByRoom(roomId) {
     let trimester_id = await trimestersService.getActualTrim();
-    let query = `SELECT * FROM asignation WHERE room_id = '${roomId}' AND trimester_id = '${trimester_id.rows[0].id}'`;
-    const request = await pool.query(query);
+    const values = [roomId, trimester_id.rows[0].id];
+    let query = `SELECT * FROM asignation WHERE room_id = $1 AND trimester_id = $2`;
+    const request = await pool.query(query, values);
     return request || [];
   }
 
   async createReservationAsAdmin(requester, subject, room, material, quantity) {
     const temp = await trimestersService.getActualTrim();
     const trimestreActual = temp.rows[0].id;
+    const values = [
+      requester,
+      room,
+      subject,
+      trimestreActual,
+      material,
+      quantity
+    ];
     let query = `INSERT into reservation_request(requester_id, room_id, subject_id, trimester_id, reason, material_needed, quantity, status) VALUES
-                    ('${requester}', '${room}', '${subject}', '${trimestreActual}', 'Solicitud Aceptada', '${material}', ${quantity}, 'A') RETURNING id`;
-    const createdRequest = await pool.query(query);
+                    ($1, $2, $3, $4, 'Solicitud Aceptada', $5, $6, 'A') RETURNING id`;
+    const createdRequest = await pool.query(query, values);
     const id = createdRequest.rows[0].id;
     return createdRequest, id;
   }
@@ -64,29 +73,33 @@ class ReservationsServices {
 
   async getReservationFromWeek(room, week) {
     let trimester_id = await trimestersService.getActualTrim();
-    let query = `SELECT subject_id, day, hour, week FROM asignation AS r JOIN asig_schedule AS s ON r.id = s.asignation_id WHERE week = ${week} AND room_id = '${room}' AND trimester_id = '${trimester_id.rows[0].id}'`;
-    const request = await pool.query(query);
+    const values = [room, trimester_id.rows[0].id];
+    let query = `SELECT subject_id, day, hour, week FROM asignation AS r JOIN asig_schedule AS s ON r.id = s.asignation_id WHERE week = ${week} AND room_id = $1 AND trimester_id = $2`;
+    const request = await pool.query(query, values);
     return request || [];
   }
 
   async getSalaHorasOcupadasTodas(salaId) {
-    const trimestre = await trimestersService.getActualTrim(); //Se obtiene el trimestre actual
-    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' GROUP BY subject_id, day, hour`;
-    const request = await pool.query(query);
+    const trimestre = await trimestersService.getActualTrim();
+    const values = [salaId, trimestre.rows[0].id];
+    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = $1 AND trimester_id = $2 GROUP BY subject_id, day, hour`;
+    const request = await pool.query(query, values);
     return request || [];
   }
 
   async getSalaHorasOcupadasPares(salaId) {
-    const trimestre = await trimestersService.getActualTrim(); //Se obtiene el trimestre actual
-    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' AND (( week % 2 ) = 0) GROUP BY subject_id, day, hour`;
-    const request = await pool.query(query);
+    const trimestre = await trimestersService.getActualTrim();
+    const values = [salaId, trimestre.rows[0].id];
+    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = $1 AND trimester_id = $2 AND (( week % 2 ) = 0) GROUP BY subject_id, day, hour`;
+    const request = await pool.query(query, values);
     return request || [];
   }
 
   async getSalaHorasOcupadasImpares(salaId) {
-    const trimestre = await trimestersService.getActualTrim(); //Se obtiene el trimestre actual
-    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = '${salaId}' AND trimester_id = '${trimestre.rows[0].id}' AND (( week % 2 ) = 1) GROUP BY subject_id, day, hour`;
-    const request = await pool.query(query);
+    const trimestre = await trimestersService.getActualTrim();
+    const values = [salaId, trimestre.rows[0].id];
+    let query = `SELECT subject_id, day, hour FROM asignation JOIN asig_schedule ON asignation.id = asig_schedule.asignation_id WHERE room_id = $1 AND trimester_id = $2 AND (( week % 2 ) = 1) GROUP BY subject_id, day, hour`;
+    const request = await pool.query(query, values);
     return request || [];
   }
 }
