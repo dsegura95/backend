@@ -5,14 +5,22 @@ const trimestersService = new TrimestersService();
 class RoomRequestService {
   async createRoomRequest(room_id, userId, date) {
     const trimestre = await trimestersService.getActualTrim();
-    let queryChief = `SELECT chief, type from usuario where usuario.id='${userId}'`;
-    const owner = await pool.query(queryChief); //Obtenemos el jefe de laboratorio correspondiente
+    const valuesChief = [userId];
+    let queryChief = `SELECT chief, type from usuario where usuario.id=$1`;
+    const owner = await pool.query(queryChief, valuesChief); //Obtenemos el jefe de laboratorio correspondiente
     if (owner.rows[0].type != 3333 || room_id == undefined) {
       return null;
     }
+    const values = [
+      room_id,
+      owner.rows[0].chief,
+      userId,
+      trimestre.rows[0].id,
+      date
+    ];
     let query = `INSERT into room_request(room_id, requested_id, owner_id, manager_id, trimester_id, date, status) VALUES
-        ('${room_id}', 'labf','${owner.rows[0].chief}','${userId}','${trimestre.rows[0].id}','${date}', 'P')`;
-    const createRoomRequest = await pool.query(query);
+        ($1, 'labf',$2, $3, $4, $5, 'P')`;
+    const createRoomRequest = await pool.query(query, values);
     return createRoomRequest;
   }
 
