@@ -29,29 +29,33 @@ class RoomsService {
 
   async getSalaItems(id) {
     let actualTrimId = await trimestersService.getActualTrim();
-    let sql = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = '${id}' AND trimester_id = '${actualTrimId.rows[0].id}'`;
-    const itemsSala = await pool.query(sql);
+    const values = [id, actualTrimId.rows[0].id];
+    let query = `SELECT i.id, i.name, i.description, r.quantity FROM room_item AS r INNER JOIN item AS i ON i.id = r.item_id WHERE room_id = $1 AND trimester_id = $2`;
+    const itemsSala = await pool.query(query, values);
     return itemsSala || [];
   }
 
   async deleteSalaItem(id, salaId) {
     let actualTrimId = await trimestersService.getActualTrim();
-    let query = `DELETE FROM room_item AS r WHERE r.room_id = '${salaId}' AND r.item_id = ${id} AND r.trimester_id = '${actualTrimId.rows[0].id}'`;
-    await pool.query(query);
+    const values = [salaId, id, actualTrimId.rows[0].id];
+    let query = `DELETE FROM room_item AS r WHERE r.room_id = $1 AND r.item_id = $2 AND r.trimester_id = $3`;
+    await pool.query(query, values);
     return;
   }
 
   async updateSalaItem(room_id, item_id, quantity) {
     let trimester_id = await trimestersService.getActualTrim();
-    let query = `UPDATE room_item SET quantity = '${quantity}' WHERE room_id = '${room_id}' AND trimester_id = '${trimester_id.rows[0].id}' AND item_id = '${item_id}'`;
-    const updateItem = await pool.query(query);
+    const values = [quantity, room_id, trimester_id.rows[0].id, item_id];
+    let query = `UPDATE room_item SET quantity = $1 WHERE room_id = $2 AND trimester_id = $3 AND item_id = $4`;
+    const updateItem = await pool.query(query, values);
     return updateItem;
   }
 
   async createSalaItem(room_id, item_id, quantity) {
     let trimester_id = await trimestersService.getActualTrim();
-    let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ('${room_id}','${trimester_id.rows[0].id}','${item_id}','${quantity}')`;
-    const createItemId = await pool.query(query);
+    const values = [room_id, trimester_id.rows[0].id, item_id, quantity];
+    let query = `INSERT INTO room_item (room_id, trimester_id, item_id, quantity) VALUES ($1, $2 , $3, $4)`;
+    const createItemId = await pool.query(query, values);
     return createItemId;
   }
 
